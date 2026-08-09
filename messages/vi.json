@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "NEWTEC TRAVEL AND TOURS | Dịch vụ du lịch Mỹ–Việt Nam",
-    "description": "Giá vé trực tiếp từ San Francisco, Los Angeles, Phoenix và New York đến Việt Nam, do chính Hanh Vong tại NEWTEC Travel and Tours ở Daly City lo liệu — vé máy bay, visa và mọi thứ ở giữa."
+    "description": "Giá vé trực tiếp từ San Francisco, Los Angeles, Phoenix và New York đến Việt Nam, do chính Hanh Vong tại NEWTEC Travel and Tours ở Daly City lo liệu — vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa."
   },
   "Nav": {
     "home": "Trang chủ NEWTEC TRAVEL AND TOURS",
@@ -15,7 +15,7 @@
     "searchCta": "Tìm chuyến bay"
   },
   "Footer": {
-    "tagline": "Tôi lo trọn chuyến đi giữa Mỹ và Việt Nam cho anh chị: vé máy bay, visa và từng chi tiết nhỏ ở giữa.",
+    "tagline": "Tôi lo trọn chuyến đi giữa Mỹ và Việt Nam cho anh chị: vé máy bay, chỗ ngồi, visa và từng chi tiết nhỏ ở giữa.",
     "privacy": "Quyền riêng tư",
     "terms": "Điều khoản",
     "disclaimer": "Gửi yêu cầu chưa phải là giữ chỗ. Tôi sẽ xác nhận giá vé và từng chi tiết với anh chị trước khi xuất vé.",
@@ -26,13 +26,13 @@
   "Home": {
     "eyebrow": "Chào anh chị!",
     "title": "Để tôi lo chuyến đi Việt Nam cho anh chị.",
-    "description": "Anh chị cho tôi biết muốn đi đâu và khi nào. Xem giá vé trực tiếp của Vietnam Airlines và EVA Air, gửi cho tôi chuyến anh chị ưng, rồi tôi sẽ đích thân gọi lại. Vé máy bay, visa và mọi thứ ở giữa.",
+    "description": "Anh chị cho tôi biết muốn đi đâu và khi nào. Xem giá vé trực tiếp của Vietnam Airlines và EVA Air, gửi cho tôi chuyến anh chị ưng, rồi tôi sẽ đích thân gọi lại. Vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa.",
     "cta": "Tìm chuyến bay cho anh chị",
     "priceNote": "Mọi mức giá ở đây là trọn gói chuyến đi — đặt vé, chọn chỗ ngồi, visa và mọi việc khác tôi lo trước khi anh chị bay.",
     "closingTitle": "Anh chị sẵn sàng chưa? Để tôi lo phần còn lại.",
     "specialistEyebrow": "Rất vui được làm quen",
     "specialistTitle": "Anh chị có tôi, từ cuộc gọi đầu tiên đến khi chuyến đi kết thúc — và cả những chuyến sau nữa.",
-    "specialistBody": "Tôi là Hanh Vong. Nhiều năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình gọi cho tôi từ những ngày đầu đến nay vẫn gọi tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, visa và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
+    "specialistBody": "Tôi là Hanh Vong. Nhiều năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình gọi cho tôi từ những ngày đầu đến nay vẫn gọi tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, visa và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
     "specialistCta": "Gọi cho tôi bất cứ lúc nào"
   },
   "Inquiry": {
@@ -177,7 +177,6 @@
     "stopsMaxOne": "Tối đa 1 điểm dừng",
     "airlineLabel": "Hãng bay",
     "airlineAll": "Mọi hãng bay",
-    "detailsLabel": "Chi tiết chuyến bay",
     "noMatchTitle": "Không có chuyến nào khớp bộ lọc",
     "noMatchBody": "Tôi có tìm được chuyến bay cho những ngày này, nhưng không chuyến nào khớp với bộ lọc anh chị chọn ở trên.",
     "clearFilters": "Xoá bộ lọc",
@@ -186,9 +185,8 @@
     "nonstop": "Bay thẳng",
     "stops": "{count, plural, other {# điểm dừng}}",
     "via": "qua {airports}",
-    "alternateReturns": "{count, plural, other {còn # giờ bay về khác}} cùng mức giá",
     "estimatedTotal": "Tổng cho {travelers, plural, other {# hành khách}}",
-    "includedBadge": "Vé máy bay, visa, trọn gói mọi thứ",
+    "includedBadge": "Vé máy bay, chỗ ngồi, visa — trọn gói mọi thứ",
     "priceIncludes": "Mọi mức giá bên dưới là trọn gói — đặt vé, chọn chỗ ngồi, visa và mọi việc khác tôi lo cho anh chị. Chưa thu khoản nào ở đây.",
     "showMore": "Xem thêm {count} lựa chọn (còn {remaining})",
     "select": "Tiếp tục với chuyến bay này",

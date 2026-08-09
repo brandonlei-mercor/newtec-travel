@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Phone } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Phone } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { apiRequest } from "./api";
-import { AirlineLogo, SliceRow, airlineNames, formatDuration } from "./flight-itinerary";
+import { AirlineLogos, formatDuration, sliceAirlineNames, sliceCarriers } from "./flight-itinerary";
 import { formatDate } from "./format";
 import {
   EmptyState,
@@ -705,19 +705,35 @@ function LegLine({ slice, label }: { slice: FlightOfferSlice; label: string }) {
       : segment.destinationAirport;
   });
 
+  /*
+   * Centred, not baselined: the times cell carries a second line for the
+   * airline, so aligning everything to the first baseline would leave the mark
+   * and the direction floating above the row they belong to.
+   */
   return (
-    <div className="grid gap-x-4 gap-y-0.5 text-sm sm:grid-cols-[3.4rem_minmax(0,9.5rem)_minmax(0,7.5rem)_minmax(0,1fr)] sm:items-baseline">
-      <span className="eyebrow">{label}</span>
-      <p className="flex items-baseline gap-1.5 font-semibold tabular-nums">
-        <span>{first.departureLocal.slice(11, 16)}</span>
-        <span aria-hidden="true" className="text-[color:var(--line-strong)]">
-          –
-        </span>
-        <span>
-          {last.arrivalLocal.slice(11, 16)}
-          {dayOffset > 0 ? <sup className="ml-0.5 text-[0.65rem]">+{dayOffset}</sup> : null}
-        </span>
-      </p>
+    <div className="grid gap-x-4 gap-y-0.5 text-sm sm:grid-cols-[minmax(0,7.5rem)_minmax(0,9.5rem)_minmax(0,7.5rem)_minmax(0,1fr)] sm:items-center">
+      {/* Its own marks on its own row: an itinerary that flies out on one
+          airline and home on another has to say so where the direction is
+          written, not once for the whole trip underneath. */}
+      <span className="flex items-center gap-2">
+        <AirlineLogos carriers={sliceCarriers(slice)} />
+        <span className="eyebrow">{label}</span>
+      </span>
+      <div className="min-w-0">
+        <p className="flex items-baseline gap-1.5 font-semibold tabular-nums">
+          <span>{first.departureLocal.slice(11, 16)}</span>
+          <span aria-hidden="true" className="text-[color:var(--line-strong)]">
+            –
+          </span>
+          <span>
+            {last.arrivalLocal.slice(11, 16)}
+            {dayOffset > 0 ? <sup className="ml-0.5 text-[0.65rem]">+{dayOffset}</sup> : null}
+          </span>
+        </p>
+        {/* Named as well as drawn: two marks side by side do not tell anyone
+            which airline is which, and one of them may have no mark at all. */}
+        <p className="muted truncate text-xs leading-5">{sliceAirlineNames(slice)}</p>
+      </div>
       <p className="tabular-nums">
         <span className="font-semibold">{formatDuration(slice.durationMinutes)}</span>{" "}
         <span className="muted font-mono text-xs">
@@ -733,8 +749,9 @@ function LegLine({ slice, label }: { slice: FlightOfferSlice; label: string }) {
 
 /**
  * One offer as a single scannable row: times, length, and stops for each leg on
- * the left, price and the way forward on the right. The full itinerary is one
- * click away rather than always on screen, so ten flights fit on a page.
+ * the left, price and the way forward on the right. Everything that decides a
+ * flight is on the row itself, so nothing here folds open — the full itinerary
+ * waits on the request page, where the flight has actually been chosen.
  */
 function OfferRow({
   offer,
@@ -746,84 +763,51 @@ function OfferRow({
   onSelect: () => void;
 }) {
   const t = useTranslations("Flights");
-  const [open, setOpen] = useState(false);
-  const detailsId = `offer-details-${offer.offerRef}`;
-  const leadCarrier = offer.outbound.segments[0]?.marketingCarrier ?? "";
-  const flightNumbers = [...offer.outbound.segments, ...(offer.inbound?.segments ?? [])]
-    .map((segment) => segment.flightNumber)
-    .join(", ");
 
   return (
     <article className="card overflow-hidden p-0">
       <div className="grid gap-4 p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6">
         <div className="flex min-w-0 gap-3 sm:gap-4">
-          <AirlineLogo carrier={leadCarrier} />
           <div className="grid min-w-0 flex-1 gap-2">
+            {/* Each direction carries its own airline now, so the line under
+                them has nothing left to say but the cabin. */}
             <LegLine slice={offer.outbound} label={t("outbound")} />
             {offer.inbound ? <LegLine slice={offer.inbound} label={t("inbound")} /> : null}
             <p className="muted text-xs">
-              {airlineNames(offer)} ·{" "}
               {t(`cabins.${offer.outbound.segments[0]?.cabin ?? "ECONOMY"}`)}
             </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4 lg:justify-end lg:border-0 lg:pt-0">
-          <p className="text-right">
-            <span className="block text-xl font-bold tabular-nums tracking-[-0.02em]">
-              {formatFare(customerTotalMinor(offer.priceTotalMinor))}
-            </span>
-            <span className="muted block text-[0.7rem] leading-4">
-              {t("estimatedTotal", { travelers: travelerCount })}
-            </span>
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-t border-[var(--line)] pt-4 lg:flex-nowrap lg:justify-end lg:border-0 lg:pt-0">
+          {/* The price, then what the price covers, and only then the way
+              forward. The pill belongs to the number above it, not to the
+              button beside it. */}
+          <div className="grid gap-1.5 lg:justify-items-end">
+            <p className="lg:text-right">
+              <span className="block text-xl font-bold tabular-nums tracking-[-0.02em]">
+                {formatFare(customerTotalMinor(offer.priceTotalMinor))}
+              </span>
+              <span className="muted block text-[0.7rem] leading-4">
+                {t("estimatedTotal", { travelers: travelerCount })}
+              </span>
+            </p>
             {/* On every row, not only once above the list: a price read on its
                 own has to say what it buys, or it reads as bare airfare. */}
-            <span className="mt-1 flex items-center justify-end gap-1 text-[0.7rem] font-semibold leading-4 text-[color:var(--brand-dark)]">
+            <p className="flex w-fit items-center gap-1.5 rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-[0.7rem] font-semibold leading-4 text-[color:var(--brand-dark)]">
               <Check aria-hidden="true" className="shrink-0" size={12} />
               {t("includedBadge")}
-            </span>
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="button-primary min-h-10 px-4 text-[0.82rem]"
-              onClick={onSelect}
-            >
-              {t("select")}
-            </button>
-            <button
-              type="button"
-              aria-controls={detailsId}
-              aria-expanded={open}
-              className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] border border-[var(--line)] text-[color:var(--ink-soft)] transition-colors hover:border-[var(--brand)] hover:text-[color:var(--ink)]"
-              onClick={() => setOpen((current) => !current)}
-            >
-              <ChevronDown
-                aria-hidden="true"
-                className={cn("transition-transform", open && "rotate-180")}
-                size={18}
-              />
-              <span className="sr-only">{t("detailsLabel")}</span>
-            </button>
+            </p>
           </div>
+          <button
+            type="button"
+            className="button-primary min-h-10 shrink-0 px-4 text-[0.82rem]"
+            onClick={onSelect}
+          >
+            {t("select")}
+          </button>
         </div>
       </div>
-
-      {open ? (
-        <div
-          id={detailsId}
-          className="grid gap-4 border-t border-[var(--line)] bg-[var(--ivory)] p-4 sm:p-5"
-        >
-          <SliceRow slice={offer.outbound} label={t("outbound")} />
-          {offer.inbound ? <SliceRow slice={offer.inbound} label={t("inbound")} /> : null}
-          <p className="muted text-xs leading-5">
-            {flightNumbers}
-            {offer.alternateReturnCount
-              ? ` · ${t("alternateReturns", { count: offer.alternateReturnCount })}`
-              : ""}
-          </p>
-        </div>
-      ) : null}
     </article>
   );
 }

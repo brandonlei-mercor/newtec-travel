@@ -3,7 +3,7 @@
 import { Check, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { AirlineLogo, SliceRow, airlineNames, flightNumbers } from "./flight-itinerary";
+import { SliceRow } from "./flight-itinerary";
 import type { FlightSelection } from "./types";
 import { customerTotalMinor, formatFare } from "@/shared/pricing";
 
@@ -17,15 +17,21 @@ export function SelectedFlightCard({ selection }: { selection: FlightSelection }
   const t = useTranslations("Inquiry.selected");
   const flights = useTranslations("Flights");
   const { offer } = selection;
-  const leadCarrier = offer.outbound.segments[0]?.marketingCarrier ?? "";
   const travelerCount = selection.adults + selection.children + selection.infants;
 
   return (
     <section className="card grid gap-5 p-5 sm:p-6" aria-labelledby="selected-flight-heading">
-      <div className="flex items-start justify-between gap-4">
-        <h2 className="eyebrow" id="selected-flight-heading">
-          {t("title")}
-        </h2>
+      <div className="flex items-center justify-between gap-4">
+        {/* The cabin rides along with the title as a chip: it is one word, and
+            it never deserved a block of its own above the itinerary. */}
+        <div className="flex items-center gap-2.5">
+          <h2 className="eyebrow" id="selected-flight-heading">
+            {t("title")}
+          </h2>
+          <span className="shrink-0 whitespace-nowrap rounded-full bg-[var(--sand-soft)] px-2 py-0.5 text-[0.7rem] font-semibold leading-4">
+            {flights(`cabins.${selection.cabin}`)}
+          </span>
+        </div>
         <Link
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-[color:var(--brand-dark)]"
           href={`/flights?${selection.searchQuery}`}
@@ -35,21 +41,9 @@ export function SelectedFlightCard({ selection }: { selection: FlightSelection }
         </Link>
       </div>
 
-      <div className="flex items-center gap-3">
-        <AirlineLogo carrier={leadCarrier} />
-        <div>
-          <p className="font-bold tracking-[-0.01em]">{airlineNames(offer)}</p>
-          <p className="muted mt-0.5 text-xs">
-            {flights(`cabins.${selection.cabin}`)} · {flightNumbers(offer).join(", ")}
-          </p>
-        </div>
-      </div>
-
-      <div className="grid gap-4 border-y border-[var(--line)] py-5">
-        <SliceRow slice={offer.outbound} label={flights("outbound")} compact />
-        {offer.inbound ? (
-          <SliceRow slice={offer.inbound} label={flights("inbound")} compact />
-        ) : null}
+      <div className="grid gap-5 border-y border-[var(--line)] py-5">
+        <SliceRow slice={offer.outbound} label={flights("outbound")} />
+        {offer.inbound ? <SliceRow slice={offer.inbound} label={flights("inbound")} /> : null}
       </div>
 
       <div>
@@ -61,7 +55,7 @@ export function SelectedFlightCard({ selection }: { selection: FlightSelection }
         </div>
         {/* The same badge as the row this flight was picked from, so the price
             does not quietly turn back into an airfare on the way here. */}
-        <p className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-[color:var(--brand-dark)]">
+        <p className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-semibold text-[color:var(--brand-dark)]">
           <Check aria-hidden="true" className="shrink-0" size={13} />
           {flights("includedBadge")}
         </p>

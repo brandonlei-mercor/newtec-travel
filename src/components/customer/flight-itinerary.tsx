@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { formatDate } from "./format";
-import type { FlightOffer, FlightOfferSlice } from "@/shared/contracts/search";
+import type { FlightOfferSlice } from "@/shared/contracts/search";
 
 /*
  * Official airline marks, downloaded from Duffel's published asset CDN and
@@ -31,33 +31,36 @@ export function formatDuration(minutes: number) {
   return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`;
 }
 
-/** Every flight number on the trip, both directions, in order. */
-export function flightNumbers(offer: FlightOffer): string[] {
-  return [...offer.outbound.segments, ...(offer.inbound?.segments ?? [])].map(
-    (segment) => segment.flightNumber
-  );
+/*
+ * A trip can mix carriers within one direction as easily as between them: SFO to
+ * Saigon is often EVA as far as Taipei and Vietnam Airlines from there. Naming
+ * the airlines per direction is the only way a customer can tell who they fly
+ * out with and who brings them home, so both of these work on a slice rather
+ * than on the whole offer.
+ */
+export function sliceCarriers(slice: FlightOfferSlice): string[] {
+  return [...new Set(slice.segments.map((segment) => segment.marketingCarrier))];
 }
 
-/** "Vietnam Airlines", or "Vietnam Airlines + EVA Air" when the trip mixes two. */
-export function airlineNames(offer: FlightOffer): string {
-  const names = new Set<string>();
-  for (const segment of [...offer.outbound.segments, ...(offer.inbound?.segments ?? [])]) {
-    names.add(segment.marketingCarrierName ?? segment.marketingCarrier);
-  }
-  return [...names].join(" + ");
+export function sliceAirlineNames(slice: FlightOfferSlice): string {
+  return [
+    ...new Set(
+      slice.segments.map((segment) => segment.marketingCarrierName ?? segment.marketingCarrier)
+    )
+  ].join(", ");
 }
 
 /**
  * The airline's own mark. Decorative: the name is written beside it, so
  * announcing the logo too would just repeat it to a screen reader.
  */
-export function AirlineLogo({ carrier }: { carrier: string }) {
+function AirlineLogo({ carrier }: { carrier: string }) {
   const source = CARRIER_LOGOS[carrier];
   if (!source) {
     return (
       <span
         aria-hidden="true"
-        className="grid size-9 shrink-0 place-items-center rounded-[var(--radius-control)] bg-[var(--brand-soft)] font-mono text-xs font-bold text-[color:var(--brand-dark)]"
+        className="grid size-6 shrink-0 place-items-center rounded-[var(--radius-control)] bg-[var(--brand-soft)] font-mono text-[0.6rem] font-bold text-[color:var(--brand-dark)]"
       >
         {carrier}
       </span>
@@ -67,7 +70,7 @@ export function AirlineLogo({ carrier }: { carrier: string }) {
     <Image
       alt=""
       aria-hidden="true"
-      className="h-8 w-auto shrink-0"
+      className="h-5 w-auto shrink-0"
       height={32}
       // Static marks already sized for the web; the optimizer would only
       // rasterize them, and SVG through the optimizer needs it enabled globally.
@@ -78,20 +81,24 @@ export function AirlineLogo({ carrier }: { carrier: string }) {
   );
 }
 
+/** Every mark for one leg, so two airlines on a leg show as two logos. */
+export function AirlineLogos({ carriers }: { carriers: string[] }) {
+  return (
+    <span className="flex shrink-0 items-center gap-1.5">
+      {carriers.map((carrier) => (
+        <AirlineLogo carrier={carrier} key={carrier} />
+      ))}
+    </span>
+  );
+}
+
 /**
- * One leg of the trip: the times that decide whether it works, then the date,
- * length, and stops underneath. Shared so a flight reads identically in the
- * results list and again on the page where the request is sent.
+ * One leg of the trip, in three lines: which direction and what day, then the
+ * times that decide whether it works, then everything else in one quiet line
+ * underneath. The airline is named here rather than once for the whole trip,
+ * because a trip can change carrier one way and not the other.
  */
-export function SliceRow({
-  slice,
-  label,
-  compact
-}: {
-  slice: FlightOfferSlice;
-  label: string;
-  compact?: boolean;
-}) {
+export function SliceRow({ slice, label }: { slice: FlightOfferSlice; label: string }) {
   const t = useTranslations("Flights");
   const locale = useLocale();
   const first = slice.segments[0];
@@ -104,39 +111,43 @@ export function SliceRow({
   const viaAirports = slice.segments.slice(0, -1).map((segment) => segment.destinationAirport);
 
   return (
-    <div
-      className={
-        compact
-          ? "grid gap-1"
-          : "grid gap-1 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-baseline sm:gap-5"
-      }
-    >
-      <p className="eyebrow">{label}</p>
-      <div>
-        <p className="flex flex-wrap items-baseline gap-x-2 tabular-nums">
-          <span className="font-semibold">{first.departureLocal.slice(11, 16)}</span>
-          <span className="muted text-sm">{first.originAirport}</span>
-          <span aria-hidden="true" className="text-[color:var(--line-strong)]">
-            →
-          </span>
-          <span className="font-semibold">
-            {last.arrivalLocal.slice(11, 16)}
-            {dayOffset > 0 ? (
-              <sup className="ml-0.5 text-xs font-semibold">+{dayOffset}</sup>
-            ) : null}
-          </span>
-          <span className="muted text-sm">{last.destinationAirport}</span>
-        </p>
-        <p className="muted mt-0.5 text-sm leading-6">
-          {formatDate(first.departureLocal.slice(0, 10), locale)} ·{" "}
-          {formatDuration(slice.durationMinutes)} ·{" "}
-          {slice.segments.length === 1
-            ? t("nonstop")
-            : `${t("stops", { count: slice.segments.length - 1 })} · ${t("via", {
-                airports: viaAirports.join(", ")
-              })}`}
-        </p>
+    <div className="grid gap-1.5">
+      {/* Which way, and what day. The date belongs up here beside the label
+          rather than buried in the small print: it is the second thing anyone
+          checks after the direction. */}
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2">
+          <AirlineLogos carriers={sliceCarriers(slice)} />
+          <span className="eyebrow">{label}</span>
+        </span>
+        <span className="muted text-xs font-semibold">
+          {formatDate(first.departureLocal.slice(0, 10), locale)}
+        </span>
       </div>
+      <p className="flex flex-wrap items-baseline gap-x-2 tabular-nums">
+        <span className="text-lg font-bold tracking-[-0.01em]">
+          {first.departureLocal.slice(11, 16)}
+        </span>
+        <span className="muted font-mono text-xs">{first.originAirport}</span>
+        <span aria-hidden="true" className="text-[color:var(--line-strong)]">
+          →
+        </span>
+        <span className="text-lg font-bold tracking-[-0.01em]">
+          {last.arrivalLocal.slice(11, 16)}
+          {dayOffset > 0 ? <sup className="ml-0.5 text-xs font-bold">+{dayOffset}</sup> : null}
+        </span>
+        <span className="muted font-mono text-xs">{last.destinationAirport}</span>
+      </p>
+      {/* Airline, length, stops: everything that is worth knowing but not worth
+          a line of its own. */}
+      <p className="muted text-xs leading-5">
+        {sliceAirlineNames(slice)} · {formatDuration(slice.durationMinutes)} ·{" "}
+        {slice.segments.length === 1
+          ? t("nonstop")
+          : `${t("stops", { count: slice.segments.length - 1 })} · ${t("via", {
+              airports: viaAirports.join(", ")
+            })}`}
+      </p>
     </div>
   );
 }

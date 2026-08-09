@@ -6,10 +6,19 @@ import { routing } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/shared/site-header";
 import { SiteFooter } from "@/components/shared/site-footer";
+import { COMPANY } from "@/shared/company";
+import { SOCIAL_PREVIEW_IMAGE } from "@/shared/social-preview";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+
+/**
+ * What a scraper reads. Open Graph tags in the two languages the site is
+ * written in, so a link pasted into Messages, Slack, or Facebook shows the
+ * agency's name and a photo instead of the reader's guess at both.
+ */
+const OPEN_GRAPH_LOCALES = { en: "en_US", vi: "vi_VN" } as const;
 
 export async function generateMetadata({
   params
@@ -17,8 +26,50 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  /*
+   * The layout below rejects an unknown locale, but this function runs first
+   * and independently, and everything it returns is written into the document
+   * head. Validating here keeps an arbitrary path segment from being reflected
+   * into a canonical link or an og:locale.
+   */
+  if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  return { title: t("title"), description: t("description") };
+  const title = t("title");
+  const description = t("description");
+  const canonicalPath = `/${locale}`;
+
+  return {
+    title,
+    description,
+    /* Resolves the relative paths below, and any relative preview image. */
+    metadataBase: new URL(COMPANY.siteUrl),
+    alternates: {
+      canonical: canonicalPath,
+      /*
+       * The same page in the other language, so a search engine treats the two
+       * as translations rather than as duplicates competing with each other.
+       */
+      languages: Object.fromEntries(
+        routing.locales.map((available) => [available, `/${available}`])
+      )
+    },
+    openGraph: {
+      type: "website",
+      siteName: COMPANY.name,
+      title,
+      description,
+      url: canonicalPath,
+      locale: OPEN_GRAPH_LOCALES[locale],
+      images: [SOCIAL_PREVIEW_IMAGE]
+    },
+    twitter: {
+      /* The wide card. Without this the same image renders as a thumbnail. */
+      card: "summary_large_image",
+      title,
+      description,
+      images: [SOCIAL_PREVIEW_IMAGE.url]
+    }
+  };
 }
 
 export default async function LocaleLayout({

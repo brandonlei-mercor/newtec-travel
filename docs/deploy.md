@@ -13,8 +13,12 @@ request still writes its inquiry row and its outbox row, and the agency reads ne
 requests at `/admin`. Turning email on later delivers nothing that was missed, because
 the outbox rows were written all along.
 
-Render's free instance types support neither background workers nor pre-deploy commands,
-which is why migrations run in the web service's start command rather than before it.
+Migrations run as the web service's pre-deploy command, which Render runs once per deploy,
+in this same image with these same variables, before any traffic reaches the new instance.
+A failed migration therefore fails the deploy and leaves the previous version serving. Put
+migrations in the start command instead and a bad migration produces a container that is
+already live and crash-looping. Pre-deploy commands need a paid instance type, which is one
+more reason the free tier does not fit here.
 
 ## The image
 
@@ -53,30 +57,41 @@ table.
 
 ## First deploy
 
+`render login` opens a browser and has no token flag, so it is the one step that cannot be
+scripted.
+
 ```bash
 render login
 render workspace set
 
-render postgres create --name newtec-postgres --version 18 --region oregon --plan basic_256mb --confirm
+render postgres create --name newtec-postgres --version 18 --region oregon \
+  --plan basic_256mb --confirm --output json
 
 render services create \
   --name newtec-web \
   --type web_service \
   --runtime docker \
-  --repo https://github.com/<owner>/<repo> \
+  --repo https://github.com/brandonlei-mercor/newtec-travel \
   --branch main \
   --region oregon \
   --plan starter \
   --num-instances 1 \
   --health-check-path /api/v1/health \
-  --start-command "pnpm db:migrate && pnpm start" \
+  --pre-deploy-command "pnpm db:migrate" \
+  --start-command "pnpm start" \
   --env-var APP_ENV=production \
   --output json
 ```
 
+`--num-instances` defaults to 0, so passing 1 is not optional.
+
 Then, in the dashboard, add `DATABASE_URL` (copy the internal connection string from the
 database's Connect panel so it never reaches a shell history), `DUFFEL_ACCESS_TOKEN`,
 `ADMIN_PASSWORD`, and `APP_URL` once Render has assigned the URL. Saving them redeploys.
+
+The service will not boot until all four are set: `src/shared/env.ts` refuses to start under
+`APP_ENV=production` without a live Duffel token and a 16-character admin password. A first
+deploy that fails on a missing variable is the guard working, not a broken deploy.
 
 ```bash
 render deploys create <service-id> --wait
@@ -102,10 +117,11 @@ render services create \
   --name newtec-worker \
   --type background_worker \
   --runtime docker \
-  --repo https://github.com/<owner>/<repo> \
+  --repo https://github.com/brandonlei-mercor/newtec-travel \
   --branch main \
   --region oregon \
   --plan starter \
+  --num-instances 1 \
   --start-command "pnpm worker" \
   --env-var APP_ENV=production \
   --env-var INQUIRY_EMAIL_ENABLED=true \

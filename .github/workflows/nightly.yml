@@ -1,0 +1,106 @@
+name: Nightly assurance
+
+on:
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-assurance
+  cancel-in-progress: false
+
+env:
+  CI: true
+  NEXT_TELEMETRY_DISABLED: 1
+  APP_ENV: test
+
+jobs:
+  cross-browser-e2e:
+    name: E2E (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - run: cp .env.example .env.local
+      - run: pnpm infra:up
+      - run: pnpm db:migrate
+      - run: pnpm exec playwright test --config=playwright.nightly.config.ts --project=${{ matrix.browser }}
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-${{ matrix.browser }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+      - if: always()
+        run: pnpm infra:down
+
+  zap-baseline:
+    name: OWASP ZAP baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: cp .env.example .env.local
+      - run: pnpm infra:up
+      - run: pnpm db:migrate
+      - name: Run passive baseline against the public application
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p zap-output
+          chmod 0777 zap-output
+          pnpm dev:web > zap-output/app.log 2>&1 &
+          app_pid=$!
+          trap 'kill "${app_pid}" 2>/dev/null || true' EXIT
+          curl --fail --silent --show-error --retry 60 --retry-delay 2 --retry-all-errors \
+            http://127.0.0.1:3000/en > /dev/null
+          docker run --rm --network host \
+            --volume "${PWD}/zap-output:/zap/wrk:rw" \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t http://127.0.0.1:3000/en \
+            -I \
+            -m 3 \
+            -r report.html \
+            -J report.json \
+            -w report.md
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: zap-baseline-${{ github.run_attempt }}
+          path: zap-output/
+          if-no-files-found: warn
+          retention-days: 14
+      - if: always()
+        run: pnpm infra:down

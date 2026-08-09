@@ -1,0 +1,23 @@
+# Rebuilt inside the image.
+node_modules/
+.next/
+*.tsbuildinfo
+
+# Never in an image: .env.local holds the Duffel token and the admin password.
+.env
+.env.local
+.env.*.local
+
+# Test and tooling output, none of which the running site reads.
+coverage/
+test-results/
+playwright-report/
+tests/
+.github/
+.git/
+docs/
+*.log
+.DS_Store
+
+# drizzle/, messages/, public/, scripts/, and src/ are deliberately absent from
+# this list: migrations run at startup, and the worker runs from source.

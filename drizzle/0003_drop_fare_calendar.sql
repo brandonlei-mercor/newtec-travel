@@ -1,0 +1,1 @@
+DROP TABLE "fare_calendar_entries" CASCADE;

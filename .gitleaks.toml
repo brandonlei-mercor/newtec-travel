@@ -1,0 +1,11 @@
+title = "NEWTEC TRAVEL AND TOURS secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "AWS SDK receives a runtime environment variable, not a literal secret"
+condition = "AND"
+regexTarget = "line"
+regexes = ['''secretAccessKey:\s*env\.S3_SECRET_KEY''']
+paths = ['''src/server/integrations/object-store\.ts$''']

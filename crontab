@@ -1,0 +1,5 @@
+# Durable operational sweeps. Per-aggregate jobs are also inserted transactionally.
+* * * * * raise_sla_tasks ?id=raise-sla-tasks {}
+*/5 * * * * raise_ticket_audit_tasks ?id=raise-ticket-audit-tasks {}
+*/5 * * * * dispatch_outbox ?id=dispatch-outbox-sweep {}
+17 * * * * apply_document_retention ?id=apply-document-retention {}

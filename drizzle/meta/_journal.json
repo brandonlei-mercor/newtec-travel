@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1786251025062,
+      "tag": "0000_intake",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786257433209,
+      "tag": "0001_sticky_prowler",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786258198191,
+      "tag": "0002_spicy_william_stryker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786259984214,
+      "tag": "0003_drop_fare_calendar",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786265818921,
+      "tag": "0004_widen_origins",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786269732379,
+      "tag": "0005_rename_inquiry_statuses",
+      "breakpoints": true
+    }
+  ]
+}

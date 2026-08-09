@@ -1,0 +1,217 @@
+@import "tailwindcss";
+
+/*
+ * Palette drawn from the NEWTEC business card: a navy wordmark over a tropical
+ * sky that fades into warm sand, signed in magenta. The magenta is reserved for
+ * the single strongest action on a surface; everything else is navy on paper.
+ */
+:root {
+  --ink: #10233f;
+  --ink-soft: #5a6b83;
+  --ivory: #f6f8fb;
+  --paper: #ffffff;
+  --brand: #1f3a93;
+  --brand-dark: #16296b;
+  --brand-soft: #eaeffb;
+  --accent: #d81b60;
+  --accent-dark: #ad1249;
+  /* Legible sky for text and rules sitting on the deep navy panels. */
+  --sky-pale: #9ed9f2;
+  --sand: #e7dcc0;
+  --sand-soft: #faf6ec;
+  --line: #e4e9f1;
+  --line-strong: #c9d4e3;
+  --danger: #b42318;
+  --warning: #9a5b13;
+  --success: #0a7d4f;
+  /* One radius scale: controls, cards, and pills. Nothing else. */
+  --radius-control: 10px;
+  --radius-card: 16px;
+  --shadow-sm: 0 1px 2px rgb(16 35 63 / 5%);
+  --shadow-md: 0 12px 32px rgb(16 35 63 / 9%);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+    background: var(--ivory);
+  }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--ivory);
+    font-family:
+      Inter,
+      ui-sans-serif,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    color: inherit;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--brand-soft);
+    color: var(--ink);
+  }
+}
+
+@layer components {
+  .shell {
+    width: min(1180px, calc(100% - 40px));
+    margin-inline: auto;
+  }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+  }
+  .button-primary {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--brand);
+    border-radius: var(--radius-control);
+    padding: 0 20px;
+    background: var(--brand);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 620;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+  .button-primary:hover {
+    background: var(--brand-dark);
+    border-color: var(--brand-dark);
+  }
+  .button-secondary {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-control);
+    padding: 0 20px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+  .button-secondary:hover {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+  }
+  /* The card's magenta signature ink, reserved for the single strongest call to
+     action on a surface, most often against the navy header bar. */
+  .button-accent {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-control);
+    padding: 0 20px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 620;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+  .button-accent:hover {
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+  }
+  /* One label style for the whole site. Small, quiet, never shouted. */
+  .eyebrow {
+    color: var(--ink-soft);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .font-display {
+    font-family: "Iowan Old Style", Georgia, "Palatino Linotype", "Times New Roman", serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .muted {
+    color: var(--ink-soft);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(100% - 28px, 1180px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "data": {
+    "id": "orq_0000AZgFtSSCwGm3sEgVsW",
+    "cabin_class": "economy",
+    "offers": [
+      {
+        "id": "off_0000AZgFtSSCwGm3sEgVsW_0",
+        "total_amount": "1284.60",
+        "total_currency": "USD",
+        "tax_amount": "184.60",
+        "owner": { "iata_code": "VN", "name": "Vietnam Airlines" },
+        "slices": [
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_0",
+            "duration": "PT16H35M",
+            "origin": { "iata_code": "SFO" },
+            "destination": { "iata_code": "SGN" },
+            "segments": [
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_0",
+                "origin": { "iata_code": "SFO" },
+                "destination": { "iata_code": "SGN" },
+                "departing_at": "2026-09-10T22:15:00",
+                "arriving_at": "2026-09-12T05:50:00",
+                "duration": "PT16H35M",
+                "marketing_carrier": { "iata_code": "VN", "name": "Vietnam Airlines" },
+                "marketing_carrier_flight_number": "0099",
+                "operating_carrier": { "iata_code": "VN", "name": "Vietnam Airlines" },
+                "operating_carrier_flight_number": "0099",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              }
+            ]
+          },
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_1",
+            "duration": "PT13H35M",
+            "origin": { "iata_code": "SGN" },
+            "destination": { "iata_code": "SFO" },
+            "segments": [
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_1",
+                "origin": { "iata_code": "SGN" },
+                "destination": { "iata_code": "SFO" },
+                "departing_at": "2026-09-24T19:50:00",
+                "arriving_at": "2026-09-24T19:25:00",
+                "duration": "PT13H35M",
+                "marketing_carrier": { "iata_code": "VN", "name": "Vietnam Airlines" },
+                "marketing_carrier_flight_number": "98",
+                "operating_carrier": { "iata_code": "VN", "name": "Vietnam Airlines" },
+                "operating_carrier_flight_number": "98",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "off_0000AZgFtSSCwGm3sEgVsW_1",
+        "total_amount": "1042.30",
+        "total_currency": "USD",
+        "tax_amount": "142.30",
+        "owner": { "iata_code": "BR", "name": "EVA Air" },
+        "slices": [
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_2",
+            "duration": "PT21H40M",
+            "origin": { "iata_code": "SFO" },
+            "destination": { "iata_code": "SGN" },
+            "segments": [
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_2",
+                "origin": { "iata_code": "SFO" },
+                "destination": { "iata_code": "TPE" },
+                "departing_at": "2026-09-10T01:20:00",
+                "arriving_at": "2026-09-11T06:15:00",
+                "duration": "PT13H55M",
+                "marketing_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "marketing_carrier_flight_number": "27",
+                "operating_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "operating_carrier_flight_number": "27",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              },
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_3",
+                "origin": { "iata_code": "TPE" },
+                "destination": { "iata_code": "SGN" },
+                "departing_at": "2026-09-11T08:45:00",
+                "arriving_at": "2026-09-11T11:20:00",
+                "duration": "PT03H35M",
+                "marketing_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "marketing_carrier_flight_number": "395",
+                "operating_carrier": null,
+                "operating_carrier_flight_number": null,
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              }
+            ]
+          },
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_3",
+            "duration": null,
+            "origin": { "iata_code": "SGN" },
+            "destination": { "iata_code": "SFO" },
+            "segments": [
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_4",
+                "origin": { "iata_code": "SGN" },
+                "destination": { "iata_code": "TPE" },
+                "departing_at": "2026-09-24T15:40:00",
+                "arriving_at": "2026-09-24T19:05:00",
+                "duration": "PT03H25M",
+                "marketing_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "marketing_carrier_flight_number": "396",
+                "operating_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "operating_carrier_flight_number": "396",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              },
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_5",
+                "origin": { "iata_code": "TPE" },
+                "destination": { "iata_code": "SFO" },
+                "departing_at": "2026-09-24T23:55:00",
+                "arriving_at": "2026-09-24T19:15:00",
+                "duration": "PT11H20M",
+                "marketing_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "marketing_carrier_flight_number": "26",
+                "operating_carrier": { "iata_code": "BR", "name": "EVA Air" },
+                "operating_carrier_flight_number": "26",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "off_0000AZgFtSSCwGm3sEgVsW_2",
+        "total_amount": "812.00",
+        "total_currency": "GBP",
+        "tax_amount": "112.00",
+        "owner": { "iata_code": "CI", "name": "China Airlines" },
+        "slices": [
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_4",
+            "duration": "PT22H10M",
+            "origin": { "iata_code": "SFO" },
+            "destination": { "iata_code": "SGN" },
+            "segments": [
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_6",
+                "origin": { "iata_code": "SFO" },
+                "destination": { "iata_code": "SGN" },
+                "departing_at": "2026-09-10T01:55:00",
+                "arriving_at": "2026-09-11T12:05:00",
+                "duration": "PT22H10M",
+                "marketing_carrier": { "iata_code": "CI", "name": "China Airlines" },
+                "marketing_carrier_flight_number": "3",
+                "operating_carrier": { "iata_code": "CI", "name": "China Airlines" },
+                "operating_carrier_flight_number": "3",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              }
+            ]
+          },
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_5",
+            "duration": "PT14H05M",
+            "origin": { "iata_code": "SGN" },
+            "destination": { "iata_code": "SFO" },
+            "segments": [
+              {
+                "id": "seg_0000AZgFtSSCwGm3sEgVsW_7",
+                "origin": { "iata_code": "SGN" },
+                "destination": { "iata_code": "SFO" },
+                "departing_at": "2026-09-24T08:10:00",
+                "arriving_at": "2026-09-24T08:15:00",
+                "duration": "PT14H05M",
+                "marketing_carrier": { "iata_code": "CI", "name": "China Airlines" },
+                "marketing_carrier_flight_number": "4",
+                "operating_carrier": { "iata_code": "CI", "name": "China Airlines" },
+                "operating_carrier_flight_number": "4",
+                "passengers": [{ "cabin_class": "economy", "cabin": { "name": "economy" } }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "off_0000AZgFtSSCwGm3sEgVsW_3",
+        "total_amount": "998.00",
+        "total_currency": "USD",
+        "tax_amount": "98.00",
+        "owner": { "iata_code": "KE", "name": "Korean Air" },
+        "slices": [
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_6",
+            "duration": "PT26H10M",
+            "origin": { "iata_code": "SFO" },
+            "destination": { "iata_code": "SGN" },
+            "segments": [
+              {
+                "id": "seg_a",
+                "origin": { "iata_code": "SFO" },
+                "destination": { "iata_code": "SEA" },
+                "departing_at": "2026-09-10T06:00:00",
+                "arriving_at": "2026-09-10T08:15:00",
+                "duration": "PT02H15M",
+                "marketing_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "marketing_carrier_flight_number": "5001",
+                "operating_carrier": { "iata_code": "DL", "name": "Delta" },
+                "operating_carrier_flight_number": "1200",
+                "passengers": [{ "cabin_class": "economy" }]
+              },
+              {
+                "id": "seg_b",
+                "origin": { "iata_code": "SEA" },
+                "destination": { "iata_code": "ICN" },
+                "departing_at": "2026-09-10T12:40:00",
+                "arriving_at": "2026-09-11T16:20:00",
+                "duration": "PT11H40M",
+                "marketing_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "marketing_carrier_flight_number": "20",
+                "operating_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "operating_carrier_flight_number": "20",
+                "passengers": [{ "cabin_class": "economy" }]
+              },
+              {
+                "id": "seg_c",
+                "origin": { "iata_code": "ICN" },
+                "destination": { "iata_code": "HAN" },
+                "departing_at": "2026-09-11T18:50:00",
+                "arriving_at": "2026-09-11T22:05:00",
+                "duration": "PT04H15M",
+                "marketing_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "marketing_carrier_flight_number": "679",
+                "operating_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "operating_carrier_flight_number": "679",
+                "passengers": [{ "cabin_class": "economy" }]
+              },
+              {
+                "id": "seg_d",
+                "origin": { "iata_code": "HAN" },
+                "destination": { "iata_code": "SGN" },
+                "departing_at": "2026-09-12T07:00:00",
+                "arriving_at": "2026-09-12T09:10:00",
+                "duration": "PT02H10M",
+                "marketing_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "marketing_carrier_flight_number": "5502",
+                "operating_carrier": { "iata_code": "VN", "name": "Vietnam Airlines" },
+                "operating_carrier_flight_number": "213",
+                "passengers": [{ "cabin_class": "economy" }]
+              },
+              {
+                "id": "seg_e",
+                "origin": { "iata_code": "SGN" },
+                "destination": { "iata_code": "SGN" },
+                "departing_at": "2026-09-12T10:00:00",
+                "arriving_at": "2026-09-12T10:30:00",
+                "duration": "PT00H30M",
+                "marketing_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "marketing_carrier_flight_number": "5503",
+                "operating_carrier": { "iata_code": "VN", "name": "Vietnam Airlines" },
+                "operating_carrier_flight_number": "214",
+                "passengers": [{ "cabin_class": "economy" }]
+              }
+            ]
+          },
+          {
+            "id": "sli_0000AZgFtSSCwGm3sEgVsW_7",
+            "duration": "PT15H30M",
+            "origin": { "iata_code": "SGN" },
+            "destination": { "iata_code": "SFO" },
+            "segments": [
+              {
+                "id": "seg_f",
+                "origin": { "iata_code": "SGN" },
+                "destination": { "iata_code": "SFO" },
+                "departing_at": "2026-09-24T23:40:00",
+                "arriving_at": "2026-09-25T01:10:00",
+                "duration": "PT15H30M",
+                "marketing_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "marketing_carrier_flight_number": "23",
+                "operating_carrier": { "iata_code": "KE", "name": "Korean Air" },
+                "operating_carrier_flight_number": "23",
+                "passengers": [{ "cabin_class": "economy" }]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

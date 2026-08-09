@@ -1,0 +1,700 @@
+{
+  "id": "eb8002d1-94dd-4854-bf71-5c414ed75c95",
+  "prevId": "ef8dd8bc-d1e2-4ac7-9274-1b40402f8c92",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.flight_offer_caches": {
+      "name": "flight_offer_caches",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "search_key": {
+          "name": "search_key",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "origin": {
+          "name": "origin",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'SFO'"
+        },
+        "destination": {
+          "name": "destination",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "trip_type": {
+          "name": "trip_type",
+          "type": "trip_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ROUND_TRIP'"
+        },
+        "departure_date": {
+          "name": "departure_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "return_date": {
+          "name": "return_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "adults": {
+          "name": "adults",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "children": {
+          "name": "children",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "infants": {
+          "name": "infants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cabin": {
+          "name": "cabin",
+          "type": "cabin",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "offers": {
+          "name": "offers",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fetched_at": {
+          "name": "fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "flight_offer_caches_search_key_uidx": {
+          "name": "flight_offer_caches_search_key_uidx",
+          "columns": [
+            {
+              "expression": "search_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "flight_offer_caches_expiry_idx": {
+          "name": "flight_offer_caches_expiry_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "flight_offer_caches_origin_supported": {
+          "name": "flight_offer_caches_origin_supported",
+          "value": "\"flight_offer_caches\".\"origin\" in ('SFO', 'LAX', 'PHX', 'JFK')"
+        },
+        "flight_offer_caches_destination_supported": {
+          "name": "flight_offer_caches_destination_supported",
+          "value": "\"flight_offer_caches\".\"destination\" in ('SGN', 'HAN', 'DAD')"
+        },
+        "flight_offer_caches_return_matches_trip_type": {
+          "name": "flight_offer_caches_return_matches_trip_type",
+          "value": "(\"flight_offer_caches\".\"trip_type\" = 'ONE_WAY' and \"flight_offer_caches\".\"return_date\" is null) or (\"flight_offer_caches\".\"trip_type\" = 'ROUND_TRIP' and \"flight_offer_caches\".\"return_date\" > \"flight_offer_caches\".\"departure_date\")"
+        },
+        "flight_offer_caches_party_valid": {
+          "name": "flight_offer_caches_party_valid",
+          "value": "\"flight_offer_caches\".\"adults\" >= 1 and \"flight_offer_caches\".\"children\" >= 0 and \"flight_offer_caches\".\"infants\" >= 0 and \"flight_offer_caches\".\"adults\" + \"flight_offer_caches\".\"children\" + \"flight_offer_caches\".\"infants\" <= 9 and \"flight_offer_caches\".\"infants\" <= \"flight_offer_caches\".\"adults\""
+        },
+        "flight_offer_caches_cabin_concrete": {
+          "name": "flight_offer_caches_cabin_concrete",
+          "value": "\"flight_offer_caches\".\"cabin\" <> 'NO_PREFERENCE'"
+        },
+        "flight_offer_caches_expiry_ordered": {
+          "name": "flight_offer_caches_expiry_ordered",
+          "value": "\"flight_offer_caches\".\"expires_at\" > \"flight_offer_caches\".\"fetched_at\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.idempotency_keys": {
+      "name": "idempotency_keys",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "actor_id": {
+          "name": "actor_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope": {
+          "name": "scope",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "request_hash": {
+          "name": "request_hash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "response_status": {
+          "name": "response_status",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "response_body": {
+          "name": "response_body",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "locked_at": {
+          "name": "locked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "idempotency_keys_actor_scope_key_unique": {
+          "name": "idempotency_keys_actor_scope_key_unique",
+          "nullsNotDistinct": false,
+          "columns": ["actor_id", "scope", "key"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.inquiries": {
+      "name": "inquiries",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "reference": {
+          "name": "reference",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "inquiry_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'NEW'"
+        },
+        "origin": {
+          "name": "origin",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'SFO'"
+        },
+        "destination": {
+          "name": "destination",
+          "type": "destination",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "trip_type": {
+          "name": "trip_type",
+          "type": "trip_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ROUND_TRIP'"
+        },
+        "departure_date": {
+          "name": "departure_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "return_date": {
+          "name": "return_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date_flexibility": {
+          "name": "date_flexibility",
+          "type": "date_flexibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cabin": {
+          "name": "cabin",
+          "type": "cabin",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "adults": {
+          "name": "adults",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "children": {
+          "name": "children",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "infants": {
+          "name": "infants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "given_name": {
+          "name": "given_name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family_name": {
+          "name": "family_name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "preferred_contact_method": {
+          "name": "preferred_contact_method",
+          "type": "contact_method",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "preferred_locale": {
+          "name": "preferred_locale",
+          "type": "locale",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'en'"
+        },
+        "selected_offer": {
+          "name": "selected_offer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "special_assistance": {
+          "name": "special_assistance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "customer_notes": {
+          "name": "customer_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "visa_interest": {
+          "name": "visa_interest",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "marketing_consent": {
+          "name": "marketing_consent",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "transactional_consent_at": {
+          "name": "transactional_consent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "party_data_authority_at": {
+          "name": "party_data_authority_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "contacted_at": {
+          "name": "contacted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "inquiries_status_submitted_idx": {
+          "name": "inquiries_status_submitted_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "submitted_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "inquiries_submitted_idx": {
+          "name": "inquiries_submitted_idx",
+          "columns": [
+            {
+              "expression": "submitted_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "inquiries_reference_unique": {
+          "name": "inquiries_reference_unique",
+          "nullsNotDistinct": false,
+          "columns": ["reference"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "inquiries_origin_supported": {
+          "name": "inquiries_origin_supported",
+          "value": "\"inquiries\".\"origin\" in ('SFO', 'LAX', 'PHX', 'JFK')"
+        },
+        "inquiries_party_valid": {
+          "name": "inquiries_party_valid",
+          "value": "\"inquiries\".\"adults\" >= 1 and \"inquiries\".\"children\" >= 0 and \"inquiries\".\"infants\" >= 0 and \"inquiries\".\"adults\" + \"inquiries\".\"children\" + \"inquiries\".\"infants\" <= 9 and \"inquiries\".\"infants\" <= \"inquiries\".\"adults\""
+        },
+        "inquiries_return_matches_trip_type": {
+          "name": "inquiries_return_matches_trip_type",
+          "value": "(\"inquiries\".\"trip_type\" = 'ONE_WAY' and \"inquiries\".\"return_date\" is null) or (\"inquiries\".\"trip_type\" = 'ROUND_TRIP' and \"inquiries\".\"return_date\" > \"inquiries\".\"departure_date\")"
+        },
+        "inquiries_email_single_line": {
+          "name": "inquiries_email_single_line",
+          "value": "position(chr(10) in \"inquiries\".\"email\") = 0 and position(chr(13) in \"inquiries\".\"email\") = 0"
+        },
+        "inquiries_phone_single_line": {
+          "name": "inquiries_phone_single_line",
+          "value": "position(chr(10) in \"inquiries\".\"phone\") = 0 and position(chr(13) in \"inquiries\".\"phone\") = 0"
+        },
+        "inquiries_contacted_at_matches_status": {
+          "name": "inquiries_contacted_at_matches_status",
+          "value": "(\"inquiries\".\"status\" = 'NEW') = (\"inquiries\".\"contacted_at\" is null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.inquiry_notifications": {
+      "name": "inquiry_notifications",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "inquiry_id": {
+          "name": "inquiry_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient": {
+          "name": "recipient",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "notification_state",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "last_error": {
+          "name": "last_error",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_message_id": {
+          "name": "provider_message_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "sent_at": {
+          "name": "sent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "inquiry_notifications_pending_idx": {
+          "name": "inquiry_notifications_pending_idx",
+          "columns": [
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "inquiry_notifications_inquiry_id_inquiries_id_fk": {
+          "name": "inquiry_notifications_inquiry_id_inquiries_id_fk",
+          "tableFrom": "inquiry_notifications",
+          "tableTo": "inquiries",
+          "columnsFrom": ["inquiry_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "inquiry_notifications_inquiry_unique": {
+          "name": "inquiry_notifications_inquiry_unique",
+          "nullsNotDistinct": false,
+          "columns": ["inquiry_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "inquiry_notifications_sent_at_set": {
+          "name": "inquiry_notifications_sent_at_set",
+          "value": "(\"inquiry_notifications\".\"state\" = 'SENT') = (\"inquiry_notifications\".\"sent_at\" is not null)"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.cabin": {
+      "name": "cabin",
+      "schema": "public",
+      "values": ["ECONOMY", "PREMIUM_ECONOMY", "BUSINESS", "NO_PREFERENCE"]
+    },
+    "public.contact_method": {
+      "name": "contact_method",
+      "schema": "public",
+      "values": ["EMAIL", "PHONE"]
+    },
+    "public.date_flexibility": {
+      "name": "date_flexibility",
+      "schema": "public",
+      "values": ["EXACT", "PLUS_MINUS_1", "PLUS_MINUS_3"]
+    },
+    "public.destination": {
+      "name": "destination",
+      "schema": "public",
+      "values": ["SGN", "HAN", "DAD", "FLEXIBLE"]
+    },
+    "public.inquiry_status": {
+      "name": "inquiry_status",
+      "schema": "public",
+      "values": ["NEW", "CONTACTED", "CLOSED"]
+    },
+    "public.locale": {
+      "name": "locale",
+      "schema": "public",
+      "values": ["en", "vi"]
+    },
+    "public.notification_state": {
+      "name": "notification_state",
+      "schema": "public",
+      "values": ["PENDING", "SENT", "FAILED"]
+    },
+    "public.trip_type": {
+      "name": "trip_type",
+      "schema": "public",
+      "values": ["ROUND_TRIP", "ONE_WAY"]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

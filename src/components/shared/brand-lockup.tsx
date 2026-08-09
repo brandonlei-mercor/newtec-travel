@@ -45,19 +45,18 @@ function PlaneMark({ className }: { className?: string }) {
   );
 }
 
-function Wordmark({ withSubline, className }: { withSubline: boolean; className?: string }) {
-  const height = withSubline ? SUBLINE.height : PANEL.height;
+function Wordmark({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
       className={cn("text-[color:var(--brand)]", className)}
-      viewBox={`0 0 ${PANEL.width} ${height}`}
+      viewBox={`0 0 ${PANEL.width} ${SUBLINE.height}`}
     >
       {/* The card stock the letters are cut out of. Without it they would take
           the colour of whatever the lockup happens to be sitting on. */}
-      <rect width={PANEL.width} height={height} fill="var(--sand-soft)" />
+      <rect width={PANEL.width} height={SUBLINE.height} fill="var(--sand-soft)" />
       <path d={PANEL.path} fill="currentColor" fillRule="evenodd" />
-      {withSubline ? <path d={SUBLINE.path} fill="currentColor" fillRule="evenodd" /> : null}
+      <path d={SUBLINE.path} fill="currentColor" fillRule="evenodd" />
     </svg>
   );
 }
@@ -77,10 +76,17 @@ export function BrandLockup({
     >
       {/* On the card the airliner towers over the wordmark. A horizontal lockup
           cannot carry that, so it keeps the taller of the two heights. */}
-      <PlaneMark className={compact ? "h-11 w-auto" : "h-[72px] w-auto"} />
-      {/* The speed rules stop reading below about thirty pixels, which sets the
-          floor for the header's copy of the lockup. */}
-      <Wordmark className={compact ? "h-[34px] w-auto" : "h-14 w-auto"} withSubline={!compact} />
+      <PlaneMark className={compact ? "h-12 w-auto" : "h-[72px] w-auto"} />
+      {/*
+       * The agency's name is all four words, so the header carries the subline
+       * too rather than reading as a company called NEWTEC. That costs height:
+       * the subline makes the artwork 281 units tall instead of 188, so at a
+       * fixed CSS height the NEWTEC panel renders at two thirds of it. 46px
+       * leaves the panel around 31px, just clear of the roughly 30px where the
+       * speed rules stop resolving, and the whole lockup still sits inside the
+       * header's 64px row.
+       */}
+      <Wordmark className={compact ? "h-[46px] w-auto" : "h-14 w-auto"} />
     </span>
   );
 }

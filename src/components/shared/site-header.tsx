@@ -26,7 +26,7 @@ export function SiteHeader({ locale, labels }: SiteHeaderProps) {
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--paper)] text-[color:var(--ink)]">
       <div className="shell flex h-16 items-center justify-between gap-6 lg:gap-8">
         <Link href="/" className="shrink-0 no-underline" aria-label={labels.home}>
-          <BrandLockup compact />
+          <BrandLockup compact stock="var(--paper)" />
         </Link>
 
         {/* In flow rather than absolutely centred: centring it over the whole

@@ -45,7 +45,7 @@ function PlaneMark({ className }: { className?: string }) {
   );
 }
 
-function Wordmark({ className }: { className?: string }) {
+function Wordmark({ className, stock }: { className?: string; stock: string }) {
   return (
     <svg
       aria-hidden="true"
@@ -53,8 +53,9 @@ function Wordmark({ className }: { className?: string }) {
       viewBox={`0 0 ${PANEL.width} ${SUBLINE.height}`}
     >
       {/* The card stock the letters are cut out of. Without it they would take
-          the colour of whatever the lockup happens to be sitting on. */}
-      <rect width={PANEL.width} height={SUBLINE.height} fill="var(--sand-soft)" />
+          the colour of whatever the lockup happens to be sitting on, so it has
+          to be told which surface it is printed on. */}
+      <rect width={PANEL.width} height={SUBLINE.height} fill={stock} />
       <path d={PANEL.path} fill="currentColor" fillRule="evenodd" />
       <path d={SUBLINE.path} fill="currentColor" fillRule="evenodd" />
     </svg>
@@ -63,10 +64,14 @@ function Wordmark({ className }: { className?: string }) {
 
 export function BrandLockup({
   compact = false,
-  className
+  className,
+  // The footer surface, since that is where the full lockup sits; anywhere on
+  // another background has to say so, or the wordmark shows as a cream block.
+  stock = "var(--sand-soft)"
 }: {
   compact?: boolean;
   className?: string;
+  stock?: string;
 }) {
   return (
     <span
@@ -86,7 +91,7 @@ export function BrandLockup({
        * speed rules stop resolving, and the whole lockup still sits inside the
        * header's 64px row.
        */}
-      <Wordmark className={compact ? "h-[46px] w-auto" : "h-14 w-auto"} />
+      <Wordmark className={compact ? "h-[46px] w-auto" : "h-14 w-auto"} stock={stock} />
     </span>
   );
 }

@@ -63,7 +63,7 @@ Four mobile-first steps: trip, travelers, contact, review.
 Every submission writes the request and its outbox row in one transaction, and queues the email that announces it when `INQUIRY_EMAIL_ENABLED` is on.
 
 - **`/admin`** is the durable record and the place the work happens: a three-column board — New, Processing, Done — with each request's contact details as click-to-call and click-to-mail links, and cards that move between columns by drag or by a plain select. The column a card sits in is the request's status, stored on the row.
-- **Email**, when enabled, is the alert. One message to `newtec@sbcglobal.net`, subject carrying the reference and route, body carrying phone, email, preferred channel, language, trip, party, and notes. Replying answers the customer. Each card shows whether its email was sent, queued, or failed.
+- **Email**, when enabled, is the alert. One message to `newtectravelagency@gmail.com`, subject carrying the reference and route, body carrying phone, email, preferred channel, language, trip, party, and notes. Replying answers the customer. Each card shows whether its email was sent, queued, or failed.
 
 A mail outage therefore degrades to "someone has to open `/admin`", not to a lost customer. Access is one password, `ADMIN_PASSWORD`, exchanged at `/admin/login` for a signed eight-hour session cookie and checked in the proxy and again in the page and the status route; production refuses to boot on the local default.
 

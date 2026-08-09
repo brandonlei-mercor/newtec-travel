@@ -22,6 +22,31 @@ export type InquiryStatus = (typeof INQUIRY_STATUSES)[number];
 const singleLine = <T extends z.ZodType<string>>(schema: T) =>
   schema.refine((value) => !/[\r\n]/.test(value), { message: "CONTACT_FIELD_SINGLE_LINE" });
 
+/**
+ * The three kinds of head an airline counts separately: an adult, a child in a
+ * seat of their own, and an infant carried on a lap. Spelled here rather than
+ * derived from the party counts so the manifest and the counts can be checked
+ * against each other.
+ */
+export const PASSENGER_TYPES = ["ADULT", "CHILD", "INFANT"] as const;
+export type PassengerType = (typeof PASSENGER_TYPES)[number];
+
+/**
+ * One traveler as the passport spells them. An airline holds a seat against a
+ * legal name and a date of birth, never against an email address, so this is
+ * the part of a request that lets the agency put the party on hold before the
+ * fare moves. Deliberately no passport number: nothing here needs one, and the
+ * document itself is collected later by phone.
+ */
+const passengerSchema = z.object({
+  type: z.enum(PASSENGER_TYPES),
+  givenName: singleLine(z.string().trim().min(1).max(80)),
+  familyName: singleLine(z.string().trim().min(1).max(80)),
+  dateOfBirth: z.iso.date()
+});
+
+export type PassengerInput = z.infer<typeof passengerSchema>;
+
 export const inquiryInputSchema = z
   .object({
     origin: searchOriginSchema,
@@ -30,13 +55,25 @@ export const inquiryInputSchema = z
     departureDate: z.iso.date(),
     /** Omitted on a one-way request; the superRefine below ties the two together. */
     returnDate: z.iso.date().optional(),
-    flexibility: z.enum(["EXACT", "PLUS_MINUS_1", "PLUS_MINUS_3"]),
+    flexibility: z.enum(["EXACT", "PLUS_MINUS_1", "PLUS_MINUS_2", "PLUS_MINUS_3"]),
     cabinPreference: z.enum(["ECONOMY", "PREMIUM_ECONOMY", "BUSINESS", "NO_PREFERENCE"]),
     travelers: z.object({
       adults: z.number().int().min(1).max(9),
       children: z.number().int().min(0).max(8),
       infants: z.number().int().min(0).max(8)
     }),
+    /*
+     * The manifest for that party, in the order the form asked for it. Its own
+     * field rather than something folded into `travelers` because the counts
+     * are what the fare was quoted for and these are who the seats are for;
+     * the refinement below is what keeps the two from drifting apart.
+     *
+     * Optional, and allowed to be short: a customer who does not have every
+     * passport in front of them still gets to send the request, and the agency
+     * holds what it can and asks for the rest by phone. Losing the lead over a
+     * missing date of birth would cost more than holding a seat late.
+     */
+    passengers: z.array(passengerSchema).max(9).optional(),
     contact: z.object({
       givenName: singleLine(z.string().trim().min(1).max(80)),
       familyName: singleLine(z.string().trim().min(1).max(80)),
@@ -100,6 +137,29 @@ export const inquiryInputSchema = z
         code: "custom",
         path: ["travelers", "infants"],
         message: "INQUIRY_INFANTS_REQUIRE_ADULTS"
+      });
+    }
+    /*
+     * A short manifest is fine — the rest arrives by phone — but a long one is
+     * not: naming more heads than the fare was quoted for would have the agency
+     * holding a seat nobody paid for. Counted per kind rather than in total,
+     * because a lap infant and a child in a seat are not interchangeable.
+     */
+    const counted: Record<(typeof PASSENGER_TYPES)[number], number> = {
+      ADULT: 0,
+      CHILD: 0,
+      INFANT: 0
+    };
+    for (const passenger of value.passengers ?? []) counted[passenger.type] += 1;
+    if (
+      counted.ADULT > value.travelers.adults ||
+      counted.CHILD > value.travelers.children ||
+      counted.INFANT > value.travelers.infants
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["passengers"],
+        message: "INQUIRY_PASSENGERS_EXCEED_PARTY"
       });
     }
     /*

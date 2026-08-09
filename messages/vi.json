@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "NEWTEC TRAVEL AND TOURS | Dịch vụ du lịch Mỹ–Việt Nam",
-    "description": "Giá vé trực tiếp từ San Francisco, Los Angeles, Phoenix và New York đến Việt Nam, do chính Hanh Vong tại NEWTEC Travel and Tours ở Daly City lo liệu — vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa."
+    "description": "Giá vé trực tiếp từ San Francisco, Los Angeles, Seattle, Chicago và năm thành phố khác ở Mỹ đến Việt Nam, do chính Hanh Newtec tại NEWTEC Travel and Tours ở Daly City lo liệu — vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa."
   },
   "Nav": {
     "home": "Trang chủ NEWTEC TRAVEL AND TOURS",
@@ -28,21 +28,22 @@
     "title": "Để tôi lo chuyến đi Việt Nam cho anh chị.",
     "description": "Anh chị cho tôi biết muốn đi đâu và khi nào. Xem giá vé trực tiếp của Vietnam Airlines và EVA Air, gửi cho tôi chuyến anh chị ưng, rồi tôi sẽ đích thân gọi lại. Vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa.",
     "cta": "Tìm chuyến bay cho anh chị",
-    "priceNote": "Mọi mức giá ở đây là trọn gói chuyến đi — đặt vé, chọn chỗ ngồi, visa và mọi việc khác tôi lo trước khi anh chị bay.",
+    "priceNote": "Mọi mức giá ở đây là trọn gói chuyến đi — đặt vé, chọn chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo trước khi anh chị bay.",
     "closingTitle": "Anh chị sẵn sàng chưa? Để tôi lo phần còn lại.",
     "specialistEyebrow": "Rất vui được làm quen",
     "specialistTitle": "Anh chị có tôi, từ cuộc gọi đầu tiên đến khi chuyến đi kết thúc — và cả những chuyến sau nữa.",
-    "specialistBody": "Tôi là Hanh Vong. Nhiều năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình gọi cho tôi từ những ngày đầu đến nay vẫn gọi tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, visa và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
+    "specialistBody": "Tôi là Hanh Newtec. Nhiều năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình gọi cho tôi từ những ngày đầu đến nay vẫn gọi tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, visa, mã QR trước khi đến và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
     "specialistCta": "Gọi cho tôi bất cứ lúc nào"
   },
   "Inquiry": {
     "eyebrow": "Sắp xong rồi",
     "title": "Gửi chuyến bay này cho tôi",
-    "description": "Chuyến bay của anh chị luôn ở ngay đây trong suốt quá trình. Anh chị cho tôi biết cách liên lạc, tôi sẽ kiểm tra giá vé và đích thân trả lời.",
+    "description": "Chuyến bay của anh chị luôn ở ngay đây trong suốt quá trình. Anh chị cho tôi biết cách liên lạc và những ai cùng đi, tôi sẽ kiểm tra giá vé và đích thân trả lời.",
     "progressLabel": "Tiến trình yêu cầu",
     "steps": {
       "1": "Thông tin của anh chị",
-      "2": "Kiểm tra và gửi"
+      "2": "Hành khách",
+      "3": "Kiểm tra và gửi"
     },
     "continue": "Tiếp tục",
     "back": "Quay lại",
@@ -60,9 +61,27 @@
       "NO_PREFERENCE": "Không ưu tiên"
     },
     "travelers": {
-      "assistance": "Hỗ trợ đặc biệt",
-      "assistanceHint": "Xin đừng nhập hồ sơ y tế hoặc thông tin hộ chiếu.",
-      "assistancePlaceholder": "Hỗ trợ xe lăn, nhu cầu chỗ ngồi, đi cùng trẻ sơ sinh…"
+      "assistance": "Ngày bay và những gì anh chị cần trên chuyến bay",
+      "assistanceHint": "Nếu ngày bay có thể xê dịch, anh chị ghi rõ ở đây lệch bao nhiêu và về phía nào — đi sớm hơn một ngày, về trễ vài ngày, hay cả một tuần nào đó cũng được. Cùng ô này cho những gì anh chị cần trên chuyến bay. Xin đừng nhập hồ sơ y tế hoặc số hộ chiếu.",
+      "assistancePlaceholder": "Có thể đi sớm hơn một ngày, về ngày nào trong tuần đó cũng được, hỗ trợ xe lăn, nhu cầu chỗ ngồi…"
+    },
+    "passengers": {
+      "title": "Những ai cùng đi?",
+      "description": "Anh chị cho tôi tên từng hành khách đúng như trên hộ chiếu. Hãng bay giữ chỗ theo tên hợp pháp và ngày sinh, nên đây là phần giúp tôi giữ chỗ cho cả đoàn.",
+      "optionalNote": "Phần này không bắt buộc để gửi yêu cầu. Anh chị cứ để trống, tôi sẽ hỏi lại khi mình nói chuyện — anh chị điền được bao nhiêu thì tôi giữ chỗ sớm được bấy nhiêu.",
+      "holdTitle": "Đây là cách tôi giữ chỗ trước cho anh chị",
+      "holdBody": "Có những tên này là tôi giữ được các chỗ ngồi này trước cho anh chị, trước khi giá vé thay đổi. Vé xuất sai tên so với hộ chiếu phải xuất lại và anh chị chịu phí, nên anh chị kiểm tra kỹ từng chữ với chính cuốn hộ chiếu giúp tôi.",
+      "types": {
+        "ADULT": "Người lớn {number}",
+        "CHILD": "Trẻ em {number}",
+        "INFANT": "Trẻ sơ sinh ngồi lòng {number}"
+      },
+      "givenName": "Tên và tên đệm theo hộ chiếu",
+      "familyName": "Họ theo hộ chiếu",
+      "nameHint": "Đúng như in trên hộ chiếu.",
+      "dateOfBirth": "Ngày sinh",
+      "reviewTitle": "Tên theo hộ chiếu",
+      "reviewMissing": "Anh chị sẽ cho tôi sau"
     },
     "contact": {
       "title": "Tôi liên lạc với anh chị bằng cách nào?",
@@ -72,8 +91,10 @@
       "email": "Địa chỉ email",
       "phone": "Số điện thoại",
       "phoneHint": "Ghi mã quốc gia nếu ở ngoài Hoa Kỳ.",
-      "visaTitle": "Tôi muốn được hỗ trợ visa Việt Nam",
-      "visaBody": "Tôi làm visa Việt Nam cho khách thường xuyên. Anh chị đánh dấu ô này, tôi sẽ hướng dẫn tận nơi khi mình nói chuyện.",
+      "visaNoteTitle": "Về visa Việt Nam của anh chị",
+      "visaNoteBody": "Để làm visa Việt Nam, tôi cần bản sao trang đầu hộ chiếu, ảnh chân dung và địa chỉ ở Việt Nam. Tôi sẽ liên hệ để hướng dẫn thêm.",
+      "flexibleDatesTitle": "Ngày bay của tôi có thể xê dịch một hai ngày",
+      "flexibleDatesBody": "Anh chị đánh dấu ô này nếu ngày đi hoặc ngày về có thể lệch 1–2 ngày, Hanh sẽ tìm giá tốt nhất cho anh chị. Anh chị dùng ô bên dưới để ghi rõ ngày đi hoặc ngày về có thể xê dịch thế nào.",
       "contactMethodTitle": "Cách liên hệ thuận tiện nhất",
       "contactMethodHint": "Tôi xin cả hai để vẫn liên lạc được nếu một cách không thành công.",
       "contactMethodEmail": "Email",
@@ -86,12 +107,12 @@
       "partyValue": "{adults} người lớn, {children} trẻ em, {infants} trẻ sơ sinh",
       "contact": "Liên hệ",
       "notes": "Còn điều gì tôi nên biết không?",
-      "notesHint": "Xin đừng nhập thông tin hộ chiếu, thanh toán hoặc y tế tại đây.",
+      "notesHint": "Xin đừng nhập số hộ chiếu, thông tin thanh toán hoặc y tế tại đây.",
       "transactionalConsent": "Tôi đồng ý nhận thông báo dịch vụ về yêu cầu này qua email và điện thoại nếu đã cung cấp.",
       "partyDataAuthority": "Tôi được phép cung cấp thông tin chuyến đi cho mọi hành khách trong yêu cầu này.",
       "marketingConsent": "Tôi cũng muốn thỉnh thoảng nhận tin du lịch. (Không bắt buộc)",
       "noPurchaseTitle": "Không thu bất kỳ khoản nào ở đây",
-      "noPurchaseBody": "Không có chỗ nào được giữ và không có khoản thanh toán nào khi anh chị gửi biểu mẫu. Mình sẽ trao đổi kỹ với nhau trước."
+      "noPurchaseBody": "Không có khoản thanh toán nào khi anh chị gửi biểu mẫu. Tôi dùng thông tin hành khách để giữ chỗ trong khả năng có thể, và sẽ đi qua toàn bộ giá với anh chị trước khi xuất vé."
     },
     "errors": {
       "summary": "Vui lòng kiểm tra {count} mục được đánh dấu.",
@@ -108,18 +129,19 @@
       "partyDataAuthority": "Xác nhận rằng anh chị có thể cung cấp thông tin cho các hành khách này.",
       "submit": "Yêu cầu chưa gửi được. Anh chị thử lại giúp tôi, hoặc cứ gọi cho tôi.",
       "phone": "Nhập số điện thoại để tôi có thể gọi.",
-      "preferredContactMethod": "Chọn cách anh chị muốn được liên hệ."
+      "preferredContactMethod": "Chọn cách anh chị muốn được liên hệ.",
+      "passengerDateOfBirth": "Nhập ngày sinh trong quá khứ."
     },
     "selected": {
       "title": "Chuyến bay của anh chị",
       "change": "Đổi",
       "total": "Tổng cho {travelers, plural, other {# hành khách}}",
-      "estimateNote": "Đây là giá trọn gói — vé máy bay, chỗ ngồi, visa và mọi việc khác tôi lo. Chưa thu khoản nào ở đây, và tôi sẽ đi qua giá với anh chị trước khi đặt vé."
+      "estimateNote": "Đây là giá trọn gói — vé máy bay, chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo. Chưa thu khoản nào ở đây, và tôi sẽ đi qua giá với anh chị trước khi đặt vé."
     }
   },
   "Flights": {
     "title": "Tìm chuyến bay đến Việt Nam",
-    "description": "Xem giá khứ hồi từ San Francisco, Los Angeles, Phoenix hoặc New York đến TP. Hồ Chí Minh, Hà Nội và Đà Nẵng, rồi gửi cho tôi chuyến anh chị ưng. Tôi sẽ xác nhận giá với anh chị qua điện thoại hoặc email.",
+    "description": "Xem giá khứ hồi từ chín thành phố ở Mỹ đến TP. Hồ Chí Minh, Hà Nội và Đà Nẵng, rồi gửi cho tôi chuyến anh chị ưng. Tôi sẽ xác nhận giá với anh chị qua điện thoại hoặc email.",
     "bar": {
       "from": "Điểm đi",
       "to": "Điểm đến",
@@ -132,7 +154,12 @@
     "origins": {
       "SFO": "San Francisco · SFO",
       "LAX": "Los Angeles · LAX",
+      "ONT": "Ontario, CA · ONT",
+      "SEA": "Seattle · SEA",
       "PHX": "Phoenix · PHX",
+      "ORD": "Chicago · ORD",
+      "IAH": "Houston · IAH",
+      "IAD": "Washington, DC · IAD",
       "JFK": "New York · JFK"
     },
     "tripTypeLabel": "Loại chuyến",
@@ -170,7 +197,7 @@
     "resultsTitle": "Chuyến bay cho anh chị",
     "resultsCount": "{count, plural, other {# lựa chọn}}",
     "sortLabel": "Sắp xếp theo",
-    "sortPrice": "Giá thấp nhất",
+    "sortPrice": "Ít điểm dừng nhất, rồi đến giá",
     "sortDuration": "Thời gian ngắn nhất",
     "stopsLabel": "Điểm dừng",
     "stopsAny": "Bất kỳ",
@@ -186,11 +213,11 @@
     "stops": "{count, plural, other {# điểm dừng}}",
     "via": "qua {airports}",
     "estimatedTotal": "Tổng cho {travelers, plural, other {# hành khách}}",
-    "includedBadge": "Vé máy bay, chỗ ngồi, visa — trọn gói mọi thứ",
-    "priceIncludes": "Mọi mức giá bên dưới là trọn gói — đặt vé, chọn chỗ ngồi, visa và mọi việc khác tôi lo cho anh chị. Chưa thu khoản nào ở đây.",
+    "includedBadge": "Bao gồm vé máy bay, chỗ ngồi, visa và mã QR trước khi đến",
+    "priceIncludes": "Mọi mức giá bên dưới là trọn gói — đặt vé, chọn chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo cho anh chị. Chưa thu khoản nào ở đây.",
     "showMore": "Xem thêm {count} lựa chọn (còn {remaining})",
     "select": "Tiếp tục với chuyến bay này",
-    "moreOptionsBody": "Về các chuyến bay khác, hoặc ưu đãi cho đoàn và hạng thương gia, anh chị cứ gửi yêu cầu hoặc gọi cho tôi để tôi báo giá."
+    "moreOptionsBody": "Về các hành trình bay khác, hoặc ưu đãi cho đoàn và hạng thương gia, anh chị cứ gửi yêu cầu hoặc gọi cho tôi để tôi báo giá."
   },
   "Received": {
     "eyebrow": "Cảm ơn anh chị!",

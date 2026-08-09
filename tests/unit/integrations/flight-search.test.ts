@@ -153,7 +153,7 @@ describe("flight search factory and contracts", () => {
       { ...baseQuery, returnDate: "2026-12-10" },
       { ...baseQuery, destination: "NRT" },
       /* An airport the agency does not sell out of, so it never reaches Duffel. */
-      { ...baseQuery, origin: "SEA" }
+      { ...baseQuery, origin: "MIA" }
     ];
     for (const query of invalid) {
       expect(flightOffersQuerySchema.safeParse(query).success).toBe(false);

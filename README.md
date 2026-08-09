@@ -9,7 +9,7 @@ The agency's website: live round-trip fares from San Francisco, Los Angeles, Pho
 **NEWTEC TRAVEL AND TOURS**  
 [836 Schwerin Street, Daly City, CA 94014](https://www.google.com/maps/search/?api=1&query=836%20Schwerin%20Street%2C%20Daly%20City%2C%20CA%2094014)  
 Telephone: [(415) 626 3579](tel:+14156263579)  
-Email: [newtec@sbcglobal.net](mailto:newtec@sbcglobal.net)  
+Email: [newtectravelagency@gmail.com](mailto:newtectravelagency@gmail.com)  
 Reviews: [Yelp](https://www.yelp.com/biz/newtec-travel-agency-daly-city)
 
 ## What the site does
@@ -17,7 +17,7 @@ Reviews: [Yelp](https://www.yelp.com/biz/newtec-travel-agency-daly-city)
 1. A visitor searches SFO, LAX, PHX, or JFK to SGN, HAN, or DAD and sees real Duffel fares.
 2. Every result list ends by pointing at the phone, because group fares and business-class contracts are quoted by hand and are never in the search results.
 3. Selecting a flight, or starting from scratch, opens a four-step request form.
-4. Submitting writes one row and queues one email to `newtec@sbcglobal.net` with the customer's phone, email, trip, and preferred callback channel. Reply-To is the customer, so replying answers them directly.
+4. Submitting writes one row and queues one email to `newtectravelagency@gmail.com` with the customer's phone, email, trip, and preferred callback channel. Reply-To is the customer, so replying answers them directly.
 5. Staff opens `/admin`, calls the customer back, and drags the request from New to Processing to Done.
 
 Both the phone number and the email address are always required, even though the customer picks one as preferred: the agency calls back by hand, and a filtered mailbox or one wrong digit must not be the only route to a lead.

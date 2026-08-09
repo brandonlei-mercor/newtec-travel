@@ -1,5 +1,7 @@
 import type { EmailMessage } from "@/server/integrations/email-sender";
-import type { InquiryRecord } from "./queries";
+import type { InquiryPassengerRecord, InquiryWithPassengers } from "./queries";
+
+type InquiryRecord = InquiryWithPassengers;
 
 const DESTINATION_NAMES: Record<InquiryRecord["destination"], string> = {
   SGN: "Ho Chi Minh City (SGN)",
@@ -18,6 +20,7 @@ const CABIN_NAMES: Record<InquiryRecord["cabin"], string> = {
 const FLEXIBILITY_NAMES: Record<InquiryRecord["dateFlexibility"], string> = {
   EXACT: "Exact dates",
   PLUS_MINUS_1: "Flexible by 1 day",
+  PLUS_MINUS_2: "Flexible by 1–2 days",
   PLUS_MINUS_3: "Flexible by 3 days"
 };
 
@@ -37,6 +40,34 @@ function escapeHtml(value: string): string {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+const PASSENGER_LABELS: Record<InquiryPassengerRecord["type"], string> = {
+  ADULT: "Adult",
+  CHILD: "Child",
+  INFANT: "Lap infant"
+};
+
+/**
+ * The passport manifest, one row per traveler rather than one joined line.
+ * This is the part of the email that gets retyped into Sabre to hold the
+ * seats, and a name that wrapped mid-line is where a booking gets misspelled.
+ * Numbered within its own kind, which is how an airline lists a booking.
+ *
+ * The names are optional on the form, so a request often arrives with some or
+ * none of them. That says so in a row of its own rather than leaving a gap:
+ * whoever calls back needs to know the names are still to be collected.
+ */
+function passengerRows(passengers: InquiryPassengerRecord[]): [string, string][] {
+  if (passengers.length === 0) return [["Passport names", "not given yet — collect on the call"]];
+  const seen: Record<InquiryPassengerRecord["type"], number> = { ADULT: 0, CHILD: 0, INFANT: 0 };
+  return passengers.map((passenger) => {
+    seen[passenger.type] += 1;
+    return [
+      `${PASSENGER_LABELS[passenger.type]} ${seen[passenger.type]}`,
+      `${passenger.familyName}, ${passenger.givenName} (born ${passenger.dateOfBirth})`
+    ];
+  });
 }
 
 function party(inquiry: InquiryRecord): string {
@@ -78,6 +109,7 @@ export function composeInquiryNotification(
     ["Flexibility", FLEXIBILITY_NAMES[inquiry.dateFlexibility]],
     ["Cabin", CABIN_NAMES[inquiry.cabin]],
     ["Travelers", party(inquiry)],
+    ...passengerRows(inquiry.passengers),
     ["Visa help requested", inquiry.visaInterest ? "yes" : "no"],
     ["Marketing consent", inquiry.marketingConsent ? "yes" : "no"],
     ["Special assistance", inquiry.specialAssistance ?? "none"],

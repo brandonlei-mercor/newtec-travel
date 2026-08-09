@@ -1,14 +1,24 @@
 import { z } from "zod";
 
 /*
- * The US cities the agency sells out of. SFO is the home airport and stays the
- * default: it is where most of the customers are and where every carrier the
- * agency ticks serves. The other three are a closed set for the same reason
- * destinations are — an origin reaches the upstream request body, a database
- * row, and an email, and none of those should ever see a string a browser made
- * up.
+ * The US cities the agency sells out of, ordered roughly west to east so the
+ * dropdown reads like a map. SFO is the home airport and stays the default: it
+ * is where most of the customers are and where every carrier the agency ticks
+ * serves. The rest are a closed set for the same reason destinations are — an
+ * origin reaches the upstream request body, a database row, and an email, and
+ * none of those should ever see a string a browser made up.
  */
-export const SEARCH_ORIGINS = ["SFO", "LAX", "PHX", "JFK"] as const;
+export const SEARCH_ORIGINS = [
+  "SFO",
+  "LAX",
+  "ONT",
+  "SEA",
+  "PHX",
+  "ORD",
+  "IAH",
+  "IAD",
+  "JFK"
+] as const;
 export const SEARCH_DEFAULT_ORIGIN = "SFO" as const;
 export const SEARCH_DESTINATIONS = ["SGN", "HAN", "DAD"] as const;
 /*
@@ -16,8 +26,8 @@ export const SEARCH_DESTINATIONS = ["SGN", "HAN", "DAD"] as const;
  * returns is dropped before it reaches a result card, so a price on screen is
  * always a price a specialist can actually ticket. Coverage is uneven across
  * the origins — all three fly SFO and LAX, only JX flies PHX, only BR flies
- * JFK — so a thin result set out of Phoenix or New York is the filter working,
- * not a bug.
+ * JFK, and the smaller stations are thinner still — so few or no results out of
+ * a secondary city is the filter working, not a bug.
  */
 export const SEARCH_SHOWN_CARRIERS = ["VN", "BR", "JX"] as const;
 export const SEARCH_HORIZON_DAYS = 330;

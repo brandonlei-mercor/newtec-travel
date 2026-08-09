@@ -32,20 +32,20 @@ migration script.
 Set values, never names, through the Render dashboard for the three marked secret. The
 rest are safe on a command line.
 
-| Variable                     | Web | Worker | Value                                                  |
-| ---------------------------- | :-: | :----: | ------------------------------------------------------ |
-| `APP_ENV`                    |  ✓  |   ✓    | `production`                                           |
-| `APP_URL`                    |  ✓  |   ✓    | The service's own `https://` URL                       |
-| `DATABASE_URL`               |  ✓  |   ✓    | The database's **internal** connection string (secret) |
-| `DUFFEL_ACCESS_TOKEN`        |  ✓  |        | A live token; `duffel_test_…` is refused (secret)      |
-| `ADMIN_PASSWORD`             |  ✓  |   ✓    | 16+ random characters (secret)                         |
-| `INQUIRY_NOTIFICATION_EMAIL` |     |   ✓    | `newtec@sbcglobal.net`                                 |
-| `INQUIRY_EMAIL_ENABLED`      |     |   ✓    | `true` once a relay is configured                      |
-| `SMTP_HOST` / `SMTP_PORT`    |     |   ✓    | `smtp.mail.att.net` / `465`                            |
-| `SMTP_SECURE`                |     |   ✓    | `true` on port 465                                     |
-| `SMTP_USER`                  |     |   ✓    | `newtec@sbcglobal.net`                                 |
-| `SMTP_PASSWORD`              |     |   ✓    | The AT&T secure mail key (secret)                      |
-| `SMTP_FROM`                  |     |   ✓    | `NEWTEC TRAVEL AND TOURS <newtec@sbcglobal.net>`       |
+| Variable                     | Web | Worker | Value                                                    |
+| ---------------------------- | :-: | :----: | -------------------------------------------------------- |
+| `APP_ENV`                    |  ✓  |   ✓    | `production`                                             |
+| `APP_URL`                    |  ✓  |   ✓    | The service's own `https://` URL                         |
+| `DATABASE_URL`               |  ✓  |   ✓    | The database's **internal** connection string (secret)   |
+| `DUFFEL_ACCESS_TOKEN`        |  ✓  |        | A live token; `duffel_test_…` is refused (secret)        |
+| `ADMIN_PASSWORD`             |  ✓  |   ✓    | 16+ random characters (secret)                           |
+| `INQUIRY_NOTIFICATION_EMAIL` |     |   ✓    | `newtectravelagency@gmail.com`                           |
+| `INQUIRY_EMAIL_ENABLED`      |     |   ✓    | `true` once a relay is configured                        |
+| `SMTP_HOST` / `SMTP_PORT`    |     |   ✓    | `smtp.gmail.com` / `465`                                 |
+| `SMTP_SECURE`                |     |   ✓    | `true` on port 465                                       |
+| `SMTP_USER`                  |     |   ✓    | `newtectravelagency@gmail.com`                           |
+| `SMTP_PASSWORD`              |     |   ✓    | A Gmail app password (secret)                            |
+| `SMTP_FROM`                  |     |   ✓    | `NEWTEC TRAVEL AND TOURS <newtectravelagency@gmail.com>` |
 
 `APP_URL` is load-bearing twice over: it is one of the two origins the mutation guard
 accepts, and the `/admin` session cookie is marked `Secure` only when it begins `https://`.

@@ -1,3 +1,4 @@
+import type { PassengerType } from "@/shared/contracts/inquiry";
 import type { FlightOffer, SearchDestination, SearchOrigin } from "@/shared/contracts/search";
 
 /** Where a request can be for: any airport the search sells, or "help me pick". */
@@ -12,9 +13,21 @@ export type InquiryPayload = {
   departureDate: string;
   /** Absent on a one-way request; the server contract rejects it there. */
   returnDate?: string;
-  flexibility: "EXACT" | "PLUS_MINUS_1" | "PLUS_MINUS_3";
+  flexibility: "EXACT" | "PLUS_MINUS_1" | "PLUS_MINUS_2" | "PLUS_MINUS_3";
   cabinPreference: "ECONOMY" | "PREMIUM_ECONOMY" | "BUSINESS" | "NO_PREFERENCE";
   travelers: { adults: number; children: number; infants: number };
+  /**
+   * Whichever travelers the customer named, as their passports spell them, in
+   * the order the form asked. Absent when nobody was named — the names are
+   * optional and the rest are collected by phone — and the server rejects a
+   * manifest that names more heads than `travelers` was quoted for.
+   */
+  passengers?: {
+    type: PassengerType;
+    givenName: string;
+    familyName: string;
+    dateOfBirth: string;
+  }[];
   /** One line describing the flight the customer checked out with. */
   selectedOffer?: string;
   specialAssistance?: string;

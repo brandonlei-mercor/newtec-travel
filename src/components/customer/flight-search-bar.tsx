@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { CalendarDays, MapPin, Plane, Search, Ticket, Users } from "lucide-react";
+import { Baby, CalendarDays, MapPin, Plane, Search, Ticket, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import {
@@ -38,7 +38,14 @@ export function FlightSearchBar() {
   const [destination, setDestination] = useState<SearchDestination>("SGN");
   const [departureDate, setDepartureDate] = useState(() => addDaysIso(today, 30));
   const [returnDate, setReturnDate] = useState(() => addDaysIso(today, 44));
+  /*
+   * Who is going is part of the search, not a detail settled later: the airline
+   * prices a seat per head and a lap infant differently again, so a party set
+   * here is a different fare from the same party set on the results page.
+   */
   const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [infants, setInfants] = useState(0);
   const [cabin, setCabin] = useState<SearchCabin>("ECONOMY");
 
   function onDepartureChange(value: string) {
@@ -55,6 +62,8 @@ export function FlightSearchBar() {
       departureDate,
       returnDate,
       adults: String(adults),
+      children: String(children),
+      infants: String(infants),
       cabin
     });
     router.push(`/flights?${params.toString()}`);
@@ -144,6 +153,42 @@ export function FlightSearchBar() {
             onChange={(event) => setAdults(Number(event.target.value))}
           >
             {Array.from({ length: 9 }, (_, index) => index + 1).map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </div>
+      </label>
+
+      <label className={cellClassName}>
+        <Users aria-hidden="true" className="shrink-0 text-[color:var(--brand)]" size={17} />
+        <div className="min-w-0 flex-1">
+          <span className={labelClassName}>{t("children")}</span>
+          <select
+            className={valueClassName}
+            value={children}
+            onChange={(event) => setChildren(Number(event.target.value))}
+          >
+            {Array.from({ length: 9 }, (_, index) => index).map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </div>
+      </label>
+
+      <label className={cellClassName}>
+        <Baby aria-hidden="true" className="shrink-0 text-[color:var(--brand)]" size={17} />
+        <div className="min-w-0 flex-1">
+          <span className={labelClassName}>{t("infants")}</span>
+          <select
+            className={valueClassName}
+            value={infants}
+            onChange={(event) => setInfants(Number(event.target.value))}
+          >
+            {Array.from({ length: 9 }, (_, index) => index).map((value) => (
               <option key={value} value={value}>
                 {value}
               </option>

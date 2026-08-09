@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "NEWTEC TRAVEL AND TOURS | US–Vietnam Flights",
-    "description": "Live fares from San Francisco, Los Angeles, Phoenix, and New York to Vietnam, handled personally by Hanh Vong at NEWTEC Travel and Tours in Daly City — flights, seat arrangements, visas, and everything in between."
+    "description": "Live fares from San Francisco, Los Angeles, Seattle, Chicago, and five other US cities to Vietnam, handled personally by Hanh Newtec at NEWTEC Travel and Tours in Daly City — flights, seat arrangements, visas, and everything in between."
   },
   "Nav": {
     "home": "NEWTEC TRAVEL AND TOURS home",
@@ -28,21 +28,22 @@
     "title": "Let me take care of your trip to Vietnam.",
     "description": "Tell me where you want to go and when. Have a look at live fares from Vietnam Airlines and EVA Air, send me the one you like, and I’ll call you back myself. Flights, seat arrangements, visas, and everything in between.",
     "cta": "Find your flights",
-    "priceNote": "Every price you see here is the whole trip — the booking, your seats, your visa, and everything else I take care of before you fly.",
+    "priceNote": "Every price you see here is the whole trip — the booking, your seats, your visa, your pre-arrival QR code, and everything else I take care of before you fly.",
     "closingTitle": "Ready when you are. Let me take it from here.",
     "specialistEyebrow": "Nice to meet you",
     "specialistTitle": "You get me, from your first phone call until the trip is over — and for every trip after that.",
-    "specialistBody": "I’m Hanh Vong, and I’ve been arranging flights between the Bay Area and Vietnam from the same little office in Daly City for years. A lot of the families who called me at the beginning still call me first today, and many of them have become friends. Your dates, your fare, your seats, your visa, and your ticket all go through me, never through a booking engine.",
+    "specialistBody": "I’m Hanh Newtec, and I’ve been arranging flights between the Bay Area and Vietnam from the same little office in Daly City for years. A lot of the families who called me at the beginning still call me first today, and many of them have become friends. Your dates, your fare, your seats, your visa, your pre-arrival QR code, and your ticket all go through me, never through a booking engine.",
     "specialistCta": "Call me anytime"
   },
   "Inquiry": {
     "eyebrow": "Almost there",
     "title": "Send this one over to me",
-    "description": "Your flight stays right here with you the whole way. Just tell me how to reach you, and I’ll check the fare and come back to you myself.",
+    "description": "Your flight stays right here with you the whole way. Tell me how to reach you and who is traveling, and I’ll check the fare and come back to you myself.",
     "progressLabel": "Request progress",
     "steps": {
       "1": "Your details",
-      "2": "Review and send"
+      "2": "Travelers",
+      "3": "Review and send"
     },
     "continue": "Continue",
     "back": "Back",
@@ -60,9 +61,27 @@
       "NO_PREFERENCE": "No preference"
     },
     "travelers": {
-      "assistance": "Special assistance",
-      "assistanceHint": "Please do not include medical records or passport details.",
-      "assistancePlaceholder": "Wheelchair assistance, seating needs, traveling with an infant…"
+      "assistance": "Your dates and anything you need on board",
+      "assistanceHint": "If your dates can move, tell me here how far and which way — a day earlier out, a few days later back, or a whole week that would work. Same box for anything you need on board. Please do not include medical records or passport numbers.",
+      "assistancePlaceholder": "Could leave a day earlier, could come back any day that week, wheelchair assistance, seating needs…"
+    },
+    "passengers": {
+      "title": "Who is traveling?",
+      "description": "Give me each traveler exactly as their passport spells them. An airline holds a seat against a legal name and a date of birth, so this is what lets me put your party on hold.",
+      "optionalNote": "None of this is required to send your request. Leave any of it blank and I’ll take those details when we speak — whatever you can give me now is simply what I can start holding sooner.",
+      "holdTitle": "This is how I hold your spots in advance",
+      "holdBody": "With these names I can hold these seats for you ahead of time, before the fare moves. A ticket issued in a name that does not match the passport has to be reissued at your cost, so please check every spelling against the document itself.",
+      "types": {
+        "ADULT": "Adult {number}",
+        "CHILD": "Child {number}",
+        "INFANT": "Lap infant {number}"
+      },
+      "givenName": "Legal first and middle names",
+      "familyName": "Legal last name",
+      "nameHint": "Exactly as printed on the passport.",
+      "dateOfBirth": "Date of birth",
+      "reviewTitle": "Passport names",
+      "reviewMissing": "You’ll give me this later"
     },
     "contact": {
       "title": "How can I reach you?",
@@ -72,8 +91,10 @@
       "email": "Email address",
       "phone": "Phone number",
       "phoneHint": "Include the country code when outside the U.S.",
-      "visaTitle": "I would like help with my Vietnam visa",
-      "visaBody": "I help my travelers with Vietnam visas all the time. Check this box and I’ll walk you through it when we talk.",
+      "visaNoteTitle": "About your Vietnam visa",
+      "visaNoteBody": "For processing of Vietnam visa, we will need a Passport copy of the first page, headshot picture and Vietnam address. We’ll reach out with more details.",
+      "flexibleDatesTitle": "My dates could move by a day or two",
+      "flexibleDatesBody": "Tick this if your departure or return could be off by 1–2 days, and Hanh will find the best prices for your needs. Use the box below to tell me exactly how your departure or return could move.",
       "contactMethodTitle": "Best way to reach you",
       "contactMethodHint": "I ask for both so I can still find you if one doesn’t work.",
       "contactMethodEmail": "Email",
@@ -86,12 +107,12 @@
       "partyValue": "{adults} adult(s), {children} child(ren), {infants} infant(s)",
       "contact": "Contact",
       "notes": "Anything else I should know?",
-      "notesHint": "Please do not enter passport, payment, or medical information here.",
+      "notesHint": "Please do not enter passport numbers, payment, or medical information here.",
       "transactionalConsent": "I agree to receive service messages about this request by email and, if provided, phone.",
       "partyDataAuthority": "I am authorized to provide trip details for every traveler in this request.",
       "marketingConsent": "I would also like occasional travel updates. (Optional)",
       "noPurchaseTitle": "Nothing is charged here",
-      "noPurchaseBody": "No seat is held and no payment is taken when you send this form. We go over everything together first."
+      "noPurchaseBody": "No payment is taken when you send this form. I use your travelers’ details to hold the seats where I can, and I go through the whole price with you before anything is ticketed."
     },
     "errors": {
       "summary": "Please review {count, plural, one {this field} other {these # fields}}.",
@@ -108,18 +129,19 @@
       "partyDataAuthority": "Confirm that you may provide details for these travelers.",
       "submit": "That didn’t go through. Please try again, or just give me a call.",
       "phone": "Enter a phone number I can call.",
-      "preferredContactMethod": "Choose how you would like to be contacted."
+      "preferredContactMethod": "Choose how you would like to be contacted.",
+      "passengerDateOfBirth": "Enter a date of birth in the past."
     },
     "selected": {
       "title": "Your flight",
       "change": "Change",
       "total": "Total for {travelers, plural, one {1 traveler} other {# travelers}}",
-      "estimateNote": "This is the whole package — the flight, seat selection, your visa, and everything else I take care of. Nothing is charged here, and I go through the price with you before anything is booked."
+      "estimateNote": "This is the whole package — the flight, seat selection, your visa, your pre-arrival QR code, and everything else I take care of. Nothing is charged here, and I go through the price with you before anything is booked."
     }
   },
   "Flights": {
     "title": "Find your flights to Vietnam",
-    "description": "Have a look at round-trip fares from San Francisco, Los Angeles, Phoenix, or New York to Ho Chi Minh City, Hanoi, and Da Nang, then send me the one you like. I’ll confirm the fare with you by phone or email.",
+    "description": "Have a look at round-trip fares from nine US cities to Ho Chi Minh City, Hanoi, and Da Nang, then send me the one you like. I’ll confirm the fare with you by phone or email.",
     "bar": {
       "from": "Leaving from",
       "to": "Going to",
@@ -132,7 +154,12 @@
     "origins": {
       "SFO": "San Francisco · SFO",
       "LAX": "Los Angeles · LAX",
+      "ONT": "Ontario, CA · ONT",
+      "SEA": "Seattle · SEA",
       "PHX": "Phoenix · PHX",
+      "ORD": "Chicago · ORD",
+      "IAH": "Houston · IAH",
+      "IAD": "Washington, DC · IAD",
       "JFK": "New York · JFK"
     },
     "tripTypeLabel": "Trip type",
@@ -170,7 +197,7 @@
     "resultsTitle": "Your flights",
     "resultsCount": "{count, plural, one {1 option} other {# options}}",
     "sortLabel": "Sort by",
-    "sortPrice": "Lowest price",
+    "sortPrice": "Fewest stops, then price",
     "sortDuration": "Shortest trip",
     "stopsLabel": "Stops",
     "stopsAny": "Any",
@@ -186,11 +213,11 @@
     "stops": "{count, plural, one {1 stop} other {# stops}}",
     "via": "via {airports}",
     "estimatedTotal": "Total for {travelers, plural, one {1 traveler} other {# travelers}}",
-    "includedBadge": "Flight, seats, visa — everything included",
-    "priceIncludes": "Every price below is the complete package — the booking, seat selection, your visa, and everything else I take care of for you. Nothing is charged here.",
+    "includedBadge": "Includes flight, seats, visa, and pre-arrival QR code",
+    "priceIncludes": "Every price below is the complete package — the booking, seat selection, your visa, your pre-arrival QR code, and everything else I take care of for you. Nothing is charged here.",
     "showMore": "Show {count} more ({remaining} left)",
     "select": "Continue with this flight",
-    "moreOptionsBody": "For other flights, or for group travel and business class discounts, send me your request or give me a call and I’ll price them for you."
+    "moreOptionsBody": "For other routing flights, or for group travel and business class discounts, send me your request or give me a call and I’ll price them for you."
   },
   "Received": {
     "eyebrow": "Thank you!",

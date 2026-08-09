@@ -6,7 +6,8 @@ import { ADMIN_LOGIN_PATH, adminInquiryStatusPath } from "@/shared/admin-routes"
 import {
   INQUIRY_STATUSES,
   type ContactMethod,
-  type InquiryStatus
+  type InquiryStatus,
+  type PassengerType
 } from "@/shared/contracts/inquiry";
 
 export type AdminInquiry = {
@@ -29,6 +30,13 @@ export type AdminInquiry = {
   adults: number;
   children: number;
   infants: number;
+  /** Legal names as the passport spells them, in the order the form collected them. */
+  passengers: {
+    type: PassengerType;
+    givenName: string;
+    familyName: string;
+    dateOfBirth: string;
+  }[];
   visaInterest: boolean;
   selectedOffer: string | null;
   specialAssistance: string | null;
@@ -63,6 +71,12 @@ const NOTIFICATION_LABELS: Record<string, string> = {
   PENDING: "Email queued",
   SENT: "Email sent",
   FAILED: "Email failed"
+};
+
+const PASSENGER_LABELS: Record<PassengerType, string> = {
+  ADULT: "Adult",
+  CHILD: "Child",
+  INFANT: "Lap infant"
 };
 
 /** The MIME type the card writes its id into, so a stray drop cannot be read as one. */
@@ -236,13 +250,28 @@ function InquiryCard({
   showNotificationState: boolean;
   onMove: (inquiry: AdminInquiry, target: InquiryStatus) => void;
 }) {
-  const passengers = [
+  const party = [
     `${inquiry.adults} adult${inquiry.adults === 1 ? "" : "s"}`,
     inquiry.children > 0 ? `${inquiry.children} child${inquiry.children === 1 ? "" : "ren"}` : null,
     inquiry.infants > 0 ? `${inquiry.infants} infant${inquiry.infants === 1 ? "" : "s"}` : null
   ]
     .filter(Boolean)
     .join(", ");
+
+  /*
+   * Numbered within its own kind, matching the labels the customer filled in
+   * and the way the notification email lists them, so a name read off this
+   * card and a name read off the email are unambiguously the same traveler.
+   */
+  const seen: Record<PassengerType, number> = { ADULT: 0, CHILD: 0, INFANT: 0 };
+  const manifest = inquiry.passengers.map((passenger) => {
+    seen[passenger.type] += 1;
+    return {
+      label: `${PASSENGER_LABELS[passenger.type]} ${seen[passenger.type]}`,
+      name: `${passenger.familyName}, ${passenger.givenName}`,
+      dateOfBirth: passenger.dateOfBirth
+    };
+  });
 
   return (
     <li
@@ -293,8 +322,17 @@ function InquiryCard({
         <Detail label="Details">
           {inquiry.cabin} &middot; {inquiry.dateFlexibility}
           <br />
-          {passengers}
+          {party}
         </Detail>
+        {manifest.length > 0 ? (
+          <Detail label="Passport names">
+            {manifest.map((traveler) => (
+              <span className="block" key={traveler.label}>
+                {traveler.label}: {traveler.name} &middot; {traveler.dateOfBirth}
+              </span>
+            ))}
+          </Detail>
+        ) : null}
         <Detail label="Language">
           {inquiry.preferredLocale === "vi" ? "Vietnamese" : "English"}
         </Detail>

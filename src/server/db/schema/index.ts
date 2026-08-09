@@ -15,7 +15,7 @@ import {
   uuid,
   varchar
 } from "drizzle-orm/pg-core";
-import { INQUIRY_STATUSES } from "@/shared/contracts/inquiry";
+import { INQUIRY_STATUSES, PASSENGER_TYPES } from "@/shared/contracts/inquiry";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -26,6 +26,7 @@ export const destinationEnum = pgEnum("destination", ["SGN", "HAN", "DAD", "FLEX
 export const dateFlexibilityEnum = pgEnum("date_flexibility", [
   "EXACT",
   "PLUS_MINUS_1",
+  "PLUS_MINUS_2",
   "PLUS_MINUS_3"
 ]);
 export const cabinEnum = pgEnum("cabin", [
@@ -37,6 +38,7 @@ export const cabinEnum = pgEnum("cabin", [
 export const tripTypeEnum = pgEnum("trip_type", ["ROUND_TRIP", "ONE_WAY"]);
 export const contactMethodEnum = pgEnum("contact_method", ["EMAIL", "PHONE"]);
 export const inquiryStatusEnum = pgEnum("inquiry_status", INQUIRY_STATUSES);
+export const passengerTypeEnum = pgEnum("passenger_type", PASSENGER_TYPES);
 export const notificationStateEnum = pgEnum("notification_state", ["PENDING", "SENT", "FAILED"]);
 
 /**
@@ -97,7 +99,10 @@ export const inquiries = pgTable(
      * The same closed set the contract enforces, repeated here so a bad origin
      * cannot reach the table by any route that skips the Zod parse.
      */
-    check("inquiries_origin_supported", sql`${table.origin} in ('SFO', 'LAX', 'PHX', 'JFK')`),
+    check(
+      "inquiries_origin_supported",
+      sql`${table.origin} in ('SFO', 'LAX', 'ONT', 'SEA', 'PHX', 'ORD', 'IAH', 'IAD', 'JFK')`
+    ),
     check(
       "inquiries_party_valid",
       sql`${table.adults} >= 1 and ${table.children} >= 0 and ${table.infants} >= 0 and ${table.adults} + ${table.children} + ${table.infants} <= 9 and ${table.infants} <= ${table.adults}`
@@ -130,6 +135,41 @@ export const inquiries = pgTable(
       "inquiries_contacted_at_matches_status",
       sql`(${table.status} = 'NEW') = (${table.contactedAt} is null)`
     )
+  ]
+);
+
+/**
+ * The passport manifest for one request: every traveler's legal name and date
+ * of birth, in the order the form asked for them. A table of its own rather
+ * than columns on the inquiry, because a request carries up to nine of these
+ * and the agency reads them as a list when holding the seats. Cascades with
+ * the inquiry, so deleting a request takes the names with it rather than
+ * leaving passport data behind with nothing pointing at it.
+ */
+export const inquiryPassengers = pgTable(
+  "inquiry_passengers",
+  {
+    id: id(),
+    inquiryId: uuid("inquiry_id")
+      .notNull()
+      .references(() => inquiries.id, { onDelete: "cascade" }),
+    /** 1-based, and the order the form collected them in: adults, then children, then infants. */
+    position: integer("position").notNull(),
+    type: passengerTypeEnum("type").notNull(),
+    givenName: varchar("given_name", { length: 80 }).notNull(),
+    familyName: varchar("family_name", { length: 80 }).notNull(),
+    dateOfBirth: date("date_of_birth").notNull(),
+    createdAt: createdAt()
+  },
+  (table) => [
+    /*
+     * Two travelers cannot hold the same place in the list. This is what makes
+     * a retried insert visible as a conflict rather than quietly doubling a
+     * party, and it gives the read side a stable order to sort by.
+     */
+    unique("inquiry_passengers_position_unique").on(table.inquiryId, table.position),
+    index("inquiry_passengers_inquiry_idx").on(table.inquiryId),
+    check("inquiry_passengers_position_positive", sql`${table.position} >= 1`)
   ]
 );
 
@@ -211,7 +251,7 @@ export const flightOfferCaches = pgTable(
     index("flight_offer_caches_expiry_idx").on(table.expiresAt),
     check(
       "flight_offer_caches_origin_supported",
-      sql`${table.origin} in ('SFO', 'LAX', 'PHX', 'JFK')`
+      sql`${table.origin} in ('SFO', 'LAX', 'ONT', 'SEA', 'PHX', 'ORD', 'IAH', 'IAD', 'JFK')`
     ),
     check(
       "flight_offer_caches_destination_supported",
@@ -231,7 +271,15 @@ export const flightOfferCaches = pgTable(
 );
 
 export const inquiriesRelations = relations(inquiries, ({ many }) => ({
-  notifications: many(inquiryNotifications)
+  notifications: many(inquiryNotifications),
+  passengers: many(inquiryPassengers)
+}));
+
+export const inquiryPassengersRelations = relations(inquiryPassengers, ({ one }) => ({
+  inquiry: one(inquiries, {
+    fields: [inquiryPassengers.inquiryId],
+    references: [inquiries.id]
+  })
 }));
 
 export const inquiryNotificationsRelations = relations(inquiryNotifications, ({ one }) => ({

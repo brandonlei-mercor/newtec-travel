@@ -14,7 +14,7 @@ export const COMPANY = {
    */
   siteUrl: "https://newtectravel.com",
   owner: {
-    name: "Hanh Vong",
+    name: "Hanh Newtec",
     title: "Travel Specialist"
   },
   address: {
@@ -27,8 +27,8 @@ export const COMPANY = {
     href: "tel:+14156263579"
   },
   email: {
-    address: "newtec@sbcglobal.net",
-    href: "mailto:newtec@sbcglobal.net"
+    address: "newtectravelagency@gmail.com",
+    href: "mailto:newtectravelagency@gmail.com"
   },
   reviewsUrl: "https://www.yelp.com/biz/newtec-travel-agency-daly-city",
   mapsUrl:

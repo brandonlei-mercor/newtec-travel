@@ -2,7 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { createInquiry } from "@/modules/inquiries/service";
 import { listInquiries, setInquiryStatus } from "@/modules/inquiries/queries";
-import { inquiries, inquiryNotifications } from "@/server/db/schema";
+import { inquiries, inquiryNotifications, inquiryPassengers } from "@/server/db/schema";
 import { createJobHandlers } from "@/server/jobs/handlers";
 import { FixedClock } from "@/server/integrations/clock";
 import type { EmailDelivery, EmailMessage, EmailSender } from "@/server/integrations/email-sender";
@@ -37,6 +37,10 @@ function inquiryInput(overrides: Record<string, unknown> = {}) {
     flexibility: "PLUS_MINUS_1",
     cabinPreference: "ECONOMY",
     travelers: { adults: 2, children: 0, infants: 0 },
+    passengers: [
+      { type: "ADULT", givenName: "Ana", familyName: "Nguyen", dateOfBirth: "1988-04-12" },
+      { type: "ADULT", givenName: "Minh", familyName: "Nguyen", dateOfBirth: "1986-11-02" }
+    ],
     contact: {
       givenName: "Ana",
       familyName: "Nguyen",
@@ -68,6 +72,7 @@ describe("inquiry intake", () => {
 
   beforeEach(async () => {
     await database.db.delete(inquiryNotifications);
+    await database.db.delete(inquiryPassengers);
     await database.db.delete(inquiries);
     /* Jobs outlive the rows they point at, so each test starts with an empty queue. */
     await database.db.execute(sql`delete from graphile_worker._private_jobs`);
@@ -220,6 +225,48 @@ describe("inquiry intake", () => {
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
     // An empty row would read as a dropped field rather than a deliberate absence.
     expect(emailSender.sent[0]?.text).toContain("request taken without a search");
+  });
+
+  it("stores the passport manifest with the request and mails it out", async () => {
+    await createInquiry(database.db, inquiryInput(), {
+      idempotencyKey: "key-manifest",
+      notificationRecipient: AGENCY_MAILBOX,
+      sendNotificationEmail: true,
+      now: NOW
+    });
+
+    /*
+     * The names are what the agency holds the seats against, so they have to
+     * survive the same transaction the request did and come back in order.
+     */
+    const [stored] = await listInquiries(database.db);
+    expect(stored?.passengers.map((traveler) => traveler.givenName)).toEqual(["Ana", "Minh"]);
+    expect(stored?.passengers[0]?.position).toBe(1);
+    expect(stored?.passengers[1]?.dateOfBirth).toBe("1986-11-02");
+
+    await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
+    expect(emailSender.sent[0]?.text).toContain("Adult 1: Nguyen, Ana (born 1988-04-12)");
+    expect(emailSender.sent[0]?.text).toContain("Adult 2: Nguyen, Minh (born 1986-11-02)");
+  });
+
+  /*
+   * The names are optional, so most of the value of this test is that a request
+   * without them is still a lead: it lands, it mails, and the email says out
+   * loud that the manifest is still to be collected.
+   */
+  it("takes a request that carries no passport names yet", async () => {
+    await createInquiry(database.db, inquiryInput({ passengers: [] }), {
+      idempotencyKey: "key-no-manifest",
+      notificationRecipient: AGENCY_MAILBOX,
+      sendNotificationEmail: true,
+      now: NOW
+    });
+
+    const [stored] = await listInquiries(database.db);
+    expect(stored?.passengers).toEqual([]);
+
+    await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
+    expect(emailSender.sent[0]?.text).toContain("Passport names: not given yet");
   });
 
   it("returns the first result when a submission is retried", async () => {

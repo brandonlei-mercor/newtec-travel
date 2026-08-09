@@ -43,6 +43,18 @@ type StopsFilter = "ANY" | "NONSTOP" | "MAX_ONE";
  */
 const RESULTS_PAGE_SIZE = 5;
 
+/**
+ * Every stop on the trip, both directions counted. Cheapest first is only what
+ * a customer wants within a shape of trip: a nonstop is worth more to them than
+ * the twenty dollars a connection saves, so this leads the price ordering and
+ * keeps each group of equally-connected flights sorted by what it costs.
+ */
+function offerStops(offer: FlightOffer) {
+  return (
+    offer.outbound.segments.length - 1 + (offer.inbound ? offer.inbound.segments.length - 1 : 0)
+  );
+}
+
 function addMonths(month: string, delta: number) {
   const [year = 0, monthIndex = 1] = month.split("-").map(Number);
   const next = new Date(Date.UTC(year, monthIndex - 1 + delta, 1));
@@ -248,7 +260,7 @@ export function FlightSearch({
     }
     return [...list].sort((a, b) =>
       sort === "price"
-        ? a.priceTotalMinor - b.priceTotalMinor
+        ? offerStops(a) - offerStops(b) || a.priceTotalMinor - b.priceTotalMinor
         : a.outbound.durationMinutes +
           (a.inbound?.durationMinutes ?? 0) -
           (b.outbound.durationMinutes + (b.inbound?.durationMinutes ?? 0))
@@ -343,7 +355,7 @@ export function FlightSearch({
           </div>
         </div>
 
-        {/* A list rather than buttons: four cities already crowd the row, and
+        {/* A list rather than buttons: nine cities would never fit the row, and
             the agency adds a departure city far more often than a Vietnam one. */}
         <div className="lg:w-56 lg:shrink-0">
           <span className="eyebrow mb-2 block">{t("originLabel")}</span>
@@ -666,7 +678,11 @@ function FilterChip({
     <label className="flex min-h-9 items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--paper)] py-1 pl-3.5 pr-2 text-sm transition-colors focus-within:border-[var(--brand)] hover:border-[var(--line-strong)]">
       <span className="muted font-semibold">{label}</span>
       <select
-        className="max-w-[9.5rem] cursor-pointer truncate border-0 bg-transparent p-0 text-sm font-semibold text-[color:var(--ink)] outline-none"
+        /* Wide enough for the longest label either language writes, since a
+           chip that says what the list is sorted by has to say all of it.
+           Still capped, so an unusually long airline name truncates rather
+           than pushing the row apart. */
+        className="max-w-[15rem] cursor-pointer truncate border-0 bg-transparent p-0 text-sm font-semibold text-[color:var(--ink)] outline-none"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
@@ -793,9 +809,12 @@ function OfferRow({
               </span>
             </p>
             {/* On every row, not only once above the list: a price read on its
-                own has to say what it buys, or it reads as bare airfare. */}
-            <p className="flex w-fit items-center gap-1.5 rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-[0.7rem] font-semibold leading-4 text-[color:var(--brand-dark)]">
-              <Check aria-hidden="true" className="shrink-0" size={12} />
+                own has to say what it buys, or it reads as bare airfare.
+                Capped and wrapped rather than run out on one line: the whole
+                list is as wide as this column makes it, and a badge that keeps
+                growing takes its width out of the itinerary beside it. */}
+            <p className="flex w-fit max-w-[15.5rem] items-start gap-1.5 rounded-[var(--radius-control)] bg-[var(--brand-soft)] px-2.5 py-1 text-[0.7rem] font-semibold leading-4 text-[color:var(--brand-dark)]">
+              <Check aria-hidden="true" className="mt-px shrink-0" size={12} />
               {t("includedBadge")}
             </p>
           </div>

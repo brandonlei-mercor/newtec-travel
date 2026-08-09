@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildSmtpTransportOptions } from "../../../src/server/integrations/email-sender";
 
 const mailpit = { host: "127.0.0.1", port: 1025, secure: false };
-const relay = { host: "smtp.mail.att.net", port: 465, secure: true };
+const relay = { host: "smtp.gmail.com", port: 465, secure: true };
 
 describe("SMTP transport options", () => {
   it("connects anonymously to the local mail catcher", () => {
@@ -16,10 +16,10 @@ describe("SMTP transport options", () => {
   it("authenticates when a credential is configured", () => {
     const options = buildSmtpTransportOptions({
       ...relay,
-      user: "newtec@sbcglobal.net",
+      user: "newtectravelagency@gmail.com",
       password: "secure-mail-key"
     });
-    expect(options.auth).toEqual({ user: "newtec@sbcglobal.net", pass: "secure-mail-key" });
+    expect(options.auth).toEqual({ user: "newtectravelagency@gmail.com", pass: "secure-mail-key" });
     // The socket is encrypted from the first byte on 465, so there is nothing
     // to upgrade and requireTLS would be redundant.
     expect(options.requireTLS).toBeUndefined();
@@ -35,16 +35,16 @@ describe("SMTP transport options", () => {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
-      user: "newtec@gmail.com",
+      user: "newtectravelagency@gmail.com",
       password: "app-password"
     });
     expect(options.requireTLS).toBe(true);
-    expect(options.auth).toEqual({ user: "newtec@gmail.com", pass: "app-password" });
+    expect(options.auth).toEqual({ user: "newtectravelagency@gmail.com", pass: "app-password" });
   });
 
   it("never sends half a credential", () => {
     const halves = [
-      { ...relay, user: "newtec@sbcglobal.net" },
+      { ...relay, user: "newtectravelagency@gmail.com" },
       { ...relay, password: "secure-mail-key" }
     ];
     for (const config of halves) {

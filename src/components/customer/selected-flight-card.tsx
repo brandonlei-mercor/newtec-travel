@@ -55,8 +55,8 @@ export function SelectedFlightCard({ selection }: { selection: FlightSelection }
         </div>
         {/* The same badge as the row this flight was picked from, so the price
             does not quietly turn back into an airfare on the way here. */}
-        <p className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-semibold text-[color:var(--brand-dark)]">
-          <Check aria-hidden="true" className="shrink-0" size={13} />
+        <p className="mt-2 flex w-fit max-w-full items-start gap-1.5 rounded-[var(--radius-control)] bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-semibold leading-5 text-[color:var(--brand-dark)]">
+          <Check aria-hidden="true" className="mt-0.5 shrink-0" size={13} />
           {flights("includedBadge")}
         </p>
         <p className="muted mt-2 text-xs leading-5">{t("estimateNote")}</p>

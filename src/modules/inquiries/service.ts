@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/server/db";
-import { inquiries, inquiryNotifications } from "@/server/db/schema";
+import { inquiries, inquiryNotifications, inquiryPassengers } from "@/server/db/schema";
 import { claimIdempotency, completeIdempotency } from "@/modules/workflows/idempotency";
 import { createCaseReference } from "@/shared/ids";
 import {
@@ -52,6 +52,22 @@ export function validateInquiryInput(input: unknown, now = new Date()): InquiryI
       { code: "custom", path: ["returnDate"], message: "INQUIRY_DATE_MORE_THAN_330_DAYS" }
     ]);
   }
+  /*
+   * A date of birth is the one date in a request that must already have
+   * happened. Checked here rather than in the shared contract for the same
+   * reason the departure date is: only the server knows what day it is.
+   */
+  (parsed.passengers ?? []).forEach((passenger, index) => {
+    if (passenger.dateOfBirth > today || passenger.dateOfBirth < "1900-01-01") {
+      throw new z.ZodError([
+        {
+          code: "custom",
+          path: ["passengers", index, "dateOfBirth"],
+          message: "INQUIRY_DATE_OF_BIRTH_INVALID"
+        }
+      ]);
+    }
+  });
   return parsed;
 }
 
@@ -112,6 +128,26 @@ export async function createInquiry(
       })
       .returning({ id: inquiries.id, reference: inquiries.reference });
     if (!inquiry) throw new Error("INQUIRY_INSERT_FAILED");
+
+    /*
+     * The manifest goes in with the request, not after it: a party half-written
+     * across two transactions would have the agency holding seats for people
+     * whose names never arrived. Often there is nothing to write at all — the
+     * names are optional — and an insert of no rows is an error, not a no-op.
+     */
+    if (input.passengers && input.passengers.length > 0) {
+      await tx.insert(inquiryPassengers).values(
+        input.passengers.map((passenger, index) => ({
+          inquiryId: inquiry.id,
+          position: index + 1,
+          type: passenger.type,
+          givenName: passenger.givenName,
+          familyName: passenger.familyName,
+          dateOfBirth: passenger.dateOfBirth,
+          createdAt: now
+        }))
+      );
+    }
 
     const [notification] = await tx
       .insert(inquiryNotifications)

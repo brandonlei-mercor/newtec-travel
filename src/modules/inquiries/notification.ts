@@ -1,8 +1,15 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { EmailAttachment, EmailMessage } from "@/server/integrations/email-sender";
-import { EMAIL_LOCKUP } from "@/shared/brand-artwork";
+import { EMAIL_AIRLINE_MARK, EMAIL_LOCKUP } from "@/shared/brand-artwork";
 import { COMPANY } from "@/shared/company";
+import {
+  offerSummaryBlock,
+  offerSummaryLines,
+  parseOfferSummary,
+  type OfferSummaryBlock,
+  type StoredOffer
+} from "@/shared/offer-summary";
 import type { InquiryPassengerRecord, InquiryWithPassengers } from "./queries";
 
 type InquiryRecord = InquiryWithPassengers;
@@ -229,9 +236,67 @@ function lockupAttachment(): EmailAttachment | null {
   return lockupCache;
 }
 
+const AIRLINE_DIR = path.join(process.cwd(), "public", "brand", "airlines");
+const airlineCache = new Map<string, AirlineMark | null>();
+
+/** An airline's mark as the HTML needs it: what to point at and how wide to draw it. */
+type AirlineMark = { cid: string; width: number; attachment: EmailAttachment };
+
+/**
+ * The mark for one carrier, read once per process and kept.
+ *
+ * The code decides a filename, so it is checked against the shape IATA issues
+ * before it is allowed anywhere near a path — the stored flight arrives from a
+ * request body, and a code of "../../etc/passwd" reads a file rather than an
+ * airline. Anything missing degrades to a panel with no logo, never a mail that
+ * fails to send.
+ */
+function airlineMark(code: string): AirlineMark | null {
+  const cached = airlineCache.get(code);
+  if (cached !== undefined) return cached;
+  let mark: AirlineMark | null = null;
+  if (/^[A-Z0-9]{2,3}$/.test(code)) {
+    try {
+      const content = readFileSync(path.join(AIRLINE_DIR, `${code}.png`));
+      mark = {
+        cid: `airline-${code}`,
+        /*
+         * The width comes out of the PNG's own header rather than a number kept
+         * here, because an airline's mark is whatever shape it is; only the
+         * height was fixed when it was drawn. Bytes 16..20 are IHDR's width,
+         * divided back down out of the 2x-and-better raster Gmail is served.
+         */
+        width: Math.round(content.readUInt32BE(16) / EMAIL_AIRLINE_MARK.scale),
+        attachment: {
+          filename: `${code}.png`,
+          content,
+          contentType: "image/png",
+          cid: `airline-${code}`
+        }
+      };
+    } catch {
+      mark = null;
+    }
+  }
+  airlineCache.set(code, mark);
+  return mark;
+}
+
+/** Every mark the chosen flight calls for, in the order the panel draws them. */
+function airlineMarks(selected: StoredOffer | null): Map<string, AirlineMark> {
+  const marks = new Map<string, AirlineMark>();
+  for (const slice of selected?.slices ?? []) {
+    for (const code of slice.carriers) {
+      const mark = airlineMark(code);
+      if (mark) marks.set(code, mark);
+    }
+  }
+  return marks;
+}
+
 type Row = { label: string; value: string; lines?: string[] };
 
-function requestRows(inquiry: InquiryRecord, locale: Locale): Row[] {
+function requestRows(inquiry: InquiryRecord, locale: Locale, selected: StoredOffer | null): Row[] {
   const copy = COPY[locale];
   const { labels } = copy;
   const dates = inquiry.returnDate
@@ -254,7 +319,10 @@ function requestRows(inquiry: InquiryRecord, locale: Locale): Row[] {
       label: labels.dates,
       value: `${dates} · ${FLEXIBILITY_NAMES[locale][inquiry.dateFlexibility]}`
     },
-    { label: labels.cabin, value: CABIN_NAMES[locale][inquiry.cabin] },
+    // The cabin has a row of its own only when no flight was picked. Otherwise
+    // it opens the flight block, where the card carried it, and a row here
+    // would be the same word twice within four lines of itself.
+    ...(selected ? [] : [{ label: labels.cabin, value: CABIN_NAMES[locale][inquiry.cabin] }]),
     {
       label: labels.travelers,
       value: copy.party(inquiry.adults, inquiry.children, inquiry.infants)
@@ -262,10 +330,12 @@ function requestRows(inquiry: InquiryRecord, locale: Locale): Row[] {
   ];
   if (names.length > 0)
     rows.push({ label: labels.passengers, value: names.join("; "), lines: names });
-  // The itinerary the customer was looking at when they sent this, so the reply
-  // starts from the same flight rather than a fresh search.
-  if (inquiry.selectedOffer)
+  // A flight that decodes gets a panel of its own above this table. One that
+  // does not — a request taken before flights were written down this way, or a
+  // value that will not parse — is printed here as it stands rather than dropped.
+  if (!selected && inquiry.selectedOffer) {
     rows.push({ label: labels.selectedOffer, value: inquiry.selectedOffer });
+  }
   rows.push({ label: labels.visa, value: inquiry.visaInterest ? copy.visaYes : copy.visaNo });
   // Left out when empty: a row saying "none" is a line the customer has to read
   // to learn nothing.
@@ -283,6 +353,7 @@ const BRAND = "#1f3a93";
 const LINE = "#e4e9f1";
 const PAPER = "#ffffff";
 const IVORY = "#f6f8fb";
+const TINT = "#e8edfa";
 const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
 
 /*
@@ -291,9 +362,80 @@ const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, 
  * supports flexbox. Everything below is the 1998 subset that renders the same
  * in all of them, which is also why the layout is one column of full-width rows.
  */
-function renderHtml(inquiry: InquiryRecord, locale: Locale, hasLockup: boolean): string {
+/*
+ * The chosen flight as its own card, because the label-and-value table the rest
+ * of the request lives in cannot hold it: a direction is four facts and a logo,
+ * and four of those stacked in one cell is the wall of text this replaced. Each
+ * direction gets its own band with a rule between them, and the price sits in a
+ * footer of its own so the eye finds it without reading the flight again.
+ */
+function renderOfferPanel(
+  block: OfferSummaryBlock,
+  title: string,
+  marks: Map<string, AirlineMark>
+): string {
+  const column = Math.max(0, ...[...marks.values()].map((mark) => mark.width));
+
+  const bands = block.slices
+    .map((slice, index) => {
+      const logos = slice.carriers
+        .map((code) => marks.get(code))
+        .filter((mark): mark is AirlineMark => mark !== undefined)
+        .map(
+          (mark) =>
+            `<img alt="" src="cid:${mark.cid}" width="${mark.width}" height="${EMAIL_AIRLINE_MARK.height}" style="display:block;border:0;margin-bottom:6px;width:${mark.width}px;height:${EMAIL_AIRLINE_MARK.height}px;" />`
+        )
+        .join("");
+      // The logo column is only spent when there is something to put in it, and
+      // it is as wide as the widest mark in this particular email so a row of
+      // them lines up against one left edge.
+      const logoCell =
+        column === 0
+          ? ""
+          : `<td width="${column}" style="width:${column}px;padding-right:14px;vertical-align:top;">${logos}</td>`;
+      return `<tr><td style="padding:16px 18px;${index === 0 ? "" : `border-top:1px solid ${LINE};`}">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;font-family:${FONT};">
+          <tr>${logoCell}<td style="vertical-align:top;">
+            <p style="margin:0 0 2px;font-size:11px;line-height:16px;color:${INK_SOFT};"><span style="font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(slice.label)}</span> · ${escapeHtml(slice.date)}</p>
+            <p style="margin:0;color:${INK};font-size:17px;line-height:24px;font-weight:700;">${escapeHtml(slice.times)}</p>
+            <p style="margin:3px 0 0;color:${INK_SOFT};font-size:13px;line-height:19px;">${escapeHtml(slice.detail)}</p>
+          </td></tr>
+        </table>
+      </td></tr>`;
+    })
+    .join("");
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:${PAPER};border:1px solid ${LINE};">
+    <tr><td style="padding:12px 18px;background:${IVORY};border-bottom:1px solid ${LINE};">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;font-family:${FONT};">
+        <tr>
+          <td style="color:${BRAND};font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(title)}</td>
+          <td align="right"><span style="display:inline-block;padding:3px 10px;background:${TINT};border-radius:11px;color:${BRAND};font-size:11px;font-weight:700;">${escapeHtml(block.cabin)}</span></td>
+        </tr>
+      </table>
+    </td></tr>
+    ${bands}
+    <tr><td style="padding:14px 18px;background:${IVORY};border-top:1px solid ${LINE};">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;font-family:${FONT};">
+        <tr>
+          <td style="color:${INK_SOFT};font-size:13px;">${escapeHtml(block.totalLabel)}</td>
+          <td align="right" style="color:${INK};font-size:20px;font-weight:700;">${escapeHtml(block.total)}</td>
+        </tr>
+      </table>
+      <p style="margin:4px 0 0;font-family:${FONT};color:${INK_SOFT};font-size:11px;line-height:16px;">${escapeHtml(block.includes)}</p>
+    </td></tr>
+  </table>`;
+}
+
+function renderHtml(
+  inquiry: InquiryRecord,
+  locale: Locale,
+  hasLockup: boolean,
+  selected: StoredOffer | null,
+  marks: Map<string, AirlineMark>
+): string {
   const copy = COPY[locale];
-  const rows = requestRows(inquiry, locale)
+  const rows = requestRows(inquiry, locale, selected)
     .map((row) => {
       const value = row.lines
         ? row.lines.map((line) => escapeHtml(line)).join("<br />")
@@ -304,6 +446,16 @@ function renderHtml(inquiry: InquiryRecord, locale: Locale, hasLockup: boolean):
       </tr>`;
     })
     .join("");
+
+  // Above the request details rather than inside them: the flight is the thing
+  // the customer chose, and the rest of the table is what they typed.
+  const offerPanel = selected
+    ? `<tr><td style="padding:32px 40px 0;">${renderOfferPanel(
+        offerSummaryBlock(selected, locale, CABIN_NAMES[locale][selected.cabin]),
+        copy.labels.selectedOffer,
+        marks
+      )}</td></tr>`
+    : "";
 
   const signatureMark = hasLockup
     ? `<tr><td style="padding-top:16px;"><img alt="${escapeHtml(COMPANY.name)}" src="cid:${LOCKUP_CID}" width="${EMAIL_LOCKUP.width}" height="${EMAIL_LOCKUP.height}" style="display:block;border:0;width:${EMAIL_LOCKUP.width}px;height:${EMAIL_LOCKUP.height}px;" /></td></tr>`
@@ -319,6 +471,7 @@ function renderHtml(inquiry: InquiryRecord, locale: Locale, hasLockup: boolean):
         <p style="margin:0 0 16px;font-size:17px;font-weight:700;">${escapeHtml(copy.greeting(inquiry.givenName))}</p>
         <p style="margin:0;">${escapeHtml(copy.intro)}</p>
       </td></tr>
+      ${offerPanel}
       <tr><td style="padding:32px 40px 0;font-family:${FONT};">
         <p style="margin:0 0 4px;color:${BRAND};font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(copy.detailsTitle)}</p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;font-family:${FONT};">${rows}</table>
@@ -346,16 +499,28 @@ function renderHtml(inquiry: InquiryRecord, locale: Locale, hasLockup: boolean):
 </body></html>`;
 }
 
-function renderText(inquiry: InquiryRecord, locale: Locale): string {
+function renderText(inquiry: InquiryRecord, locale: Locale, selected: StoredOffer | null): string {
   const copy = COPY[locale];
-  const rows = requestRows(inquiry, locale).map((row) =>
+  const rows = requestRows(inquiry, locale, selected).map((row) =>
     row.lines ? `${row.label}:\n  ${row.lines.join("\n  ")}` : `${row.label}: ${row.value}`
   );
+  // The panel has no plain-text form, so the flight goes back to being lines —
+  // in the same place and the same order the card and the panel put it.
+  const flight = selected
+    ? [
+        copy.labels.selectedOffer.toUpperCase(),
+        ...offerSummaryLines(selected, locale, CABIN_NAMES[locale][selected.cabin]).map(
+          (line) => `  ${line}`
+        ),
+        ""
+      ]
+    : [];
   return [
     copy.greeting(inquiry.givenName),
     "",
     copy.intro,
     "",
+    ...flight,
     `${copy.detailsTitle.toUpperCase()}`,
     ...rows,
     "",
@@ -381,6 +546,15 @@ export function composeInquiryWelcome(inquiry: InquiryRecord, agencyCopy: string
   const locale: Locale = inquiry.preferredLocale === "vi" ? "vi" : "en";
   const route = `${inquiry.origin} → ${DESTINATION_NAMES[locale][inquiry.destination]}`;
   const lockup = lockupAttachment();
+  // The flight the customer was looking at when they sent this, described the
+  // way the checkout card described it back to them, so nothing they read on
+  // the screen has to be taken on trust in the email.
+  const selected = inquiry.selectedOffer ? parseOfferSummary(inquiry.selectedOffer) : null;
+  const marks = airlineMarks(selected);
+  const attachments = [
+    ...(lockup === null ? [] : [lockup]),
+    ...[...marks.values()].map((mark) => mark.attachment)
+  ];
 
   return {
     to: assertHeaderSafe(inquiry.email, "to"),
@@ -389,8 +563,8 @@ export function composeInquiryWelcome(inquiry: InquiryRecord, agencyCopy: string
     // The customer's own name is not in the subject: it is their inbox, and the
     // agency finds the copy by reference, which is what the board is keyed on.
     subject: assertHeaderSafe(COPY[locale].subject(inquiry.reference, route), "subject"),
-    text: renderText(inquiry, locale),
-    html: renderHtml(inquiry, locale, lockup !== null),
-    ...(lockup === null ? {} : { attachments: [lockup] })
+    text: renderText(inquiry, locale, selected),
+    html: renderHtml(inquiry, locale, lockup !== null, selected, marks),
+    ...(attachments.length === 0 ? {} : { attachments })
   };
 }

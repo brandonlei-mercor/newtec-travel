@@ -84,3 +84,12 @@ export const EMAIL_LOCKUP = {
   width: Math.ceil(planeWidth + GAP + wordmarkWidth + GAP + vietnamWidth),
   height: MARK_HEIGHT
 };
+
+/*
+ * The airlines' own marks beside the flight in that email, on the same terms:
+ * drawn from the SVGs the site uses, at one shared height so a row of them sits
+ * on a line, and at three times that so they stay sharp on the 2x images Gmail
+ * serves. Each mark's width is its own — an airline's logo is whatever shape it
+ * is — so the email reads it back from the PNG rather than assuming one here.
+ */
+export const EMAIL_AIRLINE_MARK = { height: 20, scale: 3 };

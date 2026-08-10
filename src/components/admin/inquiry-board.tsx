@@ -9,6 +9,7 @@ import {
   type InquiryStatus,
   type PassengerType
 } from "@/shared/contracts/inquiry";
+import { offerSummaryLines, parseOfferSummary } from "@/shared/offer-summary";
 
 export type AdminInquiry = {
   id: string;
@@ -334,7 +335,11 @@ function InquiryCard({
         <Detail label="Language">
           {inquiry.preferredLocale === "vi" ? "Vietnamese" : "English"}
         </Detail>
-        {inquiry.selectedOffer ? <Detail label="Flight">{inquiry.selectedOffer}</Detail> : null}
+        {inquiry.selectedOffer ? (
+          <Detail label="Flight">
+            <FlightLines stored={inquiry.selectedOffer} />
+          </Detail>
+        ) : null}
         {inquiry.visaInterest ? <Detail label="Visa">Asked about visa help</Detail> : null}
         {inquiry.specialAssistance ? (
           <Detail label="Assistance">{inquiry.specialAssistance}</Detail>
@@ -363,6 +368,27 @@ function InquiryCard({
         </select>
       </label>
     </li>
+  );
+}
+
+/**
+ * The flight the customer picked, in the same lines the email shows them.
+ *
+ * The board is read in English whoever the customer is, so the labels are the
+ * English ones even on a Vietnamese request. A record that will not decode is
+ * shown exactly as stored: an old request still says what it always said.
+ */
+function FlightLines({ stored }: { stored: string }) {
+  const offer = parseOfferSummary(stored);
+  if (!offer) return <>{stored}</>;
+  return (
+    <>
+      {offerSummaryLines(offer, "en", offer.cabin).map((line) => (
+        <span className="block" key={line}>
+          {line}
+        </span>
+      ))}
+    </>
   );
 }
 

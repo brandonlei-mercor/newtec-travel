@@ -100,14 +100,17 @@ export const inquiryInputSchema = z
       preferredLanguage: z.enum(["en", "vi"])
     }),
     /*
-     * The flight the customer checked out with, as one line the agency reads in
-     * the notification email. Control characters are stripped rather than
-     * rejected: this is machine-written text, and a stray one must not lose a
-     * lead. Optional so a request taken by hand is still a valid inquiry.
+     * The flight the customer checked out with, written by the page as the
+     * encoded record the email and the board read back. Kept as an unexamined
+     * bounded string here on purpose: control characters are stripped rather
+     * than rejected because this is machine-written text and a stray one must
+     * not lose a lead, and a value that does not decode is shown as it stands
+     * rather than turning a real request away. Optional, so a request taken by
+     * hand is still a valid inquiry.
      */
     selectedOffer: z
       .string()
-      .max(400)
+      .max(1_200)
       .transform((value) =>
         value
           .replace(/[\u0000-\u001F\u007F]/g, " ")

@@ -43,7 +43,38 @@ const inquiry: InquiryWithPassengers = {
   phone: "(415) 555-0142",
   preferredContactMethod: "PHONE",
   preferredLocale: "vi",
-  selectedOffer: "SFO-SGN round trip, flights VN99/VN98, depart 2026-08-01 23:55, ref off_1",
+  selectedOffer: JSON.stringify({
+    v: 1,
+    cabin: "ECONOMY",
+    totalMinor: 214_000,
+    currency: "USD",
+    slices: [
+      {
+        date: "2026-08-01",
+        from: "SFO",
+        to: "SGN",
+        dep: "23:55",
+        arr: "09:55",
+        plus: 1,
+        minutes: 1_135,
+        via: ["TPE"],
+        airlines: ["EVA Air"],
+        carriers: ["BR"]
+      },
+      {
+        date: "2026-08-20",
+        from: "SGN",
+        to: "SFO",
+        dep: "12:50",
+        arr: "16:10",
+        plus: 0,
+        minutes: 1_040,
+        via: ["TPE"],
+        airlines: ["EVA Air"],
+        carriers: ["BR"]
+      }
+    ]
+  }),
   specialAssistance: null,
   customerNotes: "Prefers a morning departure",
   visaInterest: true,
@@ -84,11 +115,47 @@ describe("customer welcome email", () => {
     expect(message.text).toContain("Round trip");
     expect(message.text).toContain("August 1, 2026 – August 20, 2026");
     expect(message.text).toContain("flexible by 1 day");
-    expect(message.text).toContain("Economy");
     expect(message.text).toContain("2 adults, 1 child");
-    expect(message.text).toContain("flights VN99/VN98");
     expect(message.text).toContain("Prefers a morning departure");
     expect(message.text).toContain("(415) 555-0142");
+  });
+
+  /*
+   * The flight has to arrive in the mail as the checkout card described it: the
+   * customer decided on those times and that airline, and a summary that leaves
+   * either out is a summary they have to take on trust.
+   */
+  it("describes the picked flight the way the checkout card did", () => {
+    const message = composeInquiryWelcome({ ...inquiry, preferredLocale: "en" }, AGENCY);
+    expect(message.text).toContain("Depart Aug 1, 2026 — 23:55 SFO → 09:55+1 SGN");
+    expect(message.text).toContain("EVA Air · 18h 55m · 1 stop via TPE");
+    expect(message.text).toContain("Return Aug 20, 2026 — 12:50 SGN → 16:10 SFO");
+    expect(message.text).toContain("$2,140.00 total (including the flights");
+    // The cabin opens that block, so it does not also get a row of its own.
+    expect(message.text).toContain("Economy");
+    expect(message.text).not.toContain("Cabin:");
+  });
+
+  it("keeps the cabin as its own row when no flight was picked", () => {
+    const message = composeInquiryWelcome(
+      { ...inquiry, preferredLocale: "en", selectedOffer: null },
+      AGENCY
+    );
+    expect(message.text).toContain("Cabin: Economy");
+  });
+
+  /*
+   * Requests taken before flights were written down as a record still have a
+   * line of prose in that column, and it must still reach the agency.
+   */
+  it("prints a flight it cannot decode exactly as it was stored", () => {
+    const legacy = "SFO-SGN round trip, flights VN99/VN98, ref off_1";
+    const message = composeInquiryWelcome(
+      { ...inquiry, preferredLocale: "en", selectedOffer: legacy },
+      AGENCY
+    );
+    expect(message.text).toContain(legacy);
+    expect(message.text).toContain("Cabin: Economy");
   });
 
   /*
@@ -146,6 +213,33 @@ describe("customer welcome email", () => {
     expect(logo?.content.length).toBeGreaterThan(0);
     expect(message.html).toContain(`cid:${logo?.cid}`);
     expect(message.html).not.toContain("http://");
+  });
+
+  /*
+   * The airline's mark travels with the mail for the same reason the lockup
+   * does. It is also the one place a customer-supplied value chooses a file, so
+   * a code that is not a code has to end in no logo rather than in a read.
+   */
+  it("attaches the airline mark by cid rather than fetching it", () => {
+    const message = composeInquiryWelcome(inquiry, AGENCY);
+    const mark = (message.attachments ?? []).find((attachment) => attachment.cid === "airline-BR");
+    expect(mark?.contentType).toBe("image/png");
+    expect(mark?.content.length).toBeGreaterThan(0);
+    expect(message.html).toContain('src="cid:airline-BR"');
+    expect(message.html).not.toContain("https://");
+  });
+
+  it("sends a flight whose carrier has no mark without one", () => {
+    const withoutMark = JSON.stringify({
+      ...JSON.parse(inquiry.selectedOffer!),
+      slices: JSON.parse(inquiry.selectedOffer!).slices.map((slice: { via: string[] }) => ({
+        ...slice,
+        carriers: []
+      }))
+    });
+    const message = composeInquiryWelcome({ ...inquiry, selectedOffer: withoutMark }, AGENCY);
+    expect(message.html).not.toContain("cid:airline-");
+    expect(message.text).toContain("EVA Air");
   });
 
   it("escapes customer text in the HTML body", () => {

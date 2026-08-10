@@ -6,12 +6,11 @@ import { redirect } from "@/i18n/navigation";
 import { findSelectedOffer } from "@/modules/search/service";
 import { getDatabase } from "@/server/db";
 import { createFlightSearchProvider } from "@/server/integrations";
-import { customerTotalMinor, formatMoney } from "@/shared/pricing";
+import { encodeOfferSummary } from "@/shared/offer-summary";
 import {
   SEARCH_CABINS,
   SEARCH_DESTINATIONS,
   SEARCH_ORIGINS,
-  type FlightOffer,
   type SearchCabin,
   type SearchDestination,
   type SearchOrigin,
@@ -75,31 +74,6 @@ function parseSelection(searchParams: SearchParams) {
   };
 }
 
-/** The line the agency reads in the notification email. Written here, not by the browser. */
-function summarize(
-  offer: FlightOffer,
-  query: { origin: string; destination: string; tripType: SearchTripType }
-) {
-  const flights = [...offer.outbound.segments, ...(offer.inbound?.segments ?? [])]
-    .map((segment) => segment.flightNumber)
-    .join("/");
-  const depart = offer.outbound.segments[0]?.departureLocal.slice(0, 16).replace("T", " ") ?? "";
-  const back = offer.inbound?.segments[0]?.departureLocal.slice(0, 16).replace("T", " ");
-  return [
-    `${query.origin}-${query.destination} ${query.tripType === "ONE_WAY" ? "one way" : "round trip"}`,
-    `flights ${flights}`,
-    `depart ${depart}`,
-    back ? `return ${back}` : "no return",
-    /*
-     * The quoted total first, because it is the number the customer was shown
-     * and the one to repeat on the phone. The airline total follows so whoever
-     * calls back can still see what the seats themselves cost.
-     */
-    `${formatMoney(customerTotalMinor(offer.priceTotalMinor), offer.currency)} quoted total (airline ${formatMoney(offer.priceTotalMinor, offer.currency)} + service)`,
-    `ref ${offer.offerRef}`
-  ].join(", ");
-}
-
 export default async function RequestPage({
   params,
   searchParams
@@ -146,7 +120,7 @@ export default async function RequestPage({
     children: selected.query.children,
     infants: selected.query.infants,
     cabin: selected.query.cabin,
-    summary: summarize(offer, selected.query),
+    summary: encodeOfferSummary(offer, selected.query.cabin),
     searchQuery: new URLSearchParams({
       origin: selected.query.origin,
       destination: selected.query.destination,

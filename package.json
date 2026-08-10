@@ -25,6 +25,7 @@
     "db:reset": "tsx scripts/reset-db.ts",
     "db:studio": "drizzle-kit studio",
     "brand:lockup": "tsx scripts/render-brand-lockup.ts",
+    "brand:airlines": "tsx scripts/render-airline-marks.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",

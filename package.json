@@ -7,7 +7,7 @@
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "concurrently -k -n web,worker -c cyan,magenta \"next dev\" \"tsx watch src/worker.ts\"",
+    "dev": "next dev",
     "dev:web": "next dev",
     "dev:worker": "tsx watch src/worker.ts",
     "build": "next build",
@@ -64,7 +64,6 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitest/coverage-v8": "4.1.10",
-    "concurrently": "10.0.3",
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.2",
     "eslint-config-next": "16.2.10",

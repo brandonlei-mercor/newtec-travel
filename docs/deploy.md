@@ -1,17 +1,27 @@
 # Deploying to Render
 
-The site runs on Render as two services against one Postgres database:
+The site runs on Render as one service against one Postgres database:
 
-| Resource          | Type              | What it does                           | Needed at launch   |
-| ----------------- | ----------------- | -------------------------------------- | ------------------ |
-| `newtec-web`      | Web service       | The site, `/admin`, and the API routes | Yes                |
-| `newtec-postgres` | Postgres 18       | Inquiries and the notification outbox  | Yes                |
-| `newtec-worker`   | Background worker | Drains the outbox and sends the email  | Only with email on |
+| Resource          | Type        | What it does                                       |
+| ----------------- | ----------- | -------------------------------------------------- |
+| `newtec-web`      | Web service | The site, `/admin`, the API routes, and the outbox |
+| `newtec-postgres` | Postgres 18 | Inquiries and the notification outbox              |
 
-The worker is optional because `INQUIRY_EMAIL_ENABLED` defaults to off. With it off, a
-request still writes its inquiry row and its outbox row, and the agency reads new
-requests at `/admin`. Turning email on later delivers nothing that was missed, because
-the outbox rows were written all along.
+There is no separate worker. `src/instrumentation.ts` starts graphile-worker inside the
+web server, so the process that enqueues a job is the process that runs it. A background
+worker of its own costs a full instance a month to sit idle between leads, and the work
+it does — one email, about a second — does not need one. `src/worker.ts` still runs
+standalone if sending ever has to move back out; that would be a new service pointed at
+`pnpm worker`, not a rewrite.
+
+Email is off until `INQUIRY_EMAIL_ENABLED` says otherwise. With it off, a request still
+writes its inquiry row and its outbox row, and the agency reads new requests at `/admin`.
+Turning email on later delivers nothing that was missed, because the outbox rows were
+written all along.
+
+Queue startup is deliberately fail-soft: if the queue cannot start, the hook logs it and
+the site keeps serving. A request that cannot be emailed is still a request captured,
+while a site that will not boot captures nothing.
 
 Migrations run as the web service's pre-deploy command, which Render runs once per deploy,
 in this same image with these same variables, before any traffic reaches the new instance.
@@ -24,37 +34,32 @@ more reason the free tier does not fit here.
 
 Render builds from the repo's `Dockerfile` rather than its own Node buildpack, because
 `package.json` pins pnpm 10.33.0 and an install with a different pnpm fails on the
-lockfile. Development dependencies stay in the image: `tsx` runs both the worker and the
-migration script.
+lockfile. Development dependencies stay in the image: `tsx` runs the migration script and
+the standalone worker entrypoint.
 
 ## Environment variables
 
-Set values, never names, through the Render dashboard for the three marked secret. The
-rest are safe on a command line.
+All of them go on `newtec-web`. Set values, never names, through the Render dashboard for
+the four marked secret; the rest are safe on a command line.
 
-| Variable                     | Web | Worker | Value                                                  |
-| ---------------------------- | :-: | :----: | ------------------------------------------------------ |
-| `APP_ENV`                    |  ✓  |   ✓    | `production`                                           |
-| `APP_URL`                    |  ✓  |   ✓    | The site's `https://` URL, on both                     |
-| `DATABASE_URL`               |  ✓  |   ✓    | The database's **internal** connection string (secret) |
-| `DUFFEL_ACCESS_TOKEN`        |  ✓  |   ✓    | A live token; `duffel_test_…` is refused (secret)      |
-| `ADMIN_PASSWORD`             |  ✓  |   ✓    | 16+ random characters (secret)                         |
-| `INQUIRY_NOTIFICATION_EMAIL` |  ✓  |   ✓    | `newtectravelagency@gmail.com`                         |
-| `INQUIRY_EMAIL_ENABLED`      |  ✓  |   ✓    | `true` once a relay is configured                      |
-| `SMTP_HOST` / `SMTP_PORT`    |  ✓  |   ✓    | `smtp.resend.com` / `465`                              |
-| `SMTP_SECURE`                |  ✓  |   ✓    | `true` on port 465                                     |
-| `SMTP_USER`                  |  ✓  |   ✓    | `resend`, literally                                    |
-| `SMTP_PASSWORD`              |  ✓  |   ✓    | A Resend API key, `re_…` (secret)                      |
-| `SMTP_FROM`                  |  ✓  |   ✓    | `NEWTEC TRAVEL AND TOURS <hanh@newtectravel.com>`      |
+| Variable                     | Value                                                  |
+| ---------------------------- | ------------------------------------------------------ |
+| `APP_ENV`                    | `production`                                           |
+| `APP_URL`                    | The site's own `https://` URL                          |
+| `DATABASE_URL`               | The database's **internal** connection string (secret) |
+| `DUFFEL_ACCESS_TOKEN`        | A live token; `duffel_test_…` is refused (secret)      |
+| `ADMIN_PASSWORD`             | 16+ random characters (secret)                         |
+| `INQUIRY_NOTIFICATION_EMAIL` | `newtectravelagency@gmail.com`                         |
+| `INQUIRY_EMAIL_ENABLED`      | `true` once a relay is configured                      |
+| `SMTP_HOST` / `SMTP_PORT`    | `smtp.resend.com` / `465`                              |
+| `SMTP_SECURE`                | `true` on port 465                                     |
+| `SMTP_USER`                  | `resend`, literally                                    |
+| `SMTP_PASSWORD`              | A Resend API key, `re_…` (secret)                      |
+| `SMTP_FROM`                  | `NEWTEC TRAVEL AND TOURS <hanh@newtectravel.com>`      |
 
-Both columns are ticked for every row because both processes parse the same schema.
-`src/shared/env.ts` demands a Duffel token under any non-test `APP_ENV`, so a worker
-without one crash-loops on a variable it never reads. The mail settings are on the web
-service for the same reason turned around: the web process is the one that decides a
-request enqueues a job at all, and the guard refuses to boot with that flag on and no
-relay behind it — the flag and the relay travel together, on purpose. `APP_URL` on the
-worker is the site's URL rather than one of its own, since a background worker has no
-address.
+The mail settings and `INQUIRY_EMAIL_ENABLED` are inseparable: `src/shared/env.ts` refuses
+to boot with the flag on and no relay behind it, precisely so that "we are queueing emails"
+and "we can actually send them" can never drift apart.
 
 `APP_URL` is load-bearing twice over: it is one of the two origins the mutation guard
 accepts, and the `/admin` session cookie is marked `Secure` only when it begins `https://`.
@@ -131,34 +136,17 @@ anything else claiming to be gmail.com. `src/shared/env.ts` refuses to boot on a
 sender rather than let the failure arrive one unanswered lead at a time. `SMTP_USER` is
 the literal string `resend`; the password is the API key.
 
-With the relay configured (see the SMTP variables above), create the worker from the same
-repo and image:
+With the relay configured, set the SMTP variables above on `newtec-web` and redeploy.
+Nothing else is needed — the queue starts with the server. The log line that proves it is
+graphile-worker's, printed just after Next reports ready:
 
-```bash
-render services create \
-  --name newtec-worker \
-  --type background_worker \
-  --runtime docker \
-  --repo https://github.com/brandonlei-mercor/newtec-travel \
-  --branch main \
-  --region oregon \
-  --plan starter \
-  --num-instances 1 \
-  --start-command "pnpm worker" \
-  --env-var APP_ENV=production \
-  --env-var INQUIRY_EMAIL_ENABLED=true \
-  --output json
+```
+[core] INFO: Worker connected and looking for jobs... (task names: 'notify_inquiry')
 ```
 
-`--start-command` is silently dropped on the Docker runtime, so the worker's first boot
-runs the image's own `CMD` — `pnpm start`, a second copy of the website. Set **Docker
-Command** to `pnpm worker` in the service's settings afterwards and redeploy, then read
-the logs to confirm: a worker that is working prints graphile-worker's startup, not
-Next.js's.
-
-Then add the rest of the variables from the table above and redeploy. Copy the secrets
-from `newtec-web` rather than retyping them; the two services must point at the same
-database.
+Its absence is the thing to watch for. Queue startup is caught and logged rather than
+thrown, so a site that boots cleanly and never prints that line is a site quietly taking
+requests and telling nobody.
 
 A send that fails is recorded on the notification row with its SMTP error and retried
 eight times with backoff, so `/admin` shows both that a request arrived and whether
@@ -169,13 +157,25 @@ anyone was told.
 Free Postgres is deleted 30 days after creation, and a free web service spins down after
 15 minutes of inactivity, so the first visitor after a quiet spell waits about a minute
 for a cold start. Leads are the product here, which rules out a database that expires.
-Starter web plus Basic Postgres is roughly $13 a month, plus another $7 when the worker
-starts running.
+
+| Line item                      | Monthly |
+| ------------------------------ | ------- |
+| `newtec-web`, Starter, 1 copy  | $7.00   |
+| `newtec-postgres`, Basic-256mb | $6.00   |
+| its disk, 1 GB at $0.30 per GB | $0.30   |
+| **Total**                      | $13.30  |
+
+Storage is the line to think about before creating a database, not after: Render sells it
+in 1 GB or multiples of 5, and it can only ever be increased. Autoscaling is on, so a
+surge grows the disk instead of filling it. What grows with traffic is
+`flight_offer_caches`, and it self-prunes on every search, so it holds about a day of
+results rather than a history.
 
 ## Notes
 
 - Local Postgres is 16 (`compose.yaml`) and Render's is 18. The migrations are plain SQL
   and portable, but it is a version gap worth knowing about when reproducing a bug.
-- The repo's `crontab` file is inert: the worker calls graphile-worker's `run` without a
-  `crontab` or `crontabFile` option, and graphile-worker only loads cron items when one of
-  those is passed. Nothing in it is scheduled.
+- There is no `crontab` file, and `startWorker` passes `parsedCronItems: []` to keep it
+  that way. Given neither, graphile-worker reads whatever `crontab` sits in the working
+  directory and schedules it. One left behind from another project was enough to stop the
+  queue starting inside Next, which failed as a JSON5 parse error nowhere near the cause.

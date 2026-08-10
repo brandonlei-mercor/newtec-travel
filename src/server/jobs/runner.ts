@@ -7,6 +7,10 @@ import { createTaskList } from "./task-list";
  * Nothing runs on a schedule any more. Every job is enqueued by something a
  * person did — today that is only the email announcing a new request — so the
  * worker sits idle until there is work rather than waking up to sweep caches.
+ *
+ * Said out loud with parsedCronItems, because left unsaid graphile-worker goes
+ * looking for a crontab in the working directory and schedules whatever it
+ * finds. A file this repo no longer uses was enough to stop the queue starting.
  */
 export async function startWorker(handlers: JobHandlers): Promise<Runner> {
   return run({
@@ -14,6 +18,7 @@ export async function startWorker(handlers: JobHandlers): Promise<Runner> {
     concurrency: 4,
     pollInterval: 1_000,
     noHandleSignals: true,
+    parsedCronItems: [],
     taskList: createTaskList(handlers)
   });
 }

@@ -35,17 +35,26 @@ rest are safe on a command line.
 | Variable                     | Web | Worker | Value                                                  |
 | ---------------------------- | :-: | :----: | ------------------------------------------------------ |
 | `APP_ENV`                    |  ✓  |   ✓    | `production`                                           |
-| `APP_URL`                    |  ✓  |   ✓    | The service's own `https://` URL                       |
+| `APP_URL`                    |  ✓  |   ✓    | The site's `https://` URL, on both                     |
 | `DATABASE_URL`               |  ✓  |   ✓    | The database's **internal** connection string (secret) |
-| `DUFFEL_ACCESS_TOKEN`        |  ✓  |        | A live token; `duffel_test_…` is refused (secret)      |
+| `DUFFEL_ACCESS_TOKEN`        |  ✓  |   ✓    | A live token; `duffel_test_…` is refused (secret)      |
 | `ADMIN_PASSWORD`             |  ✓  |   ✓    | 16+ random characters (secret)                         |
-| `INQUIRY_NOTIFICATION_EMAIL` |     |   ✓    | `newtectravelagency@gmail.com`                         |
-| `INQUIRY_EMAIL_ENABLED`      |     |   ✓    | `true` once a relay is configured                      |
-| `SMTP_HOST` / `SMTP_PORT`    |     |   ✓    | `smtp.resend.com` / `465`                              |
-| `SMTP_SECURE`                |     |   ✓    | `true` on port 465                                     |
-| `SMTP_USER`                  |     |   ✓    | `resend`, literally                                    |
-| `SMTP_PASSWORD`              |     |   ✓    | A Resend API key, `re_…` (secret)                      |
-| `SMTP_FROM`                  |     |   ✓    | `NEWTEC TRAVEL AND TOURS <hanh@newtectravel.com>`      |
+| `INQUIRY_NOTIFICATION_EMAIL` |  ✓  |   ✓    | `newtectravelagency@gmail.com`                         |
+| `INQUIRY_EMAIL_ENABLED`      |  ✓  |   ✓    | `true` once a relay is configured                      |
+| `SMTP_HOST` / `SMTP_PORT`    |  ✓  |   ✓    | `smtp.resend.com` / `465`                              |
+| `SMTP_SECURE`                |  ✓  |   ✓    | `true` on port 465                                     |
+| `SMTP_USER`                  |  ✓  |   ✓    | `resend`, literally                                    |
+| `SMTP_PASSWORD`              |  ✓  |   ✓    | A Resend API key, `re_…` (secret)                      |
+| `SMTP_FROM`                  |  ✓  |   ✓    | `NEWTEC TRAVEL AND TOURS <hanh@newtectravel.com>`      |
+
+Both columns are ticked for every row because both processes parse the same schema.
+`src/shared/env.ts` demands a Duffel token under any non-test `APP_ENV`, so a worker
+without one crash-loops on a variable it never reads. The mail settings are on the web
+service for the same reason turned around: the web process is the one that decides a
+request enqueues a job at all, and the guard refuses to boot with that flag on and no
+relay behind it — the flag and the relay travel together, on purpose. `APP_URL` on the
+worker is the site's URL rather than one of its own, since a background worker has no
+address.
 
 `APP_URL` is load-bearing twice over: it is one of the two origins the mutation guard
 accepts, and the `/admin` session cookie is marked `Secure` only when it begins `https://`.
@@ -140,6 +149,16 @@ render services create \
   --env-var INQUIRY_EMAIL_ENABLED=true \
   --output json
 ```
+
+`--start-command` is silently dropped on the Docker runtime, so the worker's first boot
+runs the image's own `CMD` — `pnpm start`, a second copy of the website. Set **Docker
+Command** to `pnpm worker` in the service's settings afterwards and redeploy, then read
+the logs to confirm: a worker that is working prints graphile-worker's startup, not
+Next.js's.
+
+Then add the rest of the variables from the table above and redeploy. Copy the secrets
+from `newtec-web` rather than retyping them; the two services must point at the same
+database.
 
 A send that fails is recorded on the notification row with its SMTP error and retried
 eight times with backoff, so `/admin` shows both that a request arrived and whether

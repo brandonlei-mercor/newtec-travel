@@ -79,7 +79,7 @@ render login
 render workspace set
 
 render postgres create --name newtec-postgres --version 18 --region oregon \
-  --plan basic_256mb --confirm --output json
+  --plan basic_256mb --disk-size-gb 1 --disk-autoscaling --confirm --output json
 
 render services create \
   --name newtec-web \
@@ -166,10 +166,11 @@ for a cold start. Leads are the product here, which rules out a database that ex
 | **Total**                      | $13.30  |
 
 Storage is the line to think about before creating a database, not after: Render sells it
-in 1 GB or multiples of 5, and it can only ever be increased. Autoscaling is on, so a
-surge grows the disk instead of filling it. What grows with traffic is
-`flight_offer_caches`, and it self-prunes on every search, so it holds about a day of
-results rather than a history.
+in 1 GB or multiples of 5, and it can only ever be increased. Both flags above matter for
+that reason — omit `--disk-size-gb` and the server picks for you, and the only way back
+down is a new database and a new connection string. Autoscaling is on, so a surge grows
+the disk instead of filling it. What grows with traffic is `flight_offer_caches`, and it
+self-prunes on every search, so it holds about a day of results rather than a history.
 
 ## Notes
 

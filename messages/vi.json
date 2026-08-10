@@ -166,8 +166,8 @@
     },
     "destinationLabel": "Điểm đến",
     "adults": "Người lớn",
-    "children": "Trẻ em",
-    "infants": "Em bé (ngồi cùng)",
+    "children": "Trẻ em (dưới 12 tuổi)",
+    "infants": "Em bé ngồi cùng (dưới 2 tuổi)",
     "cabinLabel": "Hạng ghế",
     "cabins": {
       "ECONOMY": "Phổ thông",

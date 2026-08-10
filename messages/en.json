@@ -166,8 +166,8 @@
     },
     "destinationLabel": "Destination",
     "adults": "Adults",
-    "children": "Children",
-    "infants": "Lap infants",
+    "children": "Children (under 12)",
+    "infants": "Lap infants (under 2)",
     "cabinLabel": "Cabin",
     "cabins": {
       "ECONOMY": "Economy",

@@ -69,7 +69,7 @@
       "description": "Anh chị cho tôi tên từng hành khách đúng như trên hộ chiếu.",
       "optionalNote": "Phần này không bắt buộc để gửi yêu cầu. Anh chị cứ để trống, tôi sẽ hỏi khi mình nói chuyện — có tên sớm chừng nào thì tôi giữ được giá sớm chừng đó.",
       "holdTitle": "Vì sao tôi cần thông tin này",
-      "holdBody": "Giá vé thay đổi liên tục. Khi nhận được yêu cầu của anh chị, tôi đi tìm mức giá thấp nhất có thể và dùng tên theo hộ chiếu để giữ ngay mức giá đó. Nếu anh chị quyết định mua, anh chị được đúng giá đó. Nếu anh chị không mua, mức giá đó tự hủy — không thu khoản nào và anh chị không nợ gì cả. Chỉ có một điều cần kiểm tra kỹ: tên phải trùng khớp với hộ chiếu. Vé xuất sai tên phải xuất lại, và cái đó tốn tiền.",
+      "holdBody": "Khi nhận được yêu cầu, tôi dùng tên theo hộ chiếu để giữ mức giá thấp nhất tôi tìm được. Anh chị mua thì được đúng giá đó. Không mua thì nó tự hủy, không thu khoản nào. Chỉ cần tên trùng khớp với hộ chiếu — vé sai tên xuất lại rất tốn tiền.",
       "types": {
         "ADULT": "Người lớn {number}",
         "CHILD": "Trẻ em {number}",

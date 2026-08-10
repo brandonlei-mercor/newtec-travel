@@ -69,7 +69,7 @@
       "description": "Give me each traveler’s name exactly as their passport spells it.",
       "optionalNote": "None of this is required to send your request. Leave it blank and I’ll ask you when we speak — the sooner I have the names, the sooner I can block a fare for you.",
       "holdTitle": "Why I ask for this",
-      "holdBody": "Prices move all the time. When your request reaches me, I look for the lowest fare I can find and use your passport names to block it for you right away. If you decide to buy, you get that price. If you decide not to, the fare cancels on its own — nothing is charged and you owe nothing. One thing to double-check: the names have to match the passport exactly. A ticket issued in the wrong name has to be reissued, and that costs money.",
+      "holdBody": "When your request reaches me, I use your passport names to block the lowest fare I can find. If you buy, you get that price. If you don’t, it cancels on its own and nothing is charged. Just make sure the names match the passport exactly — a ticket in the wrong name costs money to fix.",
       "types": {
         "ADULT": "Adult {number}",
         "CHILD": "Child {number}",

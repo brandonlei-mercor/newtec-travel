@@ -15,42 +15,52 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "@playwright/test";
-import { PANEL, PLANE, SUBLINE } from "../src/shared/brand-artwork";
+import {
+  EMAIL_LOCKUP,
+  FLAG_RED,
+  FLAG_YELLOW,
+  PANEL,
+  PLANE,
+  SUBLINE,
+  VIETNAM
+} from "../src/shared/brand-artwork";
 
 /** The navy the site draws the lockup in, and the white it sits on in mail. */
 const INK = "#1f3a93";
 const STOCK = "#ffffff";
 
 /*
- * Displayed at 229px wide in the signature. Rendered at three times that so it
- * stays sharp on a retina screen and on the 2x images Gmail serves; the speed
- * rules under the wordmark are the first thing to turn to mush when it is not.
+ * Rendered at three times its displayed size so it stays sharp on a retina
+ * screen and on the 2x images Gmail serves; the speed rules under the wordmark
+ * are the first thing to turn to mush when it is not. Every dimension comes
+ * from EMAIL_LOCKUP, which the email also sizes its <img> by, so the picture
+ * and the box it is drawn into cannot drift apart.
  */
 const SCALE = 3;
-const PLANE_HEIGHT = 48;
-const WORDMARK_HEIGHT = 46;
-const GAP = 12;
-
-const planeWidth = (PLANE.width / PLANE.height) * PLANE_HEIGHT;
-const wordmarkWidth = (PANEL.width / SUBLINE.height) * WORDMARK_HEIGHT;
 
 const page = `<!doctype html>
 <html><head><meta charset="utf-8"><style>
   html, body { margin: 0; padding: 0; background: ${STOCK}; }
   #lockup {
-    display: flex; align-items: center; gap: ${GAP}px;
-    width: ${Math.ceil(planeWidth + GAP + wordmarkWidth)}px;
-    height: ${PLANE_HEIGHT}px; background: ${STOCK};
+    display: flex; align-items: center; gap: ${EMAIL_LOCKUP.gap}px;
+    width: ${EMAIL_LOCKUP.width}px;
+    height: ${EMAIL_LOCKUP.height}px; background: ${STOCK};
   }
 </style></head>
 <body><div id="lockup">
-  <svg width="${planeWidth}" height="${PLANE_HEIGHT}" viewBox="0 0 ${PLANE.width} ${PLANE.height}">
+  <svg width="${EMAIL_LOCKUP.planeWidth}" height="${EMAIL_LOCKUP.markHeight}" viewBox="0 0 ${PLANE.width} ${PLANE.height}">
     <path d="${PLANE.path}" fill="${INK}" fill-rule="evenodd" />
   </svg>
-  <svg width="${wordmarkWidth}" height="${WORDMARK_HEIGHT}" viewBox="0 0 ${PANEL.width} ${SUBLINE.height}">
+  <svg width="${EMAIL_LOCKUP.wordmarkWidth}" height="${EMAIL_LOCKUP.wordmarkHeight}" viewBox="0 0 ${PANEL.width} ${SUBLINE.height}">
     <rect width="${PANEL.width}" height="${SUBLINE.height}" fill="${STOCK}" />
     <path d="${PANEL.path}" fill="${INK}" fill-rule="evenodd" />
     <path d="${SUBLINE.path}" fill="${INK}" fill-rule="evenodd" />
+  </svg>
+  <!-- The country closes the lockup in the signature exactly as it does in the
+       site header, and in the flag's own colours rather than the agency navy. -->
+  <svg width="${EMAIL_LOCKUP.vietnamWidth}" height="${EMAIL_LOCKUP.markHeight}" viewBox="0 0 ${VIETNAM.width} ${VIETNAM.height}">
+    <path d="${VIETNAM.path}" fill="${FLAG_RED}" fill-rule="evenodd" />
+    <path d="${VIETNAM.star}" fill="${FLAG_YELLOW}" />
   </svg>
 </div></body></html>`;
 

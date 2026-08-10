@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { EmailAttachment, EmailMessage } from "@/server/integrations/email-sender";
+import { EMAIL_LOCKUP } from "@/shared/brand-artwork";
 import { COMPANY } from "@/shared/company";
 import type { InquiryPassengerRecord, InquiryWithPassengers } from "./queries";
 
@@ -305,7 +306,7 @@ function renderHtml(inquiry: InquiryRecord, locale: Locale, hasLockup: boolean):
     .join("");
 
   const signatureMark = hasLockup
-    ? `<tr><td style="padding-top:16px;"><img alt="${escapeHtml(COMPANY.name)}" src="cid:${LOCKUP_CID}" width="229" height="48" style="display:block;border:0;width:229px;height:48px;" /></td></tr>`
+    ? `<tr><td style="padding-top:16px;"><img alt="${escapeHtml(COMPANY.name)}" src="cid:${LOCKUP_CID}" width="${EMAIL_LOCKUP.width}" height="${EMAIL_LOCKUP.height}" style="display:block;border:0;width:${EMAIL_LOCKUP.width}px;height:${EMAIL_LOCKUP.height}px;" /></td></tr>`
     : "";
 
   return `<!doctype html>

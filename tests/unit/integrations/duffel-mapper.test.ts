@@ -169,12 +169,19 @@ describe("mapDuffelOffers", () => {
 });
 
 describe("mapDuffelOffers grouping", () => {
+  /*
+   * Arrival is derived from the departure and the duration rather than fixed:
+   * a longer return is a later landing, and the grouping now reads the clock
+   * times to tell one trip from another.
+   */
   function segment(flightNumber: string, departingAt: string, minutes: number) {
     return {
       origin: { iata_code: "SFO" },
       destination: { iata_code: "SGN" },
       departing_at: departingAt,
-      arriving_at: "2026-09-11T06:00:00",
+      arriving_at: new Date(new Date(`${departingAt}Z`).getTime() + minutes * 60_000)
+        .toISOString()
+        .slice(0, 19),
       duration: `PT${minutes}M`,
       marketing_carrier: { iata_code: "VN" },
       marketing_carrier_flight_number: flightNumber
@@ -215,16 +222,41 @@ describe("mapDuffelOffers grouping", () => {
     expect(grouped[0]?.alternateReturnCount).toBe(2);
   });
 
-  it("keeps offers apart when price or outbound differs", () => {
+  /*
+   * The same aircraft at the same times, sold as Lite, Classic and Flex, is one
+   * flight with three price tags. The card shows none of what separates them,
+   * so three rows read as a broken search; the cheapest is what the agency
+   * would quote anyway.
+   */
+  it("keeps only the cheapest fare brand for a given trip", () => {
+    const grouped = mapDuffelOffers(
+      {
+        data: {
+          offers: [
+            offer("off_brand_lite", "900.00", "0099", 1_000),
+            offer("off_brand_classic", "980.00", "0099", 1_000),
+            offer("off_brand_flex", "1450.00", "0099", 1_000)
+          ]
+        }
+      },
+      query
+    );
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]?.offerRef).toBe("off_brand_lite");
+    expect(grouped[0]?.priceTotalMinor).toBe(90_000);
+  });
+
+  it("keeps a genuinely different trip, whatever it costs", () => {
     const grouped = mapDuffelOffers(
       {
         data: {
           offers: [
             offer("off_group_cheap", "900.00", "0099", 1_000),
-            // Same outbound flight, different price: a different fare, not a duplicate.
-            offer("off_group_dear", "980.00", "0099", 1_000),
-            // Same price, different outbound flight: a genuinely different itinerary.
-            offer("off_group_other", "900.00", "0007", 1_000)
+            // A different outbound flight: a real alternative, not a fare brand.
+            offer("off_group_other", "980.00", "0007", 1_000),
+            // Same outbound, a later landing coming home, and dearer with it.
+            offer("off_group_late", "1100.00", "0099", 1_200)
           ]
         }
       },
@@ -234,7 +266,7 @@ describe("mapDuffelOffers grouping", () => {
     expect(grouped.map((entry) => entry.offerRef)).toEqual([
       "off_group_cheap",
       "off_group_other",
-      "off_group_dear"
+      "off_group_late"
     ]);
     expect(grouped.every((entry) => entry.alternateReturnCount === 0)).toBe(true);
   });

@@ -165,6 +165,46 @@ function mapSlice(slice: DuffelSlice, requestedCabin: SearchCabin): FlightOfferS
 }
 
 /*
+ * The trip itself, ignoring what it costs: the same aircraft on the same day at
+ * the same times, out and back. Carrier and flight number alone would collide
+ * across days, both clock times are in the key because a fare brand never
+ * changes when a flight lands, and the cabin is there because an economy seat
+ * and a premium-economy seat on one flight are not the same thing to buy.
+ */
+function itineraryKey(offer: FlightOffer): string {
+  return [offer.outbound, offer.inbound]
+    .map(
+      (slice) =>
+        slice?.segments
+          .map(
+            (segment) =>
+              `${segment.marketingCarrier}${segment.flightNumber}@${segment.departureLocal}-${segment.arrivalLocal}/${segment.cabin}`
+          )
+          .join(">") ?? ""
+    )
+    .join("|");
+}
+
+/*
+ * Duffel returns one offer per fare brand, so a single flight comes back three
+ * times over — Lite, Classic, Flex — identical on screen apart from the price,
+ * because the baggage and change rules that separate them are not on the card.
+ * Three prices for what looks like one flight reads as a broken search. The
+ * agency quotes by hand and re-checks the fare before ticketing, so only the
+ * cheapest way onto a given itinerary is worth showing; a customer who wants
+ * the flexible fare asks for it on the call.
+ * Input must already be sorted by price, so the survivor is the cheapest.
+ */
+function cheapestFarePerItinerary(offers: FlightOffer[]): FlightOffer[] {
+  const byItinerary = new Map<string, FlightOffer>();
+  for (const offer of offers) {
+    const key = itineraryKey(offer);
+    if (!byItinerary.has(key)) byItinerary.set(key, offer);
+  }
+  return [...byItinerary.values()];
+}
+
+/*
  * One search can return a dozen offers at the same price on the same outbound
  * flights, differing only in return time. Shown as separate rows they read as
  * noise, so keep the shortest return as the representative and count the rest.
@@ -180,9 +220,9 @@ function groupByOutbound(offers: FlightOffer[]): FlightOffer[] {
       continue;
     }
     /*
-     * On a one-way there is no return to differ in, so a same-price duplicate
-     * of the same flight is just a second fare brand. Collapse it silently
-     * rather than claiming "1 other return time at this price".
+     * On a one-way there is no return to differ in, so a duplicate here is
+     * something the fare-brand pass did not recognise as the same trip.
+     * Collapse it silently rather than claiming "1 other return time".
      */
     if (!offer.inbound || !held.inbound) continue;
     const alternateReturnCount = (held.alternateReturnCount ?? 0) + 1;
@@ -251,10 +291,11 @@ export function mapDuffelOffers(payload: unknown, query: FlightOffersQuery): Fli
     );
   }
 
-  return groupByOutbound(offers.sort((a, b) => a.priceTotalMinor - b.priceTotalMinor)).slice(
-    0,
-    MAX_OFFERS
-  );
+  // Cheapest first, then one row per trip, then the return times folded in.
+  // The order matters: both passes keep whatever they see first, and that is
+  // only the cheapest fare because the sort ran before either of them.
+  const sorted = offers.sort((a, b) => a.priceTotalMinor - b.priceTotalMinor);
+  return groupByOutbound(cheapestFarePerItinerary(sorted)).slice(0, MAX_OFFERS);
 }
 
 function buildPassengers(query: FlightOffersQuery): Array<{ type: DuffelPassengerType }> {

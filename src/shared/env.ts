@@ -33,12 +33,22 @@ const schema = z.object({
     .transform((value) => value === "true"),
   SMTP_USER: z.string().min(1).optional(),
   SMTP_PASSWORD: z.string().min(1).optional(),
+  /*
+   * The envelope sender, which must be a mailbox the relay is allowed to send
+   * as. Resend allows only domains verified in the account, and gmail.com will
+   * never be one of them, so in production this is an address at the agency's
+   * own domain. The Gmail address the customer should reach is carried as
+   * Reply-To and Cc instead, which no relay polices.
+   */
   SMTP_FROM: z.string().default(COMPANY_SMTP_FROM),
-  /** Where a new request is announced. Defaults to the agency's own mailbox. */
+  /*
+   * Copied on the welcome email that goes to the customer, so the agency holds
+   * its side of the same thread. Defaults to the agency's own mailbox.
+   */
   INQUIRY_NOTIFICATION_EMAIL: z.email().default(COMPANY.email.address),
   /*
-   * Whether a new request is also announced by email. Off by default: until a
-   * real relay is configured, /admin is where the agency reads its requests,
+   * Whether a new request also sends that welcome email. Off by default: until
+   * a real relay is configured, /admin is where the agency reads its requests,
    * and a job queued against a mailbox that cannot accept it would only produce
    * failures to explain. The outbox row is written either way, so turning this
    * on later loses nothing that already happened.
@@ -59,6 +69,27 @@ const schema = z.object({
 const parsed = schema.parse(process.env);
 
 const LOOPBACK_SMTP_HOSTS = new Set(["127.0.0.1", "localhost", "::1", "[::1]", "0.0.0.0"]);
+
+/*
+ * Domains nobody gets to send as. Resend delivers only for domains verified in
+ * the account, and these publish DMARC policies telling receivers to reject
+ * anything else wearing their name, so a sender here is a bounce with extra
+ * steps. The agency's own Gmail address rides as Reply-To and Cc instead.
+ */
+const FREEMAIL_SENDER_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "yahoo.com",
+  "outlook.com",
+  "hotmail.com",
+  "icloud.com",
+  "aol.com"
+]);
+
+/** The domain out of either `name@host` or `Name <name@host>`. */
+function senderDomain(from: string): string {
+  return (from.split("@").pop() ?? "").replace(">", "").trim().toLowerCase();
+}
 
 /*
  * A user without a password would make nodemailer connect anonymously, and the
@@ -88,9 +119,9 @@ if (parsed.APP_ENV === "production") {
   }
   /*
    * Only when email is switched on. Left at the Mailpit default, production
-   * would accept every notification and deliver none of them: the agency would
-   * see requests marked SENT and never learn that nobody was told. The lead is
-   * the product, so fail closed rather than quietly.
+   * would accept every welcome email and deliver none of them: the board would
+   * show them SENT while no customer ever heard back. The lead is the product,
+   * so fail closed rather than quietly.
    */
   if (parsed.INQUIRY_EMAIL_ENABLED) {
     if (LOOPBACK_SMTP_HOSTS.has(parsed.SMTP_HOST)) {
@@ -98,6 +129,18 @@ if (parsed.APP_ENV === "production") {
     }
     if (!parsed.SMTP_USER) {
       throw new Error("SMTP_USER and SMTP_PASSWORD are required in production");
+    }
+    /*
+     * SMTP_FROM defaults to the agency's Gmail address, which is right for the
+     * local mail catcher and refused by every real relay. Left unset here, the
+     * site would boot, take requests, queue every job, and fail each send at
+     * the relay — the failure arriving one unanswered lead at a time.
+     */
+    const from = senderDomain(parsed.SMTP_FROM);
+    if (FREEMAIL_SENDER_DOMAINS.has(from)) {
+      throw new Error(
+        `SMTP_FROM must be a mailbox at a domain verified with the relay, not ${from}`
+      );
     }
   }
 }

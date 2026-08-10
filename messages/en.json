@@ -8,7 +8,6 @@
     "flights": "Flight search",
     "language": "Tiếng Việt",
     "menu": "Primary navigation",
-    "support": "Email me",
     "skip": "Skip to main content",
     "brandTagline": "Your friend for US–Vietnam flights",
     "reviews": "Reviews",
@@ -24,16 +23,16 @@
     "reviews": "My reviews on Yelp"
   },
   "Home": {
-    "eyebrow": "Hi friends!",
+    "eyebrow": "Hi friends, I’m Hanh",
     "title": "Let me take care of your trip to Vietnam.",
-    "description": "Tell me where you want to go and when. Have a look at live fares from Vietnam Airlines and EVA Air, send me the one you like, and I’ll call you back myself. Flights, seat arrangements, visas, and everything in between.",
+    "description": "I’m a travel specialist, and I’ve spent thirty years arranging trips between the US and Vietnam. Tell me where you want to go and when. Have a look at live fares from the US to Vietnam, send me the one you like, and I’ll come back to you myself. Flights, seat arrangements, visas, and everything in between.",
     "cta": "Find your flights",
     "priceNote": "Every price you see here is the whole trip — the booking, your seats, your visa, your pre-arrival QR code, and everything else I take care of before you fly.",
     "closingTitle": "Ready when you are. Let me take it from here.",
     "specialistEyebrow": "Nice to meet you",
-    "specialistTitle": "You get me, from your first phone call until the trip is over — and for every trip after that.",
-    "specialistBody": "I’m Hanh Newtec, and I’ve been arranging flights between the Bay Area and Vietnam from the same little office in Daly City for years. A lot of the families who called me at the beginning still call me first today, and many of them have become friends. Your dates, your fare, your seats, your visa, your pre-arrival QR code, and your ticket all go through me, never through a booking engine.",
-    "specialistCta": "Call me anytime"
+    "specialistTitle": "You get me, from your first message until the trip is over — and for every trip after that.",
+    "specialistBody": "I’m Hanh Newtec, and I’ve been arranging flights between the Bay Area and Vietnam from the same little office in Daly City for three decades. A lot of the families who wrote to me at the beginning still come to me first today, and many of them have become friends. Your dates, your fare, your seats, your visa, your pre-arrival QR code, and your ticket all go through me, never through a booking engine.",
+    "specialistCta": "Send me your request"
   },
   "Inquiry": {
     "eyebrow": "Almost there",
@@ -67,10 +66,10 @@
     },
     "passengers": {
       "title": "Who is traveling?",
-      "description": "Give me each traveler exactly as their passport spells them. An airline holds a seat against a legal name and a date of birth, so this is what lets me put your party on hold.",
-      "optionalNote": "None of this is required to send your request. Leave any of it blank and I’ll take those details when we speak — whatever you can give me now is simply what I can start holding sooner.",
-      "holdTitle": "This is how I hold your spots in advance",
-      "holdBody": "With these names I can hold these seats for you ahead of time, before the fare moves. A ticket issued in a name that does not match the passport has to be reissued at your cost, so please check every spelling against the document itself.",
+      "description": "Give me each traveler’s name exactly as their passport spells it.",
+      "optionalNote": "None of this is required to send your request. Leave it blank and I’ll ask you when we speak — the sooner I have the names, the sooner I can block a fare for you.",
+      "holdTitle": "Why I ask for this",
+      "holdBody": "Prices move all the time. When your request reaches me, I look for the lowest fare I can find and use your passport names to block it for you right away. If you decide to buy, you get that price. If you decide not to, the fare cancels on its own — nothing is charged and you owe nothing. One thing to double-check: the names have to match the passport exactly. A ticket issued in the wrong name has to be reissued, and that costs money.",
       "types": {
         "ADULT": "Adult {number}",
         "CHILD": "Child {number}",
@@ -79,7 +78,6 @@
       "givenName": "Legal first and middle names",
       "familyName": "Legal last name",
       "nameHint": "Exactly as printed on the passport.",
-      "dateOfBirth": "Date of birth",
       "reviewTitle": "Passport names",
       "reviewMissing": "You’ll give me this later"
     },
@@ -127,10 +125,9 @@
       "email": "Enter a valid email address.",
       "transactionalConsent": "I need your consent before I can work on this request.",
       "partyDataAuthority": "Confirm that you may provide details for these travelers.",
-      "submit": "That didn’t go through. Please try again, or just give me a call.",
+      "submit": "That didn’t go through. Please try again, or email your request to me and I’ll take it from there.",
       "phone": "Enter a phone number I can call.",
-      "preferredContactMethod": "Choose how you would like to be contacted.",
-      "passengerDateOfBirth": "Enter a date of birth in the past."
+      "preferredContactMethod": "Choose how you would like to be contacted."
     },
     "selected": {
       "title": "Your flight",
@@ -190,10 +187,10 @@
     "pickDepartureBody": "Pick a departure date on the calendar to see your flights.",
     "loading": "Let me check the fares…",
     "errorTitle": "Sorry, I couldn’t load these",
-    "errorBody": "Something went wrong on my end. Please try again, or just call me and I’ll look these up for you.",
+    "errorBody": "Something went wrong on my end. Please try again, or send me your dates and I’ll look these up for you.",
     "retry": "Try again",
     "noOffersTitle": "Nothing on these dates, sorry",
-    "noOffersBody": "I don’t have anything on these dates. Try a few days either side, or call me and I’ll look myself.",
+    "noOffersBody": "I don’t have anything on these dates. Try a few days either side, or send me your dates and I’ll look myself.",
     "resultsTitle": "Your flights",
     "resultsCount": "{count, plural, one {1 option} other {# options}}",
     "sortLabel": "Sort by",
@@ -217,7 +214,7 @@
     "priceIncludes": "Every price below is the complete package — the booking, seat selection, your visa, your pre-arrival QR code, and everything else I take care of for you. Nothing is charged here.",
     "showMore": "Show {count} more ({remaining} left)",
     "select": "Continue with this flight",
-    "moreOptionsBody": "For other routing flights, or for group travel and business class discounts, send me your request or give me a call and I’ll price them for you."
+    "moreOptionsBody": "For other routing flights, or for group travel and business class discounts, send me your request and I’ll price them for you."
   },
   "Received": {
     "eyebrow": "Thank you!",
@@ -230,8 +227,8 @@
     "specialistBody": "I go through the itinerary, the fare, and the small print myself before I bring anything back to you.",
     "homeCta": "Back to the start",
     "notReserved": "This request does not hold a seat yet. I confirm everything with you before your ticket is issued.",
-    "callTitle": "Questions in the meantime?",
-    "callBody": "Just call me and mention the reference above.",
+    "askTitle": "Questions in the meantime?",
+    "askBody": "Send them to me here and mention the reference above.",
     "methodEmail": "email",
     "methodPhone": "phone"
   },
@@ -244,13 +241,13 @@
     "privacy": {
       "eyebrow": "Privacy",
       "title": "How I handle your information",
-      "intro": "I ask for only what I need to price your trip and call you back. I do not sell your information, I do not share it outside my agency, and I do not use it to advertise to you.",
+      "intro": "I ask for only what I need to price your trip and come back to you. I do not sell your information, I do not share it outside my agency, and I do not use it to advertise to you.",
       "section1Title": "What I collect",
       "section1Body": "Your name, email address, phone number, preferred language, the trip you are asking about, and anything you write in the assistance or notes fields. I never ask for passport, payment, or medical details on this site — those come later, directly with me, once we are actually booking.",
       "section2Title": "What I do with it",
       "section2Body": "Your request comes to my office by email and appears on a staff-only page so I can research your options and get back to you. I use it to answer you and to arrange the trip you asked about, and for nothing else. No advertising lists, no data brokers, no third parties beyond the airlines and suppliers your own booking requires.",
       "section3Title": "Keeping it, and getting it removed",
-      "section3Body": "The staff page is password protected and holds only the details above. I keep your request while I am helping you, and afterwards for the records an accredited travel agency is expected to keep. Call or email me any time to ask what I have on file, correct it, or have it deleted, and I will take care of it."
+      "section3Body": "The staff page is password protected and holds only the details above. I keep your request while I am helping you, and afterwards for the records an accredited travel agency is expected to keep. Email me any time to ask what I have on file, correct it, or have it deleted, and I will take care of it."
     },
     "terms": {
       "eyebrow": "Service terms",
@@ -261,7 +258,7 @@
       "section2Title": "Sending a request is not a purchase",
       "section2Body": "Sending the form costs nothing, holds nothing, and takes no payment — this site never asks for a card. I check the exact fare in my agency’s authorized reservation system, come back to you with it, and we arrange the booking and the payment together once you are happy with it.",
       "section3Title": "How I reach you, and what I look after",
-      "section3Body": "I ask for both an email address and a phone number so I can still reach you if one of them fails, and I only contact you about the request you sent. Alongside your flights I handle Vietnam visa paperwork, seat requests, special assistance, and any changes later on. Group travel and business class discounts I quote by phone, so call me for those."
+      "section3Body": "I ask for both an email address and a phone number so I can still reach you if one of them fails, and I only contact you about the request you sent. Alongside your flights I handle Vietnam visa paperwork, seat requests, special assistance, and any changes later on. Group travel and business class discounts I quote by hand, so send me a request for those."
     },
     "accessibility": {
       "eyebrow": "Accessibility",
@@ -272,7 +269,7 @@
       "section2Title": "Assistance with your trip",
       "section2Body": "Tell me about mobility, communication, seating, or any other assistance you need in the request form and I will arrange it with the airline. Please keep it to what the airline needs to know — no private medical records.",
       "section3Title": "Tell me about a barrier",
-      "section3Body": "Call or email me with the page, your device, your browser, and a short description of what went wrong. I will find another way to help you straight away while I get it fixed."
+      "section3Body": "Email me with the page, your device, your browser, and a short description of what went wrong. I will find another way to help you straight away while I get it fixed."
     }
   }
 }

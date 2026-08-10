@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { COMPANY } from "@/shared/company";
 
@@ -34,14 +34,7 @@ export function LegalPage({ kind }: { kind: "privacy" | "terms" | "accessibility
           <p className="muted mt-3 leading-7">{common("contactBody")}</p>
           <div className="mt-5 flex flex-wrap gap-x-8 gap-y-3 text-sm font-semibold">
             <a
-              className="inline-flex items-center gap-2 text-[color:var(--brand-dark)]"
-              href={COMPANY.phone.href}
-            >
-              <Phone aria-hidden="true" size={16} />
-              <span className="tabular-nums">{COMPANY.phone.display}</span>
-            </a>
-            <a
-              className="inline-flex items-center gap-2 text-[color:var(--brand-dark)]"
+              className="inline-flex items-center gap-2 break-all text-[color:var(--brand-dark)]"
               href={COMPANY.email.href}
             >
               <Mail aria-hidden="true" size={16} />

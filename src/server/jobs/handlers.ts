@@ -1,5 +1,5 @@
 import { eq, sql } from "drizzle-orm";
-import { composeInquiryNotification } from "../../modules/inquiries/notification";
+import { composeInquiryWelcome } from "../../modules/inquiries/notification";
 import { getInquiryForNotification } from "../../modules/inquiries/queries";
 import type { Database } from "../db";
 import { inquiryNotifications } from "../db/schema";
@@ -16,17 +16,19 @@ export type JobHandlerDependencies = {
 export function createJobHandlers(dependencies: JobHandlerDependencies): JobHandlers {
   return {
     async notify_inquiry(payload) {
-      await notifyAgencyOfInquiry(dependencies, payload.notificationId);
+      await welcomeInquiry(dependencies, payload.notificationId);
     }
   };
 }
 
 /**
- * Drains one outbox row. Delivery state is recorded whether the send succeeds
- * or not, so /admin can show that a request arrived but its email did not, and a
- * throw hands the retry back to the worker rather than swallowing the failure.
+ * Drains one outbox row: the welcome email to the customer, copying the agency
+ * mailbox held in `recipient`. Delivery state is recorded whether the send
+ * succeeds or not, so /admin can show that a request arrived but its email did
+ * not, and a throw hands the retry back to the worker rather than swallowing
+ * the failure.
  */
-async function notifyAgencyOfInquiry(
+async function welcomeInquiry(
   dependencies: JobHandlerDependencies,
   notificationId: string
 ): Promise<void> {
@@ -36,7 +38,7 @@ async function notifyAgencyOfInquiry(
   if (row.state === "SENT") return;
 
   try {
-    const delivery = await emailSender.send(composeInquiryNotification(row.inquiry, row.recipient));
+    const delivery = await emailSender.send(composeInquiryWelcome(row.inquiry, row.recipient));
     if (delivery.accepted.length === 0) {
       throw new Error(`The mail server accepted no recipients: ${delivery.rejected.join(", ")}`);
     }

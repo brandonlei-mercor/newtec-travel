@@ -1,0 +1,1 @@
+ALTER TABLE "inquiry_passengers" DROP COLUMN "date_of_birth";

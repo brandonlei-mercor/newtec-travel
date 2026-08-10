@@ -64,6 +64,13 @@
       "when": 1786312286341,
       "tag": "0008_passport_manifest",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786334496902,
+      "tag": "0009_drop_passenger_date_of_birth",
+      "breakpoints": true
     }
   ]
 }

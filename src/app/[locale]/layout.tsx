@@ -101,8 +101,7 @@ export default async function LocaleLayout({
               searchCta: nav("searchCta"),
               reviews: nav("reviews"),
               language: nav("language"),
-              menu: nav("menu"),
-              support: nav("support")
+              menu: nav("menu")
             }}
           />
           {children}

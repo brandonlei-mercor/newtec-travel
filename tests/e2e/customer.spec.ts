@@ -35,8 +35,8 @@ test.describe("customer experience", () => {
       "/en/flights"
     );
     await expect(
-      page.getByRole("contentinfo").getByRole("link", { name: "Tel (415) 626 3579" })
-    ).toHaveAttribute("href", "tel:+14156263579");
+      page.getByRole("contentinfo").getByRole("link", { name: "newtectravelagency@gmail.com" })
+    ).toHaveAttribute("href", "mailto:newtectravelagency@gmail.com");
     await expect(
       page.getByRole("contentinfo").getByRole("link", { name: "Reviews" })
     ).toHaveAttribute("href", "https://www.yelp.com/biz/newtec-travel-agency-daly-city");
@@ -120,15 +120,17 @@ test.describe("customer experience", () => {
     await expect(page.getByText("contact you by phone")).toBeVisible();
   });
 
-  test("every page a customer sees prices on points at the agency phone", async ({ page }) => {
+  test("every page a customer sees prices on points at the agency inbox", async ({ page }) => {
     const band =
-      "For other flights, or for group travel and business class discounts, send me your request or give me a call and I’ll price them for you.";
+      "For other routing flights, or for group travel and business class discounts, send me your request and I’ll price them for you.";
 
     // Above the fold on both, not buried at the bottom of one of them.
     for (const path of ["/en", "/en/flights"]) {
       await page.goto(path);
       await expect(page.getByText(band)).toBeVisible();
-      await expect(page.getByRole("link", { name: "(415) 626 3579" }).first()).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: "newtectravelagency@gmail.com" }).first()
+      ).toBeVisible();
     }
   });
 

@@ -139,12 +139,12 @@ export const inquiries = pgTable(
 );
 
 /**
- * The passport manifest for one request: every traveler's legal name and date
- * of birth, in the order the form asked for them. A table of its own rather
- * than columns on the inquiry, because a request carries up to nine of these
- * and the agency reads them as a list when holding the seats. Cascades with
- * the inquiry, so deleting a request takes the names with it rather than
- * leaving passport data behind with nothing pointing at it.
+ * The passport manifest for one request: every traveler's legal name, in the
+ * order the form asked for them. A table of its own rather than columns on the
+ * inquiry, because a request carries up to nine of these and the agency reads
+ * them as a list when blocking the fare. Cascades with the inquiry, so deleting
+ * a request takes the names with it rather than leaving passport data behind
+ * with nothing pointing at it.
  */
 export const inquiryPassengers = pgTable(
   "inquiry_passengers",
@@ -158,7 +158,6 @@ export const inquiryPassengers = pgTable(
     type: passengerTypeEnum("type").notNull(),
     givenName: varchar("given_name", { length: 80 }).notNull(),
     familyName: varchar("family_name", { length: 80 }).notNull(),
-    dateOfBirth: date("date_of_birth").notNull(),
     createdAt: createdAt()
   },
   (table) => [

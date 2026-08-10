@@ -72,18 +72,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div>
             <p className="leading-8">{t("specialistBody")}</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <a className="button-primary" href={COMPANY.phone.href}>
+              <a className="button-primary" href={COMPANY.email.href}>
                 {t("specialistCta")}
-                <span className="tabular-nums">{COMPANY.phone.display}</span>
+                <span className="break-all">{COMPANY.email.address}</span>
               </a>
-              <a
-                className="text-sm font-semibold text-[color:var(--brand)] underline-offset-4 hover:underline"
-                href={COMPANY.mapsUrl}
-                rel="noreferrer"
-                target="_blank"
-              >
-                {COMPANY.address.formatted}
-              </a>
+              <p className="muted text-sm font-semibold">{COMPANY.locality}</p>
             </div>
           </div>
         </div>

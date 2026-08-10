@@ -26,7 +26,6 @@ export type InquiryPayload = {
     type: PassengerType;
     givenName: string;
     familyName: string;
-    dateOfBirth: string;
   }[];
   /** One line describing the flight the customer checked out with. */
   selectedOffer?: string;

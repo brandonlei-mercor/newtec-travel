@@ -1,4 +1,4 @@
-import { Globe, Menu, Phone } from "lucide-react";
+import { Globe, Mail, Menu } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { COMPANY } from "@/shared/company";
 import { BrandLockup } from "./brand-lockup";
@@ -12,7 +12,6 @@ type SiteHeaderProps = {
     reviews: string;
     language: string;
     menu: string;
-    support: string;
   };
 };
 
@@ -30,7 +29,7 @@ export function SiteHeader({ locale, labels }: SiteHeaderProps) {
         </Link>
 
         {/* In flow rather than absolutely centred: centring it over the whole
-            header pushed the last link into the phone number on narrower
+            header pushed the last link into the address beside it on narrower
             desktops. Centring it in the space left over always leaves a gap. */}
         <nav
           aria-label={labels.menu}
@@ -47,18 +46,18 @@ export function SiteHeader({ locale, labels }: SiteHeaderProps) {
           >
             {labels.reviews}
           </a>
-          <a className={navLinkClassName} href={COMPANY.email.href}>
-            {labels.support}
-          </a>
         </nav>
 
         <div className="hidden shrink-0 items-center gap-4 lg:flex">
+          {/* The address itself rather than a word standing in for it: it is the
+              one way in to the agency, so it should be readable without a click
+              and copyable without a hunt through the footer. */}
           <a
-            className="hidden items-center gap-2 text-sm font-semibold tabular-nums text-[color:var(--ink)] no-underline xl:flex"
-            href={COMPANY.phone.href}
+            className="hidden items-center gap-2 text-sm font-semibold text-[color:var(--ink)] no-underline xl:flex"
+            href={COMPANY.email.href}
           >
-            <Phone aria-hidden="true" className="text-[color:var(--brand)]" size={14} />
-            {COMPANY.phone.display}
+            <Mail aria-hidden="true" className="text-[color:var(--brand)]" size={14} />
+            {COMPANY.email.address}
           </a>
           <Link
             className="inline-flex min-h-9 items-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] px-3.5 text-xs font-semibold text-[color:var(--ink-soft)] no-underline transition-colors hover:border-[var(--brand)] hover:text-[color:var(--ink)]"
@@ -96,14 +95,11 @@ export function SiteHeader({ locale, labels }: SiteHeaderProps) {
               >
                 {labels.reviews}
               </a>
-              <a className="px-2 py-4 text-sm font-medium no-underline" href={COMPANY.email.href}>
-                {labels.support}
-              </a>
             </nav>
             <div className="mt-2 grid gap-1 border-t border-[var(--line)] pt-3 text-sm text-[color:var(--ink-soft)]">
-              <a className="flex items-center gap-2 px-2 py-2" href={COMPANY.phone.href}>
-                <Phone aria-hidden="true" size={14} />
-                {COMPANY.phone.display}
+              <a className="flex items-center gap-2 break-all px-2 py-2" href={COMPANY.email.href}>
+                <Mail aria-hidden="true" className="shrink-0" size={14} />
+                {COMPANY.email.address}
               </a>
               <Link
                 className="flex items-center gap-2 px-2 py-2 no-underline"

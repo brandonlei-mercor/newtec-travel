@@ -1,13 +1,28 @@
 import nodemailer from "nodemailer";
 import { env } from "../../shared/env";
 
+/**
+ * An image carried with the message and referenced from the HTML as `cid:<cid>`
+ * rather than fetched from a URL. Remote images are blocked by default in every
+ * major client until the reader trusts the sender, and a signature that appears
+ * as a broken box the first time is worse than none.
+ */
+export type EmailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType: string;
+  cid: string;
+};
+
 export type EmailMessage = {
   to: string | readonly string[];
+  cc?: string | readonly string[];
   subject: string;
   text: string;
   html?: string;
   replyTo?: string;
   headers?: Readonly<Record<string, string>>;
+  attachments?: readonly EmailAttachment[];
 };
 
 export type EmailDelivery = {
@@ -68,6 +83,10 @@ export function buildSmtpTransportOptions(config: SmtpConfiguration): SmtpTransp
   };
 }
 
+function joinAddresses(addresses: string | readonly string[]): string {
+  return typeof addresses === "string" ? addresses : [...addresses].join(", ");
+}
+
 function createSmtpTransport() {
   return nodemailer.createTransport(
     buildSmtpTransportOptions({
@@ -90,12 +109,16 @@ export class SmtpEmailSender implements EmailSender {
   async send(message: EmailMessage): Promise<EmailDelivery> {
     const result = await this.transporter.sendMail({
       from: env.SMTP_FROM,
-      to: typeof message.to === "string" ? message.to : [...message.to].join(", "),
+      to: joinAddresses(message.to),
+      ...(message.cc === undefined ? {} : { cc: joinAddresses(message.cc) }),
       subject: message.subject,
       text: message.text,
       ...(message.html === undefined ? {} : { html: message.html }),
       ...(message.replyTo === undefined ? {} : { replyTo: message.replyTo }),
-      ...(message.headers === undefined ? {} : { headers: { ...message.headers } })
+      ...(message.headers === undefined ? {} : { headers: { ...message.headers } }),
+      ...(message.attachments === undefined
+        ? {}
+        : { attachments: message.attachments.map((file) => ({ ...file })) })
     });
     return {
       providerMessageId: String(result.messageId),

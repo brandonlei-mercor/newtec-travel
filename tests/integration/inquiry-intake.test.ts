@@ -38,8 +38,8 @@ function inquiryInput(overrides: Record<string, unknown> = {}) {
     cabinPreference: "ECONOMY",
     travelers: { adults: 2, children: 0, infants: 0 },
     passengers: [
-      { type: "ADULT", givenName: "Ana", familyName: "Nguyen", dateOfBirth: "1988-04-12" },
-      { type: "ADULT", givenName: "Minh", familyName: "Nguyen", dateOfBirth: "1986-11-02" }
+      { type: "ADULT", givenName: "Ana", familyName: "Nguyen" },
+      { type: "ADULT", givenName: "Minh", familyName: "Nguyen" }
     ],
     contact: {
       givenName: "Ana",
@@ -163,9 +163,9 @@ describe("inquiry intake", () => {
     expect(stored?.returnDate).toBeNull();
 
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
-    // Whoever calls back must not quote a return leg the customer never asked for.
-    expect(emailSender.sent[0]?.text).toContain("one way");
-    expect(emailSender.sent[0]?.text).not.toContain("2026-09-15");
+    // The customer must not read back a return leg they never asked for.
+    expect(emailSender.sent[0]?.text).toContain("Một chiều");
+    expect(emailSender.sent[0]?.text).not.toContain("15 tháng 9, 2026");
   });
 
   it("stores and mails the departure city the customer actually chose", async () => {
@@ -186,7 +186,7 @@ describe("inquiry intake", () => {
 
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
     expect(emailSender.sent[0]?.text).toContain("LAX");
-    expect(emailSender.sent[0]?.subject).toContain("LAX to SGN");
+    expect(emailSender.sent[0]?.subject).toContain("LAX → TP. Hồ Chí Minh (SGN)");
   });
 
   it("carries the chosen flight through to the mailbox", async () => {
@@ -206,15 +206,15 @@ describe("inquiry intake", () => {
 
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
     /*
-     * The call back has to start from the flight that was on screen. A summary
-     * that reaches the database but not the email would send whoever calls
-     * looking for it in /admin instead of reading it where they already are.
+     * The reply has to start from the flight that was on screen. A summary that
+     * reaches the database but not the email would leave both sides of the
+     * thread quoting different itineraries.
      */
-    expect(emailSender.sent[0]?.text).toContain("Selected flight");
+    expect(emailSender.sent[0]?.text).toContain("Chuyến anh chị đã chọn");
     expect(emailSender.sent[0]?.text).toContain("off_abc123");
   });
 
-  it("says so in the email when a request came in without a search", async () => {
+  it("leaves the flight row out when a request came in without a search", async () => {
     await createInquiry(database.db, inquiryInput(), {
       idempotencyKey: "key-no-flight",
       notificationRecipient: AGENCY_MAILBOX,
@@ -223,8 +223,12 @@ describe("inquiry intake", () => {
     });
 
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
-    // An empty row would read as a dropped field rather than a deliberate absence.
-    expect(emailSender.sent[0]?.text).toContain("request taken without a search");
+    /*
+     * The customer reads this one. A row saying no flight was picked is a line
+     * they have to read to learn nothing they did not already know.
+     */
+    expect(emailSender.sent[0]?.text).not.toContain("Chuyến anh chị đã chọn");
+    expect(emailSender.sent[0]?.text).toContain("SFO → TP. Hồ Chí Minh (SGN)");
   });
 
   it("stores the passport manifest with the request and mails it out", async () => {
@@ -236,23 +240,23 @@ describe("inquiry intake", () => {
     });
 
     /*
-     * The names are what the agency holds the seats against, so they have to
+     * The names are what the agency blocks the fare against, so they have to
      * survive the same transaction the request did and come back in order.
      */
     const [stored] = await listInquiries(database.db);
     expect(stored?.passengers.map((traveler) => traveler.givenName)).toEqual(["Ana", "Minh"]);
     expect(stored?.passengers[0]?.position).toBe(1);
-    expect(stored?.passengers[1]?.dateOfBirth).toBe("1986-11-02");
+    expect(stored?.passengers[1]?.position).toBe(2);
 
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
-    expect(emailSender.sent[0]?.text).toContain("Adult 1: Nguyen, Ana (born 1988-04-12)");
-    expect(emailSender.sent[0]?.text).toContain("Adult 2: Nguyen, Minh (born 1986-11-02)");
+    expect(emailSender.sent[0]?.text).toContain("Người lớn 1: Nguyen, Ana");
+    expect(emailSender.sent[0]?.text).toContain("Người lớn 2: Nguyen, Minh");
   });
 
   /*
    * The names are optional, so most of the value of this test is that a request
-   * without them is still a lead: it lands, it mails, and the email says out
-   * loud that the manifest is still to be collected.
+   * without them is still a lead: it lands and it mails, with the manifest row
+   * left out rather than shown empty.
    */
   it("takes a request that carries no passport names yet", async () => {
     await createInquiry(database.db, inquiryInput({ passengers: [] }), {
@@ -266,7 +270,8 @@ describe("inquiry intake", () => {
     expect(stored?.passengers).toEqual([]);
 
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
-    expect(emailSender.sent[0]?.text).toContain("Passport names: not given yet");
+    expect(emailSender.sent[0]?.text).not.toContain("Tên trên hộ chiếu");
+    expect(emailSender.sent[0]?.text).toContain("Chào anh chị Ana,");
   });
 
   it("returns the first result when a submission is retried", async () => {
@@ -288,7 +293,7 @@ describe("inquiry intake", () => {
     expect(await listInquiries(database.db)).toHaveLength(1);
   });
 
-  it("emails the agency everything it needs to call the customer back", async () => {
+  it("welcomes the customer and copies the agency onto the same thread", async () => {
     await createInquiry(database.db, inquiryInput({ notes: "Prefers a morning departure" }), {
       idempotencyKey: "key-2",
       notificationRecipient: AGENCY_MAILBOX,
@@ -299,10 +304,11 @@ describe("inquiry intake", () => {
     await handlers.notify_inquiry({ notificationId: await pendingNotificationId() });
 
     const [message] = emailSender.sent;
-    expect(message?.to).toBe(AGENCY_MAILBOX);
-    expect(message?.replyTo).toBe("ana@example.test");
+    expect(message?.to).toBe("ana@example.test");
+    expect(message?.cc).toBe(AGENCY_MAILBOX);
     expect(message?.text).toContain("(415) 555-0142");
-    expect(message?.text).toContain("Vietnamese");
+    // The form was filled in Vietnamese, so the welcome is written in it.
+    expect(message?.text).toContain("Tôi là Hanh.");
     expect(message?.text).toContain("Prefers a morning departure");
 
     const [notification] = await database.db.select().from(inquiryNotifications);

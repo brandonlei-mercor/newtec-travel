@@ -8,7 +8,6 @@
     "flights": "Tìm chuyến bay",
     "language": "English",
     "menu": "Điều hướng chính",
-    "support": "Gửi email cho tôi",
     "skip": "Chuyển đến nội dung chính",
     "brandTagline": "Người lo vé Mỹ–Việt Nam cho anh chị",
     "reviews": "Đánh giá",
@@ -24,16 +23,16 @@
     "reviews": "Đánh giá của tôi trên Yelp"
   },
   "Home": {
-    "eyebrow": "Chào anh chị!",
+    "eyebrow": "Chào anh chị, tôi là Hanh",
     "title": "Để tôi lo chuyến đi Việt Nam cho anh chị.",
-    "description": "Anh chị cho tôi biết muốn đi đâu và khi nào. Xem giá vé trực tiếp của Vietnam Airlines và EVA Air, gửi cho tôi chuyến anh chị ưng, rồi tôi sẽ đích thân gọi lại. Vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa.",
+    "description": "Tôi là chuyên viên du lịch, ba mươi năm nay chuyên lo các chuyến đi giữa Mỹ và Việt Nam. Anh chị cho tôi biết muốn đi đâu và khi nào. Xem giá vé trực tiếp từ Mỹ đi Việt Nam, gửi cho tôi chuyến anh chị ưng, rồi tôi sẽ đích thân lo tiếp. Vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa.",
     "cta": "Tìm chuyến bay cho anh chị",
     "priceNote": "Mọi mức giá ở đây là trọn gói chuyến đi — đặt vé, chọn chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo trước khi anh chị bay.",
     "closingTitle": "Anh chị sẵn sàng chưa? Để tôi lo phần còn lại.",
     "specialistEyebrow": "Rất vui được làm quen",
-    "specialistTitle": "Anh chị có tôi, từ cuộc gọi đầu tiên đến khi chuyến đi kết thúc — và cả những chuyến sau nữa.",
-    "specialistBody": "Tôi là Hanh Newtec. Nhiều năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình gọi cho tôi từ những ngày đầu đến nay vẫn gọi tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, visa, mã QR trước khi đến và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
-    "specialistCta": "Gọi cho tôi bất cứ lúc nào"
+    "specialistTitle": "Anh chị có tôi, từ lời nhắn đầu tiên đến khi chuyến đi kết thúc — và cả những chuyến sau nữa.",
+    "specialistBody": "Tôi là Hanh Newtec. Suốt ba chục năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình tìm đến tôi từ những ngày đầu đến nay vẫn tìm tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, visa, mã QR trước khi đến và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
+    "specialistCta": "Gửi yêu cầu cho tôi"
   },
   "Inquiry": {
     "eyebrow": "Sắp xong rồi",
@@ -67,10 +66,10 @@
     },
     "passengers": {
       "title": "Những ai cùng đi?",
-      "description": "Anh chị cho tôi tên từng hành khách đúng như trên hộ chiếu. Hãng bay giữ chỗ theo tên hợp pháp và ngày sinh, nên đây là phần giúp tôi giữ chỗ cho cả đoàn.",
-      "optionalNote": "Phần này không bắt buộc để gửi yêu cầu. Anh chị cứ để trống, tôi sẽ hỏi lại khi mình nói chuyện — anh chị điền được bao nhiêu thì tôi giữ chỗ sớm được bấy nhiêu.",
-      "holdTitle": "Đây là cách tôi giữ chỗ trước cho anh chị",
-      "holdBody": "Có những tên này là tôi giữ được các chỗ ngồi này trước cho anh chị, trước khi giá vé thay đổi. Vé xuất sai tên so với hộ chiếu phải xuất lại và anh chị chịu phí, nên anh chị kiểm tra kỹ từng chữ với chính cuốn hộ chiếu giúp tôi.",
+      "description": "Anh chị cho tôi tên từng hành khách đúng như trên hộ chiếu.",
+      "optionalNote": "Phần này không bắt buộc để gửi yêu cầu. Anh chị cứ để trống, tôi sẽ hỏi khi mình nói chuyện — có tên sớm chừng nào thì tôi giữ được giá sớm chừng đó.",
+      "holdTitle": "Vì sao tôi cần thông tin này",
+      "holdBody": "Giá vé thay đổi liên tục. Khi nhận được yêu cầu của anh chị, tôi đi tìm mức giá thấp nhất có thể và dùng tên theo hộ chiếu để giữ ngay mức giá đó. Nếu anh chị quyết định mua, anh chị được đúng giá đó. Nếu anh chị không mua, mức giá đó tự hủy — không thu khoản nào và anh chị không nợ gì cả. Chỉ có một điều cần kiểm tra kỹ: tên phải trùng khớp với hộ chiếu. Vé xuất sai tên phải xuất lại, và cái đó tốn tiền.",
       "types": {
         "ADULT": "Người lớn {number}",
         "CHILD": "Trẻ em {number}",
@@ -79,7 +78,6 @@
       "givenName": "Tên và tên đệm theo hộ chiếu",
       "familyName": "Họ theo hộ chiếu",
       "nameHint": "Đúng như in trên hộ chiếu.",
-      "dateOfBirth": "Ngày sinh",
       "reviewTitle": "Tên theo hộ chiếu",
       "reviewMissing": "Anh chị sẽ cho tôi sau"
     },
@@ -127,10 +125,9 @@
       "email": "Nhập địa chỉ email hợp lệ.",
       "transactionalConsent": "Tôi cần anh chị đồng ý thì mới có thể xử lý yêu cầu này.",
       "partyDataAuthority": "Xác nhận rằng anh chị có thể cung cấp thông tin cho các hành khách này.",
-      "submit": "Yêu cầu chưa gửi được. Anh chị thử lại giúp tôi, hoặc cứ gọi cho tôi.",
+      "submit": "Yêu cầu chưa gửi được. Anh chị thử lại giúp tôi, hoặc gửi yêu cầu qua email, tôi sẽ lo tiếp.",
       "phone": "Nhập số điện thoại để tôi có thể gọi.",
-      "preferredContactMethod": "Chọn cách anh chị muốn được liên hệ.",
-      "passengerDateOfBirth": "Nhập ngày sinh trong quá khứ."
+      "preferredContactMethod": "Chọn cách anh chị muốn được liên hệ."
     },
     "selected": {
       "title": "Chuyến bay của anh chị",
@@ -190,10 +187,10 @@
     "pickDepartureBody": "Chọn ngày khởi hành trên lịch để xem các chuyến bay.",
     "loading": "Để tôi xem giá vé…",
     "errorTitle": "Xin lỗi, tôi chưa tải được các chuyến này",
-    "errorBody": "Có trục trặc ở phía tôi. Anh chị thử lại giúp, hoặc cứ gọi cho tôi để tôi tìm giúp.",
+    "errorBody": "Có trục trặc ở phía tôi. Anh chị thử lại giúp, hoặc gửi ngày bay cho tôi để tôi tìm giúp.",
     "retry": "Thử lại",
     "noOffersTitle": "Ngày này chưa có chuyến nào, xin lỗi anh chị",
-    "noOffersBody": "Tôi không có chuyến nào cho ngày này. Anh chị thử vài ngày lân cận, hoặc gọi cho tôi để tôi tự tìm.",
+    "noOffersBody": "Tôi không có chuyến nào cho ngày này. Anh chị thử vài ngày lân cận, hoặc gửi ngày bay cho tôi để tôi tự tìm.",
     "resultsTitle": "Chuyến bay cho anh chị",
     "resultsCount": "{count, plural, other {# lựa chọn}}",
     "sortLabel": "Sắp xếp theo",
@@ -217,7 +214,7 @@
     "priceIncludes": "Mọi mức giá bên dưới là trọn gói — đặt vé, chọn chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo cho anh chị. Chưa thu khoản nào ở đây.",
     "showMore": "Xem thêm {count} lựa chọn (còn {remaining})",
     "select": "Tiếp tục với chuyến bay này",
-    "moreOptionsBody": "Về các hành trình bay khác, hoặc ưu đãi cho đoàn và hạng thương gia, anh chị cứ gửi yêu cầu hoặc gọi cho tôi để tôi báo giá."
+    "moreOptionsBody": "Về các hành trình bay khác, hoặc ưu đãi cho đoàn và hạng thương gia, anh chị cứ gửi yêu cầu để tôi báo giá."
   },
   "Received": {
     "eyebrow": "Cảm ơn anh chị!",
@@ -230,8 +227,8 @@
     "specialistBody": "Tôi tự xem lại lịch trình, giá vé và các điều kiện trước khi gửi lại cho anh chị.",
     "homeCta": "Về trang chủ",
     "notReserved": "Yêu cầu này chưa giữ chỗ. Tôi sẽ xác nhận mọi thứ với anh chị trước khi xuất vé.",
-    "callTitle": "Anh chị có câu hỏi ngay bây giờ?",
-    "callBody": "Anh chị cứ gọi cho tôi và cho biết mã yêu cầu ở trên.",
+    "askTitle": "Anh chị có câu hỏi ngay bây giờ?",
+    "askBody": "Anh chị gửi email cho tôi và cho biết mã yêu cầu ở trên.",
     "methodEmail": "email",
     "methodPhone": "điện thoại"
   },
@@ -244,13 +241,13 @@
     "privacy": {
       "eyebrow": "Quyền riêng tư",
       "title": "Cách tôi giữ thông tin của anh chị",
-      "intro": "Tôi chỉ xin những gì cần để báo giá chuyến đi và gọi lại cho anh chị. Tôi không bán thông tin, không chia sẻ ra ngoài công ty và không dùng để quảng cáo tới anh chị.",
+      "intro": "Tôi chỉ xin những gì cần để báo giá chuyến đi và trả lời anh chị. Tôi không bán thông tin, không chia sẻ ra ngoài công ty và không dùng để quảng cáo tới anh chị.",
       "section1Title": "Những gì tôi thu thập",
       "section1Body": "Họ tên, địa chỉ email, số điện thoại, ngôn ngữ ưu tiên, chuyến đi anh chị hỏi và những gì anh chị viết trong phần hỗ trợ hoặc ghi chú. Trang này không bao giờ hỏi thông tin hộ chiếu, thanh toán hay y tế — những thứ đó để sau, trực tiếp với tôi, khi mình thật sự đặt vé.",
       "section2Title": "Tôi dùng thông tin để làm gì",
       "section2Body": "Yêu cầu của anh chị được gửi qua email tới văn phòng và hiển thị trong một trang chỉ dành cho nhân viên, để tôi tìm phương án và liên hệ lại. Tôi dùng thông tin để trả lời anh chị và thu xếp chuyến đi anh chị hỏi, không dùng vào việc gì khác. Không danh sách quảng cáo, không môi giới dữ liệu, không bên thứ ba nào ngoài các hãng bay và nhà cung cấp mà chính chuyến đi của anh chị cần đến.",
       "section3Title": "Lưu giữ và xóa thông tin",
-      "section3Body": "Trang dành cho nhân viên được bảo vệ bằng mật khẩu và chỉ chứa những thông tin nêu trên. Tôi lưu yêu cầu trong thời gian hỗ trợ anh chị, và sau đó lưu hồ sơ theo yêu cầu đối với một đại lý du lịch được cấp phép. Anh chị cứ gọi hoặc gửi email bất cứ lúc nào để hỏi tôi đang lưu gì, sửa lại hoặc xóa đi, tôi sẽ lo ngay."
+      "section3Body": "Trang dành cho nhân viên được bảo vệ bằng mật khẩu và chỉ chứa những thông tin nêu trên. Tôi lưu yêu cầu trong thời gian hỗ trợ anh chị, và sau đó lưu hồ sơ theo yêu cầu đối với một đại lý du lịch được cấp phép. Anh chị cứ gửi email bất cứ lúc nào để hỏi tôi đang lưu gì, sửa lại hoặc xóa đi, tôi sẽ lo ngay."
     },
     "terms": {
       "eyebrow": "Điều khoản dịch vụ",
@@ -261,7 +258,7 @@
       "section2Title": "Gửi yêu cầu không phải là mua",
       "section2Body": "Gửi biểu mẫu không mất phí, không giữ chỗ và không nhận thanh toán — trang này không bao giờ hỏi thẻ của anh chị. Tôi kiểm tra giá chính xác trong hệ thống đặt chỗ được ủy quyền của công ty, báo lại cho anh chị, rồi mình thu xếp việc đặt vé và thanh toán cùng nhau khi anh chị đã hài lòng.",
       "section3Title": "Cách tôi liên hệ và những gì tôi lo",
-      "section3Body": "Tôi xin cả email lẫn số điện thoại để vẫn liên lạc được nếu một cách không thành công, và chỉ liên hệ về yêu cầu anh chị đã gửi. Ngoài vé máy bay, tôi còn lo hồ sơ visa Việt Nam, yêu cầu chỗ ngồi, hỗ trợ đặc biệt và việc đổi vé về sau. Vé đoàn và ưu đãi hạng thương gia tôi báo giá qua điện thoại, anh chị cứ gọi cho tôi."
+      "section3Body": "Tôi xin cả email lẫn số điện thoại để vẫn liên lạc được nếu một cách không thành công, và chỉ liên hệ về yêu cầu anh chị đã gửi. Ngoài vé máy bay, tôi còn lo hồ sơ visa Việt Nam, yêu cầu chỗ ngồi, hỗ trợ đặc biệt và việc đổi vé về sau. Vé đoàn và ưu đãi hạng thương gia tôi báo giá riêng, anh chị cứ gửi yêu cầu để tôi báo lại."
     },
     "accessibility": {
       "eyebrow": "Khả năng tiếp cận",
@@ -272,7 +269,7 @@
       "section2Title": "Hỗ trợ chuyến đi",
       "section2Body": "Anh chị cho tôi biết nhu cầu di chuyển, giao tiếp, chỗ ngồi hoặc hỗ trợ khác trong biểu mẫu yêu cầu, tôi sẽ thu xếp với hãng bay. Anh chị chỉ cần ghi những gì hãng bay cần biết — xin đừng gửi hồ sơ y tế riêng tư.",
       "section3Title": "Cho tôi biết khi gặp trở ngại",
-      "section3Body": "Anh chị gọi hoặc gửi email cho tôi kèm trang, thiết bị, trình duyệt và mô tả ngắn về vấn đề. Tôi sẽ tìm cách khác để hỗ trợ anh chị ngay trong lúc lo sửa."
+      "section3Body": "Anh chị gửi email cho tôi kèm trang, thiết bị, trình duyệt và mô tả ngắn về vấn đề. Tôi sẽ tìm cách khác để hỗ trợ anh chị ngay trong lúc lo sửa."
     }
   }
 }

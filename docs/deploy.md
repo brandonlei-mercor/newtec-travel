@@ -32,20 +32,20 @@ migration script.
 Set values, never names, through the Render dashboard for the three marked secret. The
 rest are safe on a command line.
 
-| Variable                     | Web | Worker | Value                                                    |
-| ---------------------------- | :-: | :----: | -------------------------------------------------------- |
-| `APP_ENV`                    |  ✓  |   ✓    | `production`                                             |
-| `APP_URL`                    |  ✓  |   ✓    | The service's own `https://` URL                         |
-| `DATABASE_URL`               |  ✓  |   ✓    | The database's **internal** connection string (secret)   |
-| `DUFFEL_ACCESS_TOKEN`        |  ✓  |        | A live token; `duffel_test_…` is refused (secret)        |
-| `ADMIN_PASSWORD`             |  ✓  |   ✓    | 16+ random characters (secret)                           |
-| `INQUIRY_NOTIFICATION_EMAIL` |     |   ✓    | `newtectravelagency@gmail.com`                           |
-| `INQUIRY_EMAIL_ENABLED`      |     |   ✓    | `true` once a relay is configured                        |
-| `SMTP_HOST` / `SMTP_PORT`    |     |   ✓    | `smtp.gmail.com` / `465`                                 |
-| `SMTP_SECURE`                |     |   ✓    | `true` on port 465                                       |
-| `SMTP_USER`                  |     |   ✓    | `newtectravelagency@gmail.com`                           |
-| `SMTP_PASSWORD`              |     |   ✓    | A Gmail app password (secret)                            |
-| `SMTP_FROM`                  |     |   ✓    | `NEWTEC TRAVEL AND TOURS <newtectravelagency@gmail.com>` |
+| Variable                     | Web | Worker | Value                                                  |
+| ---------------------------- | :-: | :----: | ------------------------------------------------------ |
+| `APP_ENV`                    |  ✓  |   ✓    | `production`                                           |
+| `APP_URL`                    |  ✓  |   ✓    | The service's own `https://` URL                       |
+| `DATABASE_URL`               |  ✓  |   ✓    | The database's **internal** connection string (secret) |
+| `DUFFEL_ACCESS_TOKEN`        |  ✓  |        | A live token; `duffel_test_…` is refused (secret)      |
+| `ADMIN_PASSWORD`             |  ✓  |   ✓    | 16+ random characters (secret)                         |
+| `INQUIRY_NOTIFICATION_EMAIL` |     |   ✓    | `newtectravelagency@gmail.com`                         |
+| `INQUIRY_EMAIL_ENABLED`      |     |   ✓    | `true` once a relay is configured                      |
+| `SMTP_HOST` / `SMTP_PORT`    |     |   ✓    | `smtp.resend.com` / `465`                              |
+| `SMTP_SECURE`                |     |   ✓    | `true` on port 465                                     |
+| `SMTP_USER`                  |     |   ✓    | `resend`, literally                                    |
+| `SMTP_PASSWORD`              |     |   ✓    | A Resend API key, `re_…` (secret)                      |
+| `SMTP_FROM`                  |     |   ✓    | `NEWTEC TRAVEL AND TOURS <hanh@newtectravel.com>`      |
 
 `APP_URL` is load-bearing twice over: it is one of the two origins the mutation guard
 accepts, and the `/admin` session cookie is marked `Secure` only when it begins `https://`.
@@ -109,8 +109,21 @@ render logs <service-id> --tail
 
 ## Turning email on
 
-Once the relay is configured (see the SMTP variables above), create the worker from the
-same repo and image:
+A request sends one email: a welcome addressed to the customer, copying the agency
+mailbox, so the reply thread the customer answers in is the thread the agency works out
+of. Reply-To is the Gmail address regardless of who the relay sends as.
+
+The relay is Resend, reached over SMTP so the app needs no Resend SDK. Before the first
+send, verify `newtectravel.com` in the Resend dashboard and publish the DNS records it
+gives you at GoDaddy, where the domain's nameservers live. `SMTP_FROM` is then a mailbox
+at that domain: `newtectravelagency@gmail.com` cannot be the sender, because Resend sends
+only as domains the account holds and Gmail's DMARC policy tells receivers to reject
+anything else claiming to be gmail.com. `src/shared/env.ts` refuses to boot on a free-mail
+sender rather than let the failure arrive one unanswered lead at a time. `SMTP_USER` is
+the literal string `resend`; the password is the API key.
+
+With the relay configured (see the SMTP variables above), create the worker from the same
+repo and image:
 
 ```bash
 render services create \

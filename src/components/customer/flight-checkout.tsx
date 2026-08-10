@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, LoaderCircle } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -9,7 +9,6 @@ import { SelectedFlightCard } from "./selected-flight-card";
 import type { ContactMethod, FlightSelection, InquiryPayload, InquiryResponse } from "./types";
 import { Field, Notice, inputClassName, textareaClassName } from "@/components/shared/customer-ui";
 import type { PassengerType } from "@/shared/contracts/inquiry";
-import { isoDate } from "@/shared/dates";
 import { cn } from "@/shared/utils";
 
 /** One traveler as their passport spells them. */
@@ -17,7 +16,6 @@ type PassengerForm = {
   type: PassengerType;
   givenName: string;
   familyName: string;
-  dateOfBirth: string;
 };
 
 type FormState = {
@@ -66,8 +64,7 @@ function blankPassengers(selection: FlightSelection): PassengerForm[] {
   const blank = (type: PassengerType): PassengerForm => ({
     type,
     givenName: "",
-    familyName: "",
-    dateOfBirth: ""
+    familyName: ""
   });
   return [
     ...Array.from({ length: selection.adults }, () => blank("ADULT")),
@@ -90,22 +87,18 @@ function numberPassengers(passengers: PassengerForm[]) {
 }
 
 /**
- * Only the travelers who were named in full, trimmed and ready to send. A line
- * with a first name and no date of birth holds nothing at an airline, and
- * sending it would leave the agency reading a manifest that looks more complete
- * than it is; those lines are simply left for the callback.
+ * Only the travelers who were named in full, trimmed and ready to send. Half a
+ * name blocks nothing at an airline, and sending it would leave the agency
+ * reading a manifest that looks more complete than it is; those lines are
+ * simply left for the callback.
  */
 function completedPassengers(passengers: PassengerForm[]) {
   return passengers
-    .filter(
-      (passenger) =>
-        passenger.givenName.trim() && passenger.familyName.trim() && passenger.dateOfBirth
-    )
+    .filter((passenger) => passenger.givenName.trim() && passenger.familyName.trim())
     .map((passenger) => ({
       type: passenger.type,
       givenName: passenger.givenName.trim(),
-      familyName: passenger.familyName.trim(),
-      dateOfBirth: passenger.dateOfBirth
+      familyName: passenger.familyName.trim()
     }));
 }
 
@@ -128,8 +121,6 @@ export function FlightCheckout({ selection }: { selection: FlightSelection }) {
     ...initialState,
     passengers: blankPassengers(selection)
   }));
-  /** Nobody has been born tomorrow; this caps every date-of-birth picker. */
-  const today = useMemo(() => isoDate(new Date()), []);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -173,20 +164,12 @@ export function FlightCheckout({ selection }: { selection: FlightSelection }) {
       // a filtered mailbox must not be the only way to reach a customer.
       if (form.phone.replace(/\D/g, "").length < 7) next.phone = t("errors.phone");
     }
-    if (currentStep === 2) {
-      /*
-       * Nothing here is required. A customer without the passports in front of
-       * them still gets to send the request; the names are what let the agency
-       * hold seats early, not what lets it take the request at all. The only
-       * thing rejected is a date that has not happened, which is a typo rather
-       * than a blank.
-       */
-      form.passengers.forEach((passenger, index) => {
-        if (passenger.dateOfBirth && passenger.dateOfBirth > today) {
-          next[passengerErrorKey(index, "dateOfBirth")] = t("errors.passengerDateOfBirth");
-        }
-      });
-    }
+    /*
+     * Step 2 validates nothing at all. Every name on it is optional — they are
+     * what let the agency block a fare early, not what lets it take the request
+     * — and a half-written one is dropped on the way out rather than argued
+     * with here.
+     */
     if (currentStep === 3) {
       if (!form.transactionalConsent) next.transactionalConsent = t("errors.transactionalConsent");
       if (!form.partyDataAuthority) next.partyDataAuthority = t("errors.partyDataAuthority");
@@ -342,12 +325,7 @@ export function FlightCheckout({ selection }: { selection: FlightSelection }) {
 
           {step === 1 ? <ContactStep form={form} errors={errors} update={update} /> : null}
           {step === 2 ? (
-            <TravelersStep
-              form={form}
-              errors={errors}
-              updatePassenger={updatePassenger}
-              today={today}
-            />
+            <TravelersStep form={form} errors={errors} updatePassenger={updatePassenger} />
           ) : null}
           {step === 3 ? (
             <ReviewStep form={form} errors={errors} update={update} selection={selection} />
@@ -519,21 +497,19 @@ function ContactStep({ form, errors, update }: StepProps) {
 
 /**
  * The passport manifest. Every other field on this form is about reaching the
- * customer; this one is about the airline, which will hold a seat against a
- * legal name and a date of birth and nothing else. The copy says as much,
- * because a customer asked for a passport spelling with no reason given will
- * reasonably wonder why a callback form wants it.
+ * customer; this one is about the airline, which will block a fare against a
+ * legal name and nothing else. The copy says as much, because a customer asked
+ * for a passport spelling with no reason given will reasonably wonder why a
+ * callback form wants it.
  */
 function TravelersStep({
   form,
   errors,
-  updatePassenger,
-  today
+  updatePassenger
 }: {
   form: FormState;
   errors: Record<string, string>;
   updatePassenger: (index: number, field: keyof PassengerForm, value: string) => void;
-  today: string;
 }) {
   const t = useTranslations("Inquiry");
   return (
@@ -586,18 +562,6 @@ function TravelersStep({
                   onChange={(event) => updatePassenger(index, "familyName", event.target.value)}
                 />
               </Field>
-              <Field
-                label={t("passengers.dateOfBirth")}
-                error={errors[passengerErrorKey(index, "dateOfBirth")]}
-              >
-                <input
-                  className={inputClassName}
-                  type="date"
-                  max={today}
-                  value={passenger.dateOfBirth}
-                  onChange={(event) => updatePassenger(index, "dateOfBirth", event.target.value)}
-                />
-              </Field>
             </div>
           </fieldset>
         ))}
@@ -645,12 +609,9 @@ function ReviewStep({
               <li className="flex flex-wrap gap-x-2" key={`${passenger.type}-${number}`}>
                 <span className="muted">{t(`passengers.types.${passenger.type}`, { number })}</span>
                 {named ? (
-                  <>
-                    <span className="font-semibold">
-                      {passenger.givenName} {passenger.familyName}
-                    </span>
-                    <span className="muted tabular-nums">{passenger.dateOfBirth}</span>
-                  </>
+                  <span className="font-semibold">
+                    {passenger.givenName} {passenger.familyName}
+                  </span>
                 ) : (
                   <span className="font-semibold">{t("passengers.reviewMissing")}</span>
                 )}

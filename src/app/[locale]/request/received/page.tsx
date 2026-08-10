@@ -1,4 +1,4 @@
-import { CheckCircle2, Mail, MessageSquareText, Phone } from "lucide-react";
+import { AtSign, CheckCircle2, Mail, MessageSquareText } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { COMPANY } from "@/shared/company";
@@ -55,20 +55,20 @@ export default async function RequestReceivedPage({
               </div>
             ))}
             <div className="grid grid-cols-[1.5rem_1fr] gap-4 border-t border-[var(--line)] pt-7">
-              <Phone
+              <AtSign
                 aria-hidden="true"
                 className="mt-0.5 text-[color:var(--brand)]"
                 size={20}
                 strokeWidth={1.6}
               />
               <div>
-                <h2 className="text-base font-bold tracking-[-0.01em]">{t("callTitle")}</h2>
-                <p className="muted mt-2 text-sm leading-6">{t("callBody")}</p>
+                <h2 className="text-base font-bold tracking-[-0.01em]">{t("askTitle")}</h2>
+                <p className="muted mt-2 text-sm leading-6">{t("askBody")}</p>
                 <a
-                  className="mt-2 inline-block font-bold tabular-nums text-[color:var(--brand)]"
-                  href={COMPANY.phone.href}
+                  className="mt-2 inline-block break-all font-bold text-[color:var(--brand)]"
+                  href={COMPANY.email.href}
                 >
-                  {COMPANY.phone.display}
+                  {COMPANY.email.address}
                 </a>
               </div>
             </div>

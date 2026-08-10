@@ -71,8 +71,7 @@ function serialize(inquiry: Awaited<ReturnType<typeof listInquiries>>[number]) {
     passengers: inquiry.passengers.map((passenger) => ({
       type: passenger.type,
       givenName: passenger.givenName,
-      familyName: passenger.familyName,
-      dateOfBirth: passenger.dateOfBirth
+      familyName: passenger.familyName
     })),
     visaInterest: inquiry.visaInterest,
     selectedOffer: inquiry.selectedOffer,

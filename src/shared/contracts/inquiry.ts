@@ -32,17 +32,18 @@ export const PASSENGER_TYPES = ["ADULT", "CHILD", "INFANT"] as const;
 export type PassengerType = (typeof PASSENGER_TYPES)[number];
 
 /**
- * One traveler as the passport spells them. An airline holds a seat against a
- * legal name and a date of birth, never against an email address, so this is
- * the part of a request that lets the agency put the party on hold before the
- * fare moves. Deliberately no passport number: nothing here needs one, and the
- * document itself is collected later by phone.
+ * One traveler as the passport spells them. An airline blocks a fare against a
+ * legal name, never against an email address, so this is the part of a request
+ * that lets the agency hold a price before it moves. The name is all of it:
+ * deliberately no passport number and no date of birth, because neither is
+ * needed to block a fare and both are more of the customer than we should be
+ * keeping. Not `.strict()`, so an older cached bundle that still posts a date
+ * has it dropped rather than having the whole request rejected.
  */
 const passengerSchema = z.object({
   type: z.enum(PASSENGER_TYPES),
   givenName: singleLine(z.string().trim().min(1).max(80)),
-  familyName: singleLine(z.string().trim().min(1).max(80)),
-  dateOfBirth: z.iso.date()
+  familyName: singleLine(z.string().trim().min(1).max(80))
 });
 
 export type PassengerInput = z.infer<typeof passengerSchema>;
@@ -70,8 +71,8 @@ export const inquiryInputSchema = z
      *
      * Optional, and allowed to be short: a customer who does not have every
      * passport in front of them still gets to send the request, and the agency
-     * holds what it can and asks for the rest by phone. Losing the lead over a
-     * missing date of birth would cost more than holding a seat late.
+     * blocks what fares it can and asks for the rest by phone. Losing the lead
+     * over a missing name would cost more than blocking a fare late.
      */
     passengers: z.array(passengerSchema).max(9).optional(),
     contact: z.object({

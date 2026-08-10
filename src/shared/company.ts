@@ -17,22 +17,23 @@ export const COMPANY = {
     name: "Hanh Newtec",
     title: "Travel Specialist"
   },
-  address: {
-    line1: "836 Schwerin Street",
-    line2: "Daly City, CA 94014",
-    formatted: "836 Schwerin Street, Daly City, CA 94014"
-  },
-  phone: {
-    display: "(415) 626 3579",
-    href: "tel:+14156263579"
-  },
+  /*
+   * The city, and no further. The office is a room in Hanh's own building and
+   * the business runs by appointment, so a street address on a public page
+   * invites walk-ins to a door nobody is watching. Daly City is enough to place
+   * the agency for the families who care that it is local.
+   */
+  locality: "Daly City, CA",
+  /*
+   * Email is the only inbound channel the site publishes. Hanh is on the phone
+   * with the airlines most of the day, so a number on the page promises a pickup
+   * that often cannot happen; a request in the inbox is answered either way.
+   */
   email: {
     address: "newtectravelagency@gmail.com",
     href: "mailto:newtectravelagency@gmail.com"
   },
-  reviewsUrl: "https://www.yelp.com/biz/newtec-travel-agency-daly-city",
-  mapsUrl:
-    "https://www.google.com/maps/search/?api=1&query=836%20Schwerin%20Street%2C%20Daly%20City%2C%20CA%2094014"
+  reviewsUrl: "https://www.yelp.com/biz/newtec-travel-agency-daly-city"
 } as const;
 
 export const COMPANY_SMTP_FROM = `${COMPANY.name} <${COMPANY.email.address}>`;

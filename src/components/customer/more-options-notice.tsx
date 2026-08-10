@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { COMPANY } from "@/shared/company";
 
@@ -22,14 +22,14 @@ export function MoreOptionsNotice() {
         <p className="max-w-3xl text-sm font-semibold leading-6 sm:text-[0.95rem]">
           {t("moreOptionsBody")}
         </p>
-        {/* The number is the whole point of the band, so it is a tap target and
+        {/* The address is the whole point of the band, so it is a tap target and
             not a phrase inside a sentence. */}
         <a
-          className="inline-flex items-center gap-2 whitespace-nowrap text-base font-bold tabular-nums text-[color:var(--brand-dark)]"
-          href={COMPANY.phone.href}
+          className="inline-flex items-center gap-2 break-all text-base font-bold text-[color:var(--brand-dark)]"
+          href={COMPANY.email.href}
         >
-          <Phone aria-hidden="true" size={17} />
-          {COMPANY.phone.display}
+          <Mail aria-hidden="true" className="shrink-0" size={17} />
+          {COMPANY.email.address}
         </a>
       </div>
     </aside>

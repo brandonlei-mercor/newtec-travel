@@ -52,22 +52,6 @@ export function validateInquiryInput(input: unknown, now = new Date()): InquiryI
       { code: "custom", path: ["returnDate"], message: "INQUIRY_DATE_MORE_THAN_330_DAYS" }
     ]);
   }
-  /*
-   * A date of birth is the one date in a request that must already have
-   * happened. Checked here rather than in the shared contract for the same
-   * reason the departure date is: only the server knows what day it is.
-   */
-  (parsed.passengers ?? []).forEach((passenger, index) => {
-    if (passenger.dateOfBirth > today || passenger.dateOfBirth < "1900-01-01") {
-      throw new z.ZodError([
-        {
-          code: "custom",
-          path: ["passengers", index, "dateOfBirth"],
-          message: "INQUIRY_DATE_OF_BIRTH_INVALID"
-        }
-      ]);
-    }
-  });
   return parsed;
 }
 
@@ -143,7 +127,6 @@ export async function createInquiry(
           type: passenger.type,
           givenName: passenger.givenName,
           familyName: passenger.familyName,
-          dateOfBirth: passenger.dateOfBirth,
           createdAt: now
         }))
       );

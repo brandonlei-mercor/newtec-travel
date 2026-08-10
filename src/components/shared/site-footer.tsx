@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone, Star } from "lucide-react";
+import { Mail, MapPin, Star } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { COMPANY } from "@/shared/company";
 import { BrandLockup } from "./brand-lockup";
@@ -38,33 +38,14 @@ export function SiteFooter({ labels }: SiteFooterProps) {
         </div>
 
         <address className="grid content-start gap-4 text-sm not-italic text-[color:var(--ink-soft)]">
-          <p className="eyebrow mb-1">{COMPANY.address.line2}</p>
+          {/* Where the agency is, not where to turn up: the office works by
+              appointment, so the city is the whole of the public address. */}
+          <p className="flex items-center gap-3">
+            <MapPin aria-hidden="true" className="shrink-0 text-[color:var(--brand)]" size={15} />
+            {COMPANY.locality}
+          </p>
           <a
-            className="flex items-start gap-3 transition-colors hover:text-[color:var(--ink)]"
-            href={COMPANY.mapsUrl}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <MapPin
-              aria-hidden="true"
-              className="mt-0.5 shrink-0 text-[color:var(--brand)]"
-              size={15}
-            />
-            <span>
-              {COMPANY.address.line1}
-              <br />
-              {COMPANY.address.line2}
-            </span>
-          </a>
-          <a
-            className="flex items-center gap-3 hover:text-[color:var(--ink)]"
-            href={COMPANY.phone.href}
-          >
-            <Phone aria-hidden="true" className="text-[color:var(--accent)]" size={15} /> Tel{" "}
-            {COMPANY.phone.display}
-          </a>
-          <a
-            className="flex items-center gap-3 hover:text-[color:var(--ink)]"
+            className="flex items-center gap-3 break-all hover:text-[color:var(--ink)]"
             href={COMPANY.email.href}
           >
             <Mail aria-hidden="true" className="text-[color:var(--brand)]" size={15} />

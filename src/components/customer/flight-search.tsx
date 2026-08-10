@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Check, ChevronLeft, ChevronRight, Phone } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Mail } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { apiRequest } from "./api";
@@ -558,14 +558,14 @@ export function FlightSearch({
           />
         ) : offers.length === 0 && !filtersActive ? (
           /* Nothing to pick means nothing to request, so the way forward is a
-             call rather than a form with no flight in it. */
+             message to Hanh rather than a form with no flight in it. */
           <EmptyState
             title={t("noOffersTitle")}
             description={t("noOffersBody")}
             action={
-              <a className="button-secondary" href={COMPANY.phone.href}>
-                <Phone aria-hidden="true" size={15} />
-                {COMPANY.phone.display}
+              <a className="button-secondary" href={COMPANY.email.href}>
+                <Mail aria-hidden="true" size={15} />
+                {COMPANY.email.address}
               </a>
             }
           />

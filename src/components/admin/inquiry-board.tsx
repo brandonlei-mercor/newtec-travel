@@ -35,7 +35,6 @@ export type AdminInquiry = {
     type: PassengerType;
     givenName: string;
     familyName: string;
-    dateOfBirth: string;
   }[];
   visaInterest: boolean;
   selectedOffer: string | null;
@@ -268,8 +267,7 @@ function InquiryCard({
     seen[passenger.type] += 1;
     return {
       label: `${PASSENGER_LABELS[passenger.type]} ${seen[passenger.type]}`,
-      name: `${passenger.familyName}, ${passenger.givenName}`,
-      dateOfBirth: passenger.dateOfBirth
+      name: `${passenger.familyName}, ${passenger.givenName}`
     };
   });
 
@@ -328,7 +326,7 @@ function InquiryCard({
           <Detail label="Passport names">
             {manifest.map((traveler) => (
               <span className="block" key={traveler.label}>
-                {traveler.label}: {traveler.name} &middot; {traveler.dateOfBirth}
+                {traveler.label}: {traveler.name}
               </span>
             ))}
           </Detail>

@@ -15,15 +15,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "@playwright/test";
-import {
-  EMAIL_LOCKUP,
-  FLAG_RED,
-  FLAG_YELLOW,
-  PANEL,
-  PLANE,
-  SUBLINE,
-  VIETNAM
-} from "../src/shared/brand-artwork";
+import { EMAIL_LOCKUP, PANEL, PLANE, SUBLINE, VIETNAM } from "../src/shared/brand-artwork";
 
 /** The navy the site draws the lockup in, and the white it sits on in mail. */
 const INK = "#1f3a93";
@@ -57,10 +49,9 @@ const page = `<!doctype html>
     <path d="${SUBLINE.path}" fill="${INK}" fill-rule="evenodd" />
   </svg>
   <!-- The country closes the lockup in the signature exactly as it does in the
-       site header, and in the flag's own colours rather than the agency navy. -->
+       site header, in the same ink as the plane and the wordmark. -->
   <svg width="${EMAIL_LOCKUP.vietnamWidth}" height="${EMAIL_LOCKUP.markHeight}" viewBox="0 0 ${VIETNAM.width} ${VIETNAM.height}">
-    <path d="${VIETNAM.path}" fill="${FLAG_RED}" fill-rule="evenodd" />
-    <path d="${VIETNAM.star}" fill="${FLAG_YELLOW}" />
+    <path d="${VIETNAM.path}" fill="${INK}" fill-rule="evenodd" />
   </svg>
 </div></body></html>`;
 

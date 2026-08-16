@@ -1,4 +1,4 @@
-import { FLAG_RED, FLAG_YELLOW, PANEL, PLANE, SUBLINE, VIETNAM } from "@/shared/brand-artwork";
+import { PANEL, PLANE, SUBLINE, VIETNAM } from "@/shared/brand-artwork";
 import { COMPANY } from "@/shared/company";
 import { cn } from "@/shared/utils";
 
@@ -18,11 +18,10 @@ function VietnamMark({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
-      className={cn("shrink-0", className)}
+      className={cn("shrink-0 text-[color:var(--brand)]", className)}
       viewBox={`0 0 ${VIETNAM.width} ${VIETNAM.height}`}
     >
-      <path d={VIETNAM.path} fill={FLAG_RED} fillRule="evenodd" />
-      <path d={VIETNAM.star} fill={FLAG_YELLOW} />
+      <path d={VIETNAM.path} fill="currentColor" fillRule="evenodd" />
     </svg>
   );
 }

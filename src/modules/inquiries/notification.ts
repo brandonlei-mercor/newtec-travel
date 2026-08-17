@@ -98,7 +98,7 @@ const COPY = {
       travelers: "Travelers",
       passengers: "Passport names",
       selectedOffer: "The flight you picked",
-      visa: "Vietnam visa",
+      visa: "Vietnam documents",
       assistance: "Special assistance",
       notes: "Your notes",
       contact: "How I will reach you"
@@ -140,7 +140,7 @@ const COPY = {
       travelers: "Số khách",
       passengers: "Tên trên hộ chiếu",
       selectedOffer: "Chuyến anh chị đã chọn",
-      visa: "Visa Việt Nam",
+      visa: "Giấy tờ Việt Nam",
       assistance: "Hỗ trợ đặc biệt",
       notes: "Ghi chú của anh chị",
       contact: "Cách tôi liên lạc"

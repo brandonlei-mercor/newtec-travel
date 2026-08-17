@@ -340,7 +340,7 @@ function InquiryCard({
             <FlightLines stored={inquiry.selectedOffer} />
           </Detail>
         ) : null}
-        {inquiry.visaInterest ? <Detail label="Visa">Asked about visa help</Detail> : null}
+        {inquiry.visaInterest ? <Detail label="Documents">Asked about document help</Detail> : null}
         {inquiry.specialAssistance ? (
           <Detail label="Assistance">{inquiry.specialAssistance}</Detail>
         ) : null}

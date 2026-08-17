@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "NEWTEC TRAVEL AND TOURS | US–Vietnam Flights",
-    "description": "Live fares from San Francisco, Los Angeles, Seattle, Chicago, and five other US cities to Vietnam, handled personally by Hanh Newtec at NEWTEC Travel and Tours in Daly City — flights, seat arrangements, visas, and everything in between."
+    "description": "Live fares from San Francisco, Los Angeles, Seattle, Chicago, and five other US cities to Vietnam, handled personally by Hanh Newtec at NEWTEC Travel and Tours in Daly City — flights, seat arrangements, documents, and everything in between."
   },
   "Nav": {
     "home": "NEWTEC TRAVEL AND TOURS home",
@@ -14,7 +14,7 @@
     "searchCta": "Find flights"
   },
   "Footer": {
-    "tagline": "I look after the whole trip between the US and Vietnam for you: the flights, the seats you sit in, the visas, and every little thing in between.",
+    "tagline": "I look after the whole trip between the US and Vietnam for you: the flights, the seats you sit in, the documents, and every little thing in between.",
     "privacy": "Privacy",
     "terms": "Terms",
     "disclaimer": "Sending a request does not hold a seat. I confirm your fare and every detail with you before your ticket is issued.",
@@ -25,13 +25,13 @@
   "Home": {
     "eyebrow": "Hi friends, I’m Hanh",
     "title": "Let me take care of your trip to Vietnam.",
-    "description": "I’m a travel specialist, and I’ve spent thirty years arranging trips between the US and Vietnam. Tell me where you want to go and when. Have a look at the live fares below, send me the one you like, and I’ll take it from there myself — the flight, your seats, your visa, your pre-arrival QR code, and everything in between.",
+    "description": "I’m a travel specialist, and I’ve spent thirty years arranging trips between the US and Vietnam. Tell me where you want to go and when. Have a look at the live fares below, send me the one you like, and I’ll take it from there myself — the flight, your seats, your documents, your pre-arrival QR code, and everything in between.",
     "cta": "Find your flights",
-    "priceNote": "Every price you see here is the whole trip — the booking, your seats, your visa, your pre-arrival QR code, and everything else I take care of before you fly.",
+    "priceNote": "Every price you see here is the whole trip — the booking, your seats, your documents, your pre-arrival QR code, and everything else I take care of before you fly.",
     "closingTitle": "Ready when you are. Let me take it from here.",
     "specialistEyebrow": "Nice to meet you",
     "specialistTitle": "You get me, from your first message until the trip is over — and for every trip after that.",
-    "specialistBody": "I’m Hanh Newtec, and I’ve been arranging flights between the Bay Area and Vietnam from the same little office in Daly City for three decades. A lot of the families who wrote to me at the beginning still come to me first today, and many of them have become friends. Your dates, your fare, your seats, your visa, your pre-arrival QR code, and your ticket all go through me, never through a booking engine.",
+    "specialistBody": "I’m Hanh Newtec, and I’ve been arranging flights between the Bay Area and Vietnam from the same little office in Daly City for three decades. A lot of the families who wrote to me at the beginning still come to me first today, and many of them have become friends. Your dates, your fare, your seats, your documents, your pre-arrival QR code, and your ticket all go through me, never through a booking engine.",
     "specialistCta": "Send me your request"
   },
   "Inquiry": {
@@ -89,8 +89,8 @@
       "email": "Email address",
       "phone": "Phone number",
       "phoneHint": "Include the country code when outside the U.S.",
-      "visaNoteTitle": "About your Vietnam visa",
-      "visaNoteBody": "For processing of Vietnam visa, we will need a Passport copy of the first page, headshot picture and Vietnam address. We’ll reach out with more details.",
+      "visaNoteTitle": "About your Vietnam documents",
+      "visaNoteBody": "For processing of Vietnam documents, we will need a Passport copy of the first page, headshot picture and Vietnam address. We’ll reach out with more details.",
       "flexibleDatesTitle": "My dates could move by a day or two",
       "flexibleDatesBody": "Tick this if your departure or return could be off by 1–2 days, and Hanh will find the best prices for your needs. Use the box below to tell me exactly how your departure or return could move.",
       "contactMethodTitle": "Best way to reach you",
@@ -133,7 +133,7 @@
       "title": "Your flight",
       "change": "Change",
       "total": "Total for {travelers, plural, one {1 traveler} other {# travelers}}",
-      "estimateNote": "This is the whole package — the flight, seat selection, your visa, your pre-arrival QR code, and everything else I take care of. Nothing is charged here, and I go through the price with you before anything is booked."
+      "estimateNote": "This is the whole package — the flight, seat selection, your documents, your pre-arrival QR code, and everything else I take care of. Nothing is charged here, and I go through the price with you before anything is booked."
     }
   },
   "Flights": {
@@ -210,8 +210,8 @@
     "stops": "{count, plural, one {1 stop} other {# stops}}",
     "via": "via {airports}",
     "estimatedTotal": "Total for {travelers, plural, one {1 traveler} other {# travelers}}",
-    "includedBadge": "Includes flight, seats, visa, and pre-arrival QR code",
-    "priceIncludes": "Every price below is the complete package — the booking, seat selection, your visa, your pre-arrival QR code, and everything else I take care of for you. Nothing is charged here.",
+    "includedBadge": "Includes flight, seats, documents, and pre-arrival QR code",
+    "priceIncludes": "Every price below is the complete package — the booking, seat selection, your documents, your pre-arrival QR code, and everything else I take care of for you. Nothing is charged here.",
     "showMore": "Show {count} more ({remaining} left)",
     "select": "Continue with this flight",
     "moreOptionsBody": "For other routing flights, or for group travel and business class discounts, send me your request and I’ll price them for you."
@@ -258,7 +258,7 @@
       "section2Title": "Sending a request is not a purchase",
       "section2Body": "Sending the form costs nothing, holds nothing, and takes no payment — this site never asks for a card. I check the exact fare in my agency’s authorized reservation system, come back to you with it, and we arrange the booking and the payment together once you are happy with it.",
       "section3Title": "How I reach you, and what I look after",
-      "section3Body": "I ask for both an email address and a phone number so I can still reach you if one of them fails, and I only contact you about the request you sent. Alongside your flights I handle Vietnam visa paperwork, seat requests, special assistance, and any changes later on. Group travel and business class discounts I quote by hand, so send me a request for those."
+      "section3Body": "I ask for both an email address and a phone number so I can still reach you if one of them fails, and I only contact you about the request you sent. Alongside your flights I handle Vietnam document paperwork, seat requests, special assistance, and any changes later on. Group travel and business class discounts I quote by hand, so send me a request for those."
     },
     "accessibility": {
       "eyebrow": "Accessibility",

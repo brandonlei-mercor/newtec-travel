@@ -143,7 +143,7 @@ const COPY = {
     totalLabel: "Total",
     totalWord: "total",
     includes:
-      "(including the flights, seats, visa, pre-arrival QR code, and everything else in between)"
+      "(including the flights, seats, documents, pre-arrival QR code, and everything else in between)"
   },
   vi: {
     depart: "Chiều đi",
@@ -155,7 +155,7 @@ const COPY = {
       minutes === 0 ? `${hours} giờ` : `${hours} giờ ${minutes} phút`,
     totalLabel: "Trọn gói",
     totalWord: "trọn gói",
-    includes: "(gồm vé máy bay, chỗ ngồi, visa, mã QR trước khi đến và mọi thứ ở giữa)"
+    includes: "(gồm vé máy bay, chỗ ngồi, giấy tờ, mã QR trước khi đến và mọi thứ ở giữa)"
   }
 } as const;
 

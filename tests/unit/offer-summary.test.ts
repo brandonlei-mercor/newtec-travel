@@ -57,7 +57,7 @@ describe("the stored flight", () => {
       "EVA Air · 18h 55m · 1 stop via TPE",
       "Return Sep 23, 2026 — 12:50 SGN → 16:10 SFO",
       "EVA Air · 17h 20m · Nonstop",
-      "$1,091.00 total (including the flights, seats, visa, pre-arrival QR code, and everything else in between)"
+      "$1,091.00 total (including the flights, seats, documents, pre-arrival QR code, and everything else in between)"
     ]);
   });
 

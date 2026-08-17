@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "NEWTEC TRAVEL AND TOURS | Dịch vụ du lịch Mỹ–Việt Nam",
-    "description": "Giá vé trực tiếp từ San Francisco, Los Angeles, Seattle, Chicago và năm thành phố khác ở Mỹ đến Việt Nam, do chính Hanh Newtec tại NEWTEC Travel and Tours ở Daly City lo liệu — vé máy bay, chỗ ngồi, visa và mọi thứ ở giữa."
+    "description": "Giá vé trực tiếp từ San Francisco, Los Angeles, Seattle, Chicago và năm thành phố khác ở Mỹ đến Việt Nam, do chính Hanh Newtec tại NEWTEC Travel and Tours ở Daly City lo liệu — vé máy bay, chỗ ngồi, giấy tờ và mọi thứ ở giữa."
   },
   "Nav": {
     "home": "Trang chủ NEWTEC TRAVEL AND TOURS",
@@ -14,7 +14,7 @@
     "searchCta": "Tìm chuyến bay"
   },
   "Footer": {
-    "tagline": "Tôi lo trọn chuyến đi giữa Mỹ và Việt Nam cho anh chị: vé máy bay, chỗ ngồi, visa và từng chi tiết nhỏ ở giữa.",
+    "tagline": "Tôi lo trọn chuyến đi giữa Mỹ và Việt Nam cho anh chị: vé máy bay, chỗ ngồi, giấy tờ và từng chi tiết nhỏ ở giữa.",
     "privacy": "Quyền riêng tư",
     "terms": "Điều khoản",
     "disclaimer": "Gửi yêu cầu chưa phải là giữ chỗ. Tôi sẽ xác nhận giá vé và từng chi tiết với anh chị trước khi xuất vé.",
@@ -25,13 +25,13 @@
   "Home": {
     "eyebrow": "Chào anh chị, tôi là Hanh",
     "title": "Để tôi lo chuyến đi Việt Nam cho anh chị.",
-    "description": "Tôi là chuyên viên du lịch, ba mươi năm nay chuyên lo các chuyến đi giữa Mỹ và Việt Nam. Anh chị cho tôi biết muốn đi đâu và khi nào. Anh chị xem giá vé bên dưới, gửi cho tôi chuyến nào ưng, rồi tôi lo tiếp — vé máy bay, chỗ ngồi, visa, mã QR trước khi đến và mọi thứ ở giữa.",
+    "description": "Tôi là chuyên viên du lịch, ba mươi năm nay chuyên lo các chuyến đi giữa Mỹ và Việt Nam. Anh chị cho tôi biết muốn đi đâu và khi nào. Anh chị xem giá vé bên dưới, gửi cho tôi chuyến nào ưng, rồi tôi lo tiếp — vé máy bay, chỗ ngồi, giấy tờ, mã QR trước khi đến và mọi thứ ở giữa.",
     "cta": "Tìm chuyến bay cho anh chị",
-    "priceNote": "Mọi mức giá ở đây là trọn gói chuyến đi — đặt vé, chọn chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo trước khi anh chị bay.",
+    "priceNote": "Mọi mức giá ở đây là trọn gói chuyến đi — đặt vé, chọn chỗ ngồi, giấy tờ, mã QR trước khi đến và mọi việc khác tôi lo trước khi anh chị bay.",
     "closingTitle": "Anh chị sẵn sàng chưa? Để tôi lo phần còn lại.",
     "specialistEyebrow": "Rất vui được làm quen",
     "specialistTitle": "Anh chị có tôi, từ lời nhắn đầu tiên đến khi chuyến đi kết thúc — và cả những chuyến sau nữa.",
-    "specialistBody": "Tôi là Hanh Newtec. Suốt ba chục năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình tìm đến tôi từ những ngày đầu đến nay vẫn tìm tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, visa, mã QR trước khi đến và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
+    "specialistBody": "Tôi là Hanh Newtec. Suốt ba chục năm nay tôi thu xếp các chuyến bay giữa vùng Vịnh và Việt Nam từ cùng một văn phòng nhỏ ở Daly City. Nhiều gia đình tìm đến tôi từ những ngày đầu đến nay vẫn tìm tôi trước tiên, và nhiều người đã thành bạn bè. Ngày bay, giá vé, chỗ ngồi, giấy tờ, mã QR trước khi đến và tấm vé của anh chị đều qua tay tôi, không bao giờ qua một hệ thống tự động.",
     "specialistCta": "Gửi yêu cầu cho tôi"
   },
   "Inquiry": {
@@ -89,8 +89,8 @@
       "email": "Địa chỉ email",
       "phone": "Số điện thoại",
       "phoneHint": "Ghi mã quốc gia nếu ở ngoài Hoa Kỳ.",
-      "visaNoteTitle": "Về visa Việt Nam của anh chị",
-      "visaNoteBody": "Để làm visa Việt Nam, tôi cần bản sao trang đầu hộ chiếu, ảnh chân dung và địa chỉ ở Việt Nam. Tôi sẽ liên hệ để hướng dẫn thêm.",
+      "visaNoteTitle": "Về giấy tờ Việt Nam của anh chị",
+      "visaNoteBody": "Để làm giấy tờ Việt Nam, tôi cần bản sao trang đầu hộ chiếu, ảnh chân dung và địa chỉ ở Việt Nam. Tôi sẽ liên hệ để hướng dẫn thêm.",
       "flexibleDatesTitle": "Ngày bay của tôi có thể xê dịch một hai ngày",
       "flexibleDatesBody": "Anh chị đánh dấu ô này nếu ngày đi hoặc ngày về có thể lệch 1–2 ngày, Hanh sẽ tìm giá tốt nhất cho anh chị. Anh chị dùng ô bên dưới để ghi rõ ngày đi hoặc ngày về có thể xê dịch thế nào.",
       "contactMethodTitle": "Cách liên hệ thuận tiện nhất",
@@ -133,7 +133,7 @@
       "title": "Chuyến bay của anh chị",
       "change": "Đổi",
       "total": "Tổng cho {travelers, plural, other {# hành khách}}",
-      "estimateNote": "Đây là giá trọn gói — vé máy bay, chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo. Chưa thu khoản nào ở đây, và tôi sẽ đi qua giá với anh chị trước khi đặt vé."
+      "estimateNote": "Đây là giá trọn gói — vé máy bay, chỗ ngồi, giấy tờ, mã QR trước khi đến và mọi việc khác tôi lo. Chưa thu khoản nào ở đây, và tôi sẽ đi qua giá với anh chị trước khi đặt vé."
     }
   },
   "Flights": {
@@ -210,8 +210,8 @@
     "stops": "{count, plural, other {# điểm dừng}}",
     "via": "qua {airports}",
     "estimatedTotal": "Tổng cho {travelers, plural, other {# hành khách}}",
-    "includedBadge": "Bao gồm vé máy bay, chỗ ngồi, visa và mã QR trước khi đến",
-    "priceIncludes": "Mọi mức giá bên dưới là trọn gói — đặt vé, chọn chỗ ngồi, visa, mã QR trước khi đến và mọi việc khác tôi lo cho anh chị. Chưa thu khoản nào ở đây.",
+    "includedBadge": "Bao gồm vé máy bay, chỗ ngồi, giấy tờ và mã QR trước khi đến",
+    "priceIncludes": "Mọi mức giá bên dưới là trọn gói — đặt vé, chọn chỗ ngồi, giấy tờ, mã QR trước khi đến và mọi việc khác tôi lo cho anh chị. Chưa thu khoản nào ở đây.",
     "showMore": "Xem thêm {count} lựa chọn (còn {remaining})",
     "select": "Tiếp tục với chuyến bay này",
     "moreOptionsBody": "Về các hành trình bay khác, hoặc ưu đãi cho đoàn và hạng thương gia, anh chị cứ gửi yêu cầu để tôi báo giá."
@@ -258,7 +258,7 @@
       "section2Title": "Gửi yêu cầu không phải là mua",
       "section2Body": "Gửi biểu mẫu không mất phí, không giữ chỗ và không nhận thanh toán — trang này không bao giờ hỏi thẻ của anh chị. Tôi kiểm tra giá chính xác trong hệ thống đặt chỗ được ủy quyền của công ty, báo lại cho anh chị, rồi mình thu xếp việc đặt vé và thanh toán cùng nhau khi anh chị đã hài lòng.",
       "section3Title": "Cách tôi liên hệ và những gì tôi lo",
-      "section3Body": "Tôi xin cả email lẫn số điện thoại để vẫn liên lạc được nếu một cách không thành công, và chỉ liên hệ về yêu cầu anh chị đã gửi. Ngoài vé máy bay, tôi còn lo hồ sơ visa Việt Nam, yêu cầu chỗ ngồi, hỗ trợ đặc biệt và việc đổi vé về sau. Vé đoàn và ưu đãi hạng thương gia tôi báo giá riêng, anh chị cứ gửi yêu cầu để tôi báo lại."
+      "section3Body": "Tôi xin cả email lẫn số điện thoại để vẫn liên lạc được nếu một cách không thành công, và chỉ liên hệ về yêu cầu anh chị đã gửi. Ngoài vé máy bay, tôi còn lo hồ sơ giấy tờ Việt Nam, yêu cầu chỗ ngồi, hỗ trợ đặc biệt và việc đổi vé về sau. Vé đoàn và ưu đãi hạng thương gia tôi báo giá riêng, anh chị cứ gửi yêu cầu để tôi báo lại."
     },
     "accessibility": {
       "eyebrow": "Khả năng tiếp cận",

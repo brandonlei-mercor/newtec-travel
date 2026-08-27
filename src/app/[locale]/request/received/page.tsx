@@ -1,5 +1,6 @@
 import { AtSign, CheckCircle2, Mail, MessageSquareText } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Script from "next/script";
 import { Link } from "@/i18n/navigation";
 import { COMPANY } from "@/shared/company";
 
@@ -23,6 +24,25 @@ export default async function RequestReceivedPage({
 
   return (
     <main id="main-content" className="flex-1 bg-[var(--ivory)] py-16 sm:py-20">
+      {/*
+       * Tells Google Ads a lead arrived. The checkout only navigates here after
+       * the inquiry row is written, and the reference gate keeps a bare visit to
+       * the URL from counting as one. The reference itself never enters the
+       * script — it is user-controlled, and this string must stay static. The
+       * dataLayer shim is Google's own pattern, so the event queues even when
+       * this runs before the loader in the layout.
+       */}
+      {reference ? (
+        <Script id="lead-conversion">
+          {`window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('event', 'conversion', {
+              'send_to': 'AW-18382365177/0iqFCIebr-ccEPnDsr1E',
+              'value': 1.0,
+              'currency': 'USD'
+            });`}
+        </Script>
+      ) : null}
       <div className="shell max-w-2xl">
         <span className="grid size-11 place-items-center rounded-full bg-[var(--brand-soft)] text-[color:var(--brand)]">
           <CheckCircle2 aria-hidden="true" size={22} strokeWidth={1.8} />

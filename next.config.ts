@@ -2,18 +2,24 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+/*
+ * The Google tag is the one third party the browser may talk to, pinned to
+ * the exact hosts Google documents for conversion tracking: the loader, the
+ * ping endpoints, and the linker iframe. Everything else is still this origin
+ * only. Duffel is called from the server, so it belongs in none of these.
+ */
+const googleTagScript = "https://www.googletagmanager.com";
+const googleTagPings =
+  "https://www.googletagmanager.com https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' ${googleTagScript}${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob: ${googleTagPings}`,
   "font-src 'self' data:",
-  /*
-   * The browser talks to this origin and nothing else. Duffel is called from
-   * the server, so no third-party host belongs in any of these three lists.
-   */
-  "connect-src 'self' ws: wss:",
-  "frame-src 'none'",
+  `connect-src 'self' ws: wss: ${googleTagPings}`,
+  "frame-src https://td.doubleclick.net https://www.googletagmanager.com",
   "form-action 'self'",
   "object-src 'none'",
   "base-uri 'self'",

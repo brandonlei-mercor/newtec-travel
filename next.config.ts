@@ -8,9 +8,14 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
  * ping endpoints, and the linker iframe. Everything else is still this origin
  * only. Duffel is called from the server, so it belongs in none of these.
  */
-const googleTagScript = "https://www.googletagmanager.com";
+/*
+ * googleads.g.doubleclick.net appears in both lists because the tag sends the
+ * same ping over whichever transport survives: fetch, image, or a script
+ * element. ad.doubleclick.net joined in a September 2026 tag revision.
+ */
+const googleTagScript = "https://www.googletagmanager.com https://googleads.g.doubleclick.net";
 const googleTagPings =
-  "https://www.googletagmanager.com https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net";
+  "https://www.googletagmanager.com https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://ad.doubleclick.net";
 
 const contentSecurityPolicy = [
   "default-src 'self'",
